@@ -9,28 +9,107 @@ interface Props {
 const { command } = Astro.props;
 ---
 
-<aside class="w-80 p-6 bg-white dark:bg-gray-800 border-l border-gray-200 dark:border-gray-700 overflow-y-auto">
+<aside class="w-full h-full">
   <!-- Estado inicial -->
-  <div id="detail-placeholder" class="text-center py-8">
-    <div class="text-gray-400 mb-4">
-      <svg class="h-16 w-16 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+  <div id="detail-placeholder" class="text-center py-12">
+    <div class="text-gray-300 mb-6">
+      <svg class="h-20 w-20 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
       </svg>
     </div>
-    <p class="text-gray-500 text-sm">Selecciona un comando para ver los detalles</p>
+    <p class="text-gray-500 text-base font-medium">Selecciona un comando para ver los detalles</p>
+    <p class="text-gray-400 text-sm mt-2">El contenido completo se mostrará aquí</p>
   </div>
 
   <!-- Contenido del detalle -->
   <div id="detail-content" class="hidden">
-    <div class="prose prose-sm dark:prose-invert max-w-none">
-      <div id="markdown-content"></div>
+    <div class="prose prose-lg max-w-none">
+      <div id="markdown-content" class="space-y-4"></div>
     </div>
   </div>
 </aside>
 
 <script>
+// Importar marked dinámicamente
+let marked: any = null;
+
+// Función para cargar marked
+async function loadMarked() {
+  if (!marked) {
+    const { marked: markedModule } = await import('marked');
+    marked = markedModule;
+    
+    // Configurar marked para usar clases de Tailwind
+    marked.setOptions({
+      gfm: true, // GitHub Flavored Markdown
+      breaks: true,
+      headerIds: false,
+      mangle: false
+    });
+  }
+  return marked;
+}
+
+// Función para remover frontmatter de markdown
+function removeFrontmatter(content: string): string {
+  const lines = content.split('\n');
+  let inFrontmatter = false;
+  let frontmatterEndIndex = -1;
+  
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i].trim();
+    
+    if (line === '---') {
+      if (!inFrontmatter) {
+        inFrontmatter = true;
+      } else {
+        frontmatterEndIndex = i;
+        break;
+      }
+    }
+  }
+  
+  if (frontmatterEndIndex !== -1) {
+    return lines.slice(frontmatterEndIndex + 1).join('\n').trim();
+  }
+  
+  return content;
+}
+
+// Función para aplicar estilos de Tailwind al HTML generado
+function applyTailwindStyles(html: string): string {
+  return html
+    // Headers
+    .replace(/<h1>/g, '<h1 class="text-2xl font-bold mt-10 mb-6 text-gray-900">')
+    .replace(/<h2>/g, '<h2 class="text-xl font-bold mt-8 mb-4 text-gray-900">')
+    .replace(/<h3>/g, '<h3 class="text-lg font-bold mt-6 mb-3 text-gray-800">')
+    
+    // Párrafos
+    .replace(/<p>/g, '<p class="my-4 leading-relaxed text-gray-700">')
+    
+    // Code blocks
+    .replace(/<pre>/g, '<pre class="bg-gray-800 text-green-400 p-4 rounded-lg my-6 overflow-x-auto text-sm">')
+    .replace(/<code>/g, '<code class="bg-gray-200 px-2 py-1 rounded text-sm font-mono text-gray-900">')
+    
+    // Links
+    .replace(/<a /g, '<a class="text-blue-600 hover:text-blue-800 hover:underline" ')
+    
+    // Lists
+    .replace(/<ul>/g, '<ul class="ml-6 mb-4">')
+    .replace(/<ol>/g, '<ol class="ml-6 mb-4">')
+    .replace(/<li>/g, '<li class="mb-2 text-gray-700">')
+    
+    // Blockquotes
+    .replace(/<blockquote>/g, '<blockquote class="border-l-4 border-blue-500 pl-4 my-6 italic text-gray-700 bg-gray-50 py-2">')
+    
+    // Tables
+    .replace(/<table>/g, '<table class="w-full border-collapse border border-gray-300 my-6">')
+    .replace(/<th>/g, '<th class="border border-gray-300 px-3 py-2 bg-gray-100 text-left font-semibold text-gray-900">')
+    .replace(/<td>/g, '<td class="border border-gray-300 px-3 py-2 text-gray-700">');
+}
+
 // Función para cargar y mostrar el contenido markdown
-async function loadCommandDetail(commandTitle) {
+async function loadCommandDetail(commandTitle: string) {
   const placeholder = document.getElementById('detail-placeholder');
   const content = document.getElementById('detail-content');
   const markdownContent = document.getElementById('markdown-content');
@@ -50,11 +129,15 @@ async function loadCommandDetail(commandTitle) {
     
     const fileContent = await response.text();
     
-    // Remover el frontmatter (líneas entre ---)
-    const cleanMarkdown = fileContent.replace(/^---[\s\S]*?---\s*/, '');
+    // Remover el frontmatter
+    const cleanMarkdown = removeFrontmatter(fileContent);
     
-    // Convertir markdown a HTML usando una librería simple
-    const htmlContent = convertMarkdownToHtml(cleanMarkdown);
+    // Cargar marked y convertir markdown a HTML
+    const markedInstance = await loadMarked();
+    const rawHtml = markedInstance.parse(cleanMarkdown);
+    
+    // Aplicar estilos de Tailwind
+    const htmlContent = applyTailwindStyles(rawHtml);
     
     // Mostrar el contenido
     markdownContent.innerHTML = htmlContent;
@@ -67,6 +150,7 @@ async function loadCommandDetail(commandTitle) {
     console.error(`❌ Error cargando markdown para ${commandTitle}:`, error);
     
     // Mostrar mensaje de error
+    const fileName = commandTitle.toLowerCase().replace(/\s+/g, '').replace(/[^a-z0-9]/g, '');
     markdownContent.innerHTML = `
       <div class="text-center py-8">
         <div class="text-red-400 mb-4">
@@ -81,51 +165,6 @@ async function loadCommandDetail(commandTitle) {
     placeholder.classList.add('hidden');
     content.classList.remove('hidden');
   }
-}
-
-// Función simple para convertir markdown a HTML
-function convertMarkdownToHtml(markdown) {
-  return markdown
-    // Headers
-    .replace(/^### (.*$)/gim, '<h3 class="text-lg font-bold mt-4 mb-2">$1</h3>')
-    .replace(/^## (.*$)/gim, '<h2 class="text-xl font-bold mt-6 mb-3">$1</h2>')
-    .replace(/^# (.*$)/gim, '<h1 class="text-2xl font-bold mt-8 mb-4">$1</h1>')
-    
-    // Bold
-    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-    
-    // Italic
-    .replace(/\*(.*?)\*/g, '<em>$1</em>')
-    
-    // Code blocks
-    .replace(/```(\w+)?\n([\s\S]*?)\n```/g, '<pre class="bg-gray-800 text-green-400 p-3 rounded my-4 overflow-x-auto"><code>$2</code></pre>')
-    .replace(/`([^`]+)`/g, '<code class="bg-gray-100 dark:bg-gray-700 px-1 rounded text-sm">$1</code>')
-    
-    // Links
-    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="text-blue-600 hover:underline">$1</a>')
-    
-    // Lists
-    .replace(/^\* (.*$)/gim, '<li class="ml-4">$1</li>')
-    .replace(/^- (.*$)/gim, '<li class="ml-4">$1</li>')
-    
-    // Blockquotes
-    .replace(/^> (.*$)/gim, '<blockquote class="border-l-4 border-gray-300 pl-4 my-4 italic">$1</blockquote>')
-    
-    // Tables (simple)
-    .replace(/\|(.+)\|/g, function(match) {
-      const cells = match.split('|').slice(1, -1);
-      return '<tr>' + cells.map(cell => `<td class="border px-2 py-1">${cell.trim()}</td>`).join('') + '</tr>';
-    })
-    
-    // Paragraphs
-    .replace(/\n\n/g, '</p><p class="my-2">')
-    
-    // Wrap in paragraphs
-    .replace(/^(.+)$/gm, '<p class="my-2">$1</p>')
-    
-    // Clean up empty paragraphs
-    .replace(/<p class="my-2"><\/p>/g, '')
-    .replace(/<p class="my-2"><\/p>/g, '');
 }
 
 // Función para limpiar el detalle

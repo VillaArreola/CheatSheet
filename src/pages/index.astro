@@ -89,7 +89,10 @@ const initialCommands = commands;
       </main>
 
       <!-- Detalles del comando -->
-      <aside class="w-80 p-6 bg-white dark:bg-gray-800 border-l border-gray-200 dark:border-gray-700 overflow-y-auto">
+      <aside id="command-detail-aside" class="w-[500px] min-w-96 max-w-3xl p-6 bg-white border-l border-gray-200 overflow-y-auto relative">
+        <!-- Resizer handle -->
+        <div id="resizer" class="absolute left-0 top-0 bottom-0 w-1 bg-gray-300 cursor-col-resize hover:bg-blue-500 transition-colors"></div>
+        
         <CommandDetail command={null} />
       </aside>
     </div>
@@ -100,6 +103,54 @@ const initialCommands = commands;
 
 <script>
 import { getCommandById, commands } from '../data/commands';
+
+// Funcionalidad de redimensionamiento del aside
+function initResizer() {
+  const aside = document.getElementById('command-detail-aside') as HTMLElement;
+  const resizer = document.getElementById('resizer') as HTMLElement;
+  
+  if (!aside || !resizer) return;
+  
+  let isResizing = false;
+  let startX: number;
+  let startWidth: number;
+  
+  resizer.addEventListener('mousedown', (e) => {
+    isResizing = true;
+    startX = e.clientX;
+    startWidth = aside.offsetWidth;
+    
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
+    
+    // Prevenir selección de texto durante el resize
+    e.preventDefault();
+  });
+  
+  function handleMouseMove(e: MouseEvent) {
+    if (!isResizing || !aside) return;
+    
+    const deltaX = startX - e.clientX;
+    const newWidth = startWidth + deltaX;
+    
+    // Limitar el ancho mínimo y máximo
+    const minWidth = 384; // min-w-96
+    const maxWidth = 768; // max-w-3xl
+    
+    if (newWidth >= minWidth && newWidth <= maxWidth) {
+      aside.style.width = `${newWidth}px`;
+    }
+  }
+  
+  function handleMouseUp() {
+    isResizing = false;
+    document.removeEventListener('mousemove', handleMouseMove);
+    document.removeEventListener('mouseup', handleMouseUp);
+  }
+}
+
+// Inicializar el resizer cuando el DOM esté listo
+document.addEventListener('DOMContentLoaded', initResizer);
 
 // Función para mostrar detalles en móvil
 function showMobileDetail(commandId: string) {

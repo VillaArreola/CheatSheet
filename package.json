@@ -16,6 +16,7 @@
     "astro": "^5.12.9",
     "autoprefixer": "^10.4.21",
     "dotenv": "^16.4.5",
+    "marked": "^16.1.2",
     "notion-to-md": "^3.1.9",
     "postcss": "^8.5.6"
   },
