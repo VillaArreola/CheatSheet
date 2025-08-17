@@ -1,0 +1,83 @@
+---
+// Definir el tipo Category localmente para evitar dependencias
+interface Category {
+  id: string;
+  name: string;
+  color: string;
+  count: number;
+}
+
+interface Props {
+  categories: Category[];
+  activeCategory?: string;
+  className?: string;
+}
+
+const { categories, activeCategory = 'all', className = '' } = Astro.props;
+
+type ColorMap = {
+  [key: string]: string;
+};
+
+const colorMap: ColorMap = {
+  blue: 'text-blue-700 dark:text-blue-400',
+  green: 'text-green-700 dark:text-green-400',
+  red: 'text-red-700 dark:text-red-400',
+  purple: 'text-purple-700 dark:text-purple-400',
+  indigo: 'text-indigo-700 dark:text-indigo-400',
+  gray: 'text-gray-700 dark:text-gray-400'
+};
+---
+
+<nav class={`space-y-2 ${className}`}>
+  {categories.map(category => (
+    <button
+      onclick={`filterByCategory('${category.id}')`}
+      class={`
+        category-filter-btn w-full text-left px-4 py-3 rounded-lg 
+        hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors
+        ${activeCategory === category.id ? 'bg-gray-100 dark:bg-gray-700' : ''}
+      `}
+    >
+      <div class="flex items-center justify-between">
+        <span class={`font-medium ${colorMap[category.color] || colorMap.gray}`}>
+          {category.name}
+        </span>
+        <span class="text-sm text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-600 px-2 py-1 rounded-full">
+          {category.count}
+        </span>
+      </div>
+    </button>
+  ))}
+</nav>
+
+<script>
+  function filterByCategory(category: string) {
+    // Actualizar estilos de botones
+    document.querySelectorAll('.category-filter-btn').forEach(btn => {
+      btn.classList.remove('active');
+    });
+    
+    (event?.target as HTMLElement)?.closest('.category-filter-btn')?.classList.add('active');
+    
+    // Emitir evento para que otros componentes reaccionen
+    window.dispatchEvent(new CustomEvent('categoryChanged', { 
+      detail: { category } 
+    }));
+  }
+
+  // Declarar globalmente
+  (window as any).filterByCategory = filterByCategory;
+</script>
+
+<style>
+.category-filter-btn.active {
+  background-color: #f3f4f6;
+  border: 1px solid #d1d5db;
+}
+
+.dark .category-filter-btn.active {
+  background-color: #374151;
+  border: 1px solid #4b5563;
+}
+</style>

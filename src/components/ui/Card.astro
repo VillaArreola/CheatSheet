@@ -1,0 +1,12 @@
+---
+interface Props {
+  className?: string;
+  hover?: boolean;
+}
+
+const { className = '', hover = true } = Astro.props;
+---
+
+<div class={`bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden ${hover ? 'hover:shadow-lg transition-shadow' : ''} ${className}`}>
+  <slot />
+</div>

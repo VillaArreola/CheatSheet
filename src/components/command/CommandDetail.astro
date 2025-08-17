@@ -1,0 +1,181 @@
+---
+import Card from '../ui/Card.astro';
+import Badge from '../ui/Badge.astro';
+
+interface Props {
+  command?: any;
+}
+
+const { command } = Astro.props;
+---
+
+<aside class="w-80 p-6 bg-white dark:bg-gray-800 border-l border-gray-200 dark:border-gray-700 overflow-y-auto">
+  <!-- Estado inicial -->
+  <div id="detail-placeholder" class="text-center py-8">
+    <div class="text-gray-400 mb-4">
+      <svg class="h-16 w-16 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+      </svg>
+    </div>
+    <p class="text-gray-500 text-sm">Selecciona un comando para ver los detalles</p>
+  </div>
+
+  <!-- Contenido del detalle -->
+  <div id="detail-content" class="hidden">
+    <div class="prose prose-sm dark:prose-invert max-w-none">
+      <div id="markdown-content"></div>
+    </div>
+  </div>
+</aside>
+
+<script>
+// Función para cargar y mostrar el contenido markdown
+async function loadCommandDetail(commandTitle) {
+  const placeholder = document.getElementById('detail-placeholder');
+  const content = document.getElementById('detail-content');
+  const markdownContent = document.getElementById('markdown-content');
+  
+  if (!placeholder || !content || !markdownContent) return;
+
+  try {
+    // Generar el nombre del archivo
+    const fileName = commandTitle.toLowerCase().replace(/\s+/g, '').replace(/[^a-z0-9]/g, '');
+    
+    // Hacer fetch del archivo markdown
+    const response = await fetch(`/comando/${fileName}.md`);
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    const fileContent = await response.text();
+    
+    // Remover el frontmatter (líneas entre ---)
+    const cleanMarkdown = fileContent.replace(/^---[\s\S]*?---\s*/, '');
+    
+    // Convertir markdown a HTML usando una librería simple
+    const htmlContent = convertMarkdownToHtml(cleanMarkdown);
+    
+    // Mostrar el contenido
+    markdownContent.innerHTML = htmlContent;
+    placeholder.classList.add('hidden');
+    content.classList.remove('hidden');
+    
+    console.log(`✅ Contenido markdown cargado para: ${commandTitle}`);
+    
+  } catch (error) {
+    console.error(`❌ Error cargando markdown para ${commandTitle}:`, error);
+    
+    // Mostrar mensaje de error
+    markdownContent.innerHTML = `
+      <div class="text-center py-8">
+        <div class="text-red-400 mb-4">
+          <svg class="h-16 w-16 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+          </svg>
+        </div>
+        <p class="text-red-500 text-sm">No se pudo cargar el contenido detallado</p>
+        <p class="text-gray-400 text-xs mt-2">Buscando: ${fileName}.md</p>
+      </div>
+    `;
+    placeholder.classList.add('hidden');
+    content.classList.remove('hidden');
+  }
+}
+
+// Función simple para convertir markdown a HTML
+function convertMarkdownToHtml(markdown) {
+  return markdown
+    // Headers
+    .replace(/^### (.*$)/gim, '<h3 class="text-lg font-bold mt-4 mb-2">$1</h3>')
+    .replace(/^## (.*$)/gim, '<h2 class="text-xl font-bold mt-6 mb-3">$1</h2>')
+    .replace(/^# (.*$)/gim, '<h1 class="text-2xl font-bold mt-8 mb-4">$1</h1>')
+    
+    // Bold
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    
+    // Italic
+    .replace(/\*(.*?)\*/g, '<em>$1</em>')
+    
+    // Code blocks
+    .replace(/```(\w+)?\n([\s\S]*?)\n```/g, '<pre class="bg-gray-800 text-green-400 p-3 rounded my-4 overflow-x-auto"><code>$2</code></pre>')
+    .replace(/`([^`]+)`/g, '<code class="bg-gray-100 dark:bg-gray-700 px-1 rounded text-sm">$1</code>')
+    
+    // Links
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="text-blue-600 hover:underline">$1</a>')
+    
+    // Lists
+    .replace(/^\* (.*$)/gim, '<li class="ml-4">$1</li>')
+    .replace(/^- (.*$)/gim, '<li class="ml-4">$1</li>')
+    
+    // Blockquotes
+    .replace(/^> (.*$)/gim, '<blockquote class="border-l-4 border-gray-300 pl-4 my-4 italic">$1</blockquote>')
+    
+    // Tables (simple)
+    .replace(/\|(.+)\|/g, function(match) {
+      const cells = match.split('|').slice(1, -1);
+      return '<tr>' + cells.map(cell => `<td class="border px-2 py-1">${cell.trim()}</td>`).join('') + '</tr>';
+    })
+    
+    // Paragraphs
+    .replace(/\n\n/g, '</p><p class="my-2">')
+    
+    // Wrap in paragraphs
+    .replace(/^(.+)$/gm, '<p class="my-2">$1</p>')
+    
+    // Clean up empty paragraphs
+    .replace(/<p class="my-2"><\/p>/g, '')
+    .replace(/<p class="my-2"><\/p>/g, '');
+}
+
+// Función para limpiar el detalle
+function clearCommandDetail() {
+  const placeholder = document.getElementById('detail-placeholder');
+  const content = document.getElementById('detail-content');
+  
+  if (placeholder && content) {
+    placeholder.classList.remove('hidden');
+    content.classList.add('hidden');
+  }
+}
+
+// Hacer las funciones globales
+(window as any).loadCommandDetail = loadCommandDetail;
+(window as any).clearCommandDetail = clearCommandDetail;
+
+// Interceptar la función showPreview existente
+window.addEventListener('DOMContentLoaded', () => {
+  const originalShowPreview = (window as any).showPreview;
+  
+  if (originalShowPreview) {
+    (window as any).showPreview = function(commandId: string) {
+      // Llamar a la función original
+      originalShowPreview(commandId);
+      
+      // También cargar el detalle markdown
+      const commands = (window as any).__CHEATSHEET_COMMANDS__;
+      if (commands) {
+        const command = commands.find((c: any) => c.id === commandId);
+        if (command) {
+          console.log('🔍 Cargando detalle para:', command.title);
+          loadCommandDetail(command.title);
+        }
+      }
+    };
+  }
+  
+  // También interceptar clics directos en las tarjetas de comandos
+  document.addEventListener('click', (event) => {
+    const target = event.target as HTMLElement;
+    const commandCard = target.closest('.command-card');
+    
+    if (commandCard) {
+      const commandTitle = commandCard.querySelector('h3')?.textContent;
+      if (commandTitle) {
+        console.log('🔍 Clic detectado en comando:', commandTitle);
+        loadCommandDetail(commandTitle);
+      }
+    }
+  });
+});
+</script>

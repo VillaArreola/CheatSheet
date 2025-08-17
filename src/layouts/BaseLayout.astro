@@ -1,0 +1,67 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    <script>
+      // Prevenir flash inicial y exponer funciones globales de tema antes del render
+      (function() {
+        const applyTheme = (theme) => {
+          if (theme === 'dark') {
+            document.documentElement.classList.add('dark');
+            localStorage.setItem('theme', 'dark');
+          } else {
+            document.documentElement.classList.remove('dark');
+            localStorage.setItem('theme', 'light');
+          }
+        };
+
+        // Inicialización: savedTheme > prefersDark
+        const savedTheme = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (savedTheme) {
+          applyTheme(savedTheme);
+        } else if (prefersDark) {
+          applyTheme('dark');
+        } else {
+          applyTheme('light');
+        }
+
+        // Exponer helpers globales
+        window.__applyTheme = applyTheme;
+        window.__toggleTheme = () => {
+          const isDark = document.documentElement.classList.contains('dark');
+          applyTheme(isDark ? 'light' : 'dark');
+        };
+
+        // Delegación: cualquier click en #dark-mode-toggle alterna el tema
+        window.addEventListener('DOMContentLoaded', () => {
+          document.addEventListener('click', (ev) => {
+            const target = ev.target;
+            if (target && typeof target.closest === 'function') {
+              const btn = target.closest('#dark-mode-toggle');
+              if (btn) {
+                window.__toggleTheme();
+              }
+            }
+          });
+        });
+      })();
+    </script>
+  </head>
+  <body class="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
+    <slot />
+  </body>
+</html>

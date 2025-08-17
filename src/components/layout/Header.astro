@@ -1,0 +1,163 @@
+---
+import Search from '../ui/Search.astro';
+import DarkModeToggle from '../ui/DarkModeToggle.astro';
+---
+
+<header class="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-40">
+  <div class="flex flex-col sm:flex-row justify-between items-center p-4 gap-4 sm:gap-0">
+    <div class="flex items-center">
+      <a href="/" class="text-xl sm:text-2xl font-bold text-gray-800 dark:text-gray-100">TechSec Cheatsheet</a>
+    </div>
+    <div class="flex items-center gap-4 w-full sm:w-auto">
+      <div class="flex-1 sm:flex-initial sm:max-w-md">
+        <Search />
+      </div>
+      <DarkModeToggle />
+    </div>
+  </div>
+  
+  <!-- Selector de categorías (solo móvil) -->
+  <div class="lg:hidden px-4 pb-4">
+    <div class="flex items-start flex-col space-y-3">
+      <span class="text-sm font-medium text-gray-600 dark:text-gray-300">Categorías:</span>
+      <div class="flex flex-wrap gap-2 w-full">
+        <button onclick="selectCategory('all')" class="category-btn active px-4 py-2 text-sm rounded-full transition-colors min-h-[44px] touch-manipulation">
+          Todos
+        </button>
+        <button onclick="selectCategory('linux')" class="category-btn px-4 py-2 text-sm rounded-full transition-colors min-h-[44px] touch-manipulation">
+          Linux Basics
+        </button>
+        <button onclick="selectCategory('text')" class="category-btn px-4 py-2 text-sm rounded-full transition-colors min-h-[44px] touch-manipulation">
+          Text Processing
+        </button>
+        <button onclick="selectCategory('files')" class="category-btn px-4 py-2 text-sm rounded-full transition-colors min-h-[44px] touch-manipulation">
+          File Search
+        </button>
+        <button onclick="selectCategory('network')" class="category-btn px-4 py-2 text-sm rounded-full transition-colors min-h-[44px] touch-manipulation">
+          Networking
+        </button>
+        <button onclick="selectCategory('security')" class="category-btn px-4 py-2 text-sm rounded-full transition-colors min-h-[44px] touch-manipulation">
+          Security
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<style>
+.category-btn {
+  background-color: #f3f4f6;
+  color: #6b7280;
+  border: 1px solid transparent;
+}
+
+.category-btn:hover {
+  background-color: #e5e7eb;
+  color: #374151;
+}
+
+.category-btn.active {
+  background-color: #3b82f6;
+  color: white;
+  border-color: #2563eb;
+}
+
+.category-btn.active:hover {
+  background-color: #2563eb;
+}
+
+/* Dark mode styles */
+.dark .category-btn {
+  background-color: #374151;
+  color: #d1d5db;
+}
+
+.dark .category-btn:hover {
+  background-color: #4b5563;
+  color: #f3f4f6;
+}
+
+.dark .category-btn.active {
+  background-color: #3b82f6;
+  color: white;
+  border-color: #2563eb;
+}
+
+.dark .category-btn.active:hover {
+  background-color: #2563eb;
+}
+</style>
+
+<script>
+function selectCategory(category: string) {
+  // Actualizar estilos de botones
+  document.querySelectorAll('.category-btn').forEach(btn => {
+    btn.classList.remove('active');
+  });
+  
+  (event?.target as HTMLElement)?.classList.add('active');
+  
+  // Emitir evento para que otros componentes reaccionen
+  window.dispatchEvent(new CustomEvent('categoryChanged', { 
+    detail: { category } 
+  }));
+  
+  // En móvil, también filtrar los comandos directamente
+  if (window.innerWidth < 1024) {
+    filterMobileCommands(category);
+  }
+}
+
+function filterMobileCommands(category: string) {
+  // We'll get the commands from the global data that was loaded on the page
+  const allCommands = (window as any).__CHEATSHEET_COMMANDS__ || [];
+  const filteredCommands = category === 'all' 
+    ? allCommands 
+    : allCommands.filter((cmd: any) => cmd.category.toLowerCase() === category.toLowerCase());
+  
+  // Mostrar el placeholder inicial cuando se filtra
+  const placeholder = document.getElementById('mobile-preview-placeholder');
+  if (placeholder) {
+    placeholder.style.display = 'block';
+  }
+  
+  // Actualizar contador
+  const counter = document.getElementById('mobile-command-count');
+  if (counter) {
+    counter.textContent = filteredCommands.length.toString();
+  }
+  
+  // Actualizar lista de comandos
+  const commandList = document.getElementById('mobile-command-list');
+  if (commandList) {
+    // Regenerar las tarjetas de comandos filtradas
+    commandList.innerHTML = filteredCommands.map((command: any) => `
+      <div class="command-card cursor-pointer transition-transform hover:scale-[1.02] active:scale-[0.98]" onclick="showMobileDetail('${command.id}')">
+        <div class="bg-white p-4 sm:p-6 rounded-lg shadow hover:shadow-lg transition-shadow border">
+          <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-3 sm:mb-2">
+            <div class="flex items-start mb-2 sm:mb-0">
+              <h3 class="text-lg sm:text-xl font-mono font-semibold text-${command.color || 'blue'}-700 break-words">
+                ${command.name}
+              </h3>
+              ${command.isDangerous ? `
+                <span class="bg-red-100 text-red-700 text-xs font-bold px-2 py-1 rounded-full ml-2 flex-shrink-0">⚠️</span>
+              ` : ''}
+            </div>
+            <span class="font-mono text-xs sm:text-sm text-gray-500 bg-gray-50 px-2 py-1 rounded break-all">${command.syntax}</span>
+          </div>
+          <p class="text-gray-700 mb-4 text-sm sm:text-base leading-relaxed">${command.description}</p>
+          <div class="flex flex-wrap gap-2">
+            ${command.tags.map((tag: string) => `
+              <span class="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-full">${tag}</span>
+            `).join('')}
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+}
+
+// Declarar globalmente
+(window as any).selectCategory = selectCategory;
+(window as any).filterMobileCommands = filterMobileCommands;
+</script>

@@ -6,9 +6,21 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "sync": "node scripts/sync-notion-commands.cjs",
+    "sync:md": "node scripts/generate-markdown-raw.cjs",
+    "sync:all": "npm run sync && npm run sync:md"
   },
   "dependencies": {
-    "astro": "^5.12.9"
+    "@notionhq/client": "^2.2.14",
+    "astro": "^5.12.9",
+    "autoprefixer": "^10.4.21",
+    "dotenv": "^16.4.5",
+    "notion-to-md": "^3.1.9",
+    "postcss": "^8.5.6"
+  },
+  "devDependencies": {
+    "@astrojs/tailwind": "^5.1.5",
+    "tailwindcss": "^3.4.17"
   }
 }
