@@ -5,7 +5,6 @@ import Footer from '../components/layout/Footer.astro';
 import CategoryFilter from '../components/command/CategoryFilter.astro';
 import CommandList from '../components/command/CommandList.astro';
 import CommandDetail from '../components/command/CommandDetail.astro';
-import CommandPreview from '../components/command/CommandPreview.astro';
 import { categories, commands } from '../data/generated/commands';
 
 // Estado inicial
@@ -89,7 +88,7 @@ const initialCommands = commands;
       </main>
 
       <!-- Detalles del comando -->
-      <aside id="command-detail-aside" class="w-[500px] min-w-96 max-w-3xl p-6 bg-white border-l border-gray-200 overflow-y-auto relative">
+      <aside id="command-detail-aside" class="w-[700px] min-w-96 max-w-4xl p-6 bg-white border-l border-gray-200 overflow-y-auto relative">
         <!-- Resizer handle -->
         <div id="resizer" class="absolute left-0 top-0 bottom-0 w-1 bg-gray-300 cursor-col-resize hover:bg-blue-500 transition-colors"></div>
         
@@ -133,9 +132,9 @@ function initResizer() {
     const deltaX = startX - e.clientX;
     const newWidth = startWidth + deltaX;
     
-    // Limitar el ancho mínimo y máximo
-    const minWidth = 384; // min-w-96
-    const maxWidth = 768; // max-w-3xl
+                   // Limitar el ancho mínimo y máximo
+               const minWidth = 384; // min-w-96
+               const maxWidth = 896; // max-w-4xl
     
     if (newWidth >= minWidth && newWidth <= maxWidth) {
       aside.style.width = `${newWidth}px`;
