@@ -72,23 +72,23 @@ const initialCommands = commands;
     
     <!-- Layout desktop -->
     <div class="hidden lg:flex flex-1 min-h-screen">
-      <!-- Categorías -->
-      <aside class="w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 overflow-y-auto p-6">
-        <CategoryFilter 
-          categories={categories}
-          activeCategory="all"
-        />
-      </aside>
-
-      <!-- Lista de comandos -->
-      <main class="flex-1 overflow-y-auto p-8 bg-white dark:bg-gray-800">
-        <CommandList 
-          commands={initialCommands}
-        />
-      </main>
+              <!-- Categorías - Fijas -->
+        <aside class="w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 p-6 sticky top-0 h-screen overflow-y-auto z-10">
+          <CategoryFilter 
+            categories={categories}
+            activeCategory="all"
+          />
+        </aside>
+  
+        <!-- Lista de comandos - Fija -->
+        <main class="flex-1 p-8 bg-white dark:bg-gray-800 sticky top-0 h-screen overflow-y-auto z-10">
+          <CommandList 
+            commands={initialCommands}
+          />
+        </main>
 
       <!-- Detalles del comando -->
-      <aside id="command-detail-aside" class="w-[700px] min-w-96 max-w-4xl p-6 bg-white border-l border-gray-200 overflow-y-auto relative">
+      <aside id="command-detail-aside" class="w-1/2 min-w-96 max-w-[60%] p-6 pb-20 bg-white border-l border-gray-200 overflow-hidden relative transform-gpu">
         <!-- Resizer handle -->
         <div id="resizer" class="absolute left-0 top-0 bottom-0 w-1 bg-gray-300 cursor-col-resize hover:bg-blue-500 transition-colors"></div>
         
@@ -132,9 +132,12 @@ function initResizer() {
     const deltaX = startX - e.clientX;
     const newWidth = startWidth + deltaX;
     
-                   // Limitar el ancho mínimo y máximo
-               const minWidth = 384; // min-w-96
-               const maxWidth = 896; // max-w-4xl
+    // Obtener el ancho total de la ventana
+    const windowWidth = window.innerWidth;
+    
+    // Calcular límites en píxeles basados en porcentajes
+    const minWidth = 384; // min-w-96 (384px)
+    const maxWidth = windowWidth * 0.6; // 60% del ancho de la ventana
     
     if (newWidth >= minWidth && newWidth <= maxWidth) {
       aside.style.width = `${newWidth}px`;
