@@ -1,93 +1,28 @@
 ---
-// Definir el tipo Command localmente para compatibilidad con datos de Notion
-interface Command {
-  id: string;
-  title: string;
-  command: string;
-  description: string;
-  category: string;
-  tags: string[];
-  examples?: string[];
-  dangerous?: boolean;
-  platform?: string;
-  syntax?: string;
-  parameters?: Array<{
-    param: string;
-    description: string;
-    example: string;
-  }>;
-  output?: string;
-  notes?: string;
-  references?: string[];
-  created_at: string;
-  updated_at: string;
-}
 import CommandCard from './CommandCard.astro';
 
 interface Props {
-  commands: Command[];
+  commands: any[];
   selectedCommand?: string;
-  onCommandClick?: (id: string) => void;
 }
 
 const { commands, selectedCommand } = Astro.props;
 ---
 
 <div class="space-y-6">
-  {commands.map((command) => (
+  {commands.map((command: any) => (
     <CommandCard
       command={command}
       isSelected={command.id === selectedCommand}
-      onClick={`showPreview('${command.id}')`}
+      onClick={`showPreview('${command.title}')`}
     />
   ))}
 </div>
 
 <script>
-import { getCommandById } from '../../data/generated/commands';
-
-function showPreview(commandId: string) {
-  const command = getCommandById(commandId);
-  if (!command) return;
-
-  // Ocultar placeholder y mostrar contenido
-  const placeholder = document.getElementById('preview-placeholder');
-  const content = document.getElementById('preview-content');
-  if (placeholder) placeholder.classList.add('hidden');
-  if (content) content.classList.remove('hidden');
-
-  // Actualizar contenido
-  const comandoEl = document.getElementById('preview-comando');
-  const sintaxisEl = document.getElementById('preview-sintaxis');
-  const descripcionEl = document.getElementById('preview-descripcion');
-  const warningEl = document.getElementById('preview-warning');
-  const ejemploEl = document.getElementById('preview-ejemplo');
-  const tagsEl = document.getElementById('preview-tags');
-
-  if (comandoEl) comandoEl.textContent = command.title;
-  if (sintaxisEl) sintaxisEl.textContent = command.syntax || command.command;
-  if (descripcionEl) descripcionEl.textContent = command.description;
-  
-  // Mostrar/ocultar warning
-  if (warningEl) {
-    if (command.dangerous) {
-      warningEl.classList.remove('hidden');
-    } else {
-      warningEl.classList.add('hidden');
-    }
-  }
-
-  // Actualizar ejemplo (solo el primero)
-  if (ejemploEl && command.examples && command.examples[0]) {
-    ejemploEl.innerHTML = `<code class="block text-green-400">$ ${command.examples[0]}</code>`;
-  }
-
-  // Actualizar tags
-  if (tagsEl) {
-    tagsEl.innerHTML = command.tags.map(tag => 
-      `<span class="px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full">${tag}</span>`
-    ).join('');
-  }
+function showPreview(commandTitle: string) {
+  // Esta función ahora solo se usa para desktop
+  // En móvil se intercepta en MobileLayout
 }
 
 // Declarar globalmente

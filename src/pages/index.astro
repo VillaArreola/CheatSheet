@@ -5,6 +5,7 @@ import Footer from '../components/layout/Footer.astro';
 import CategoryFilter from '../components/command/CategoryFilter.astro';
 import CommandList from '../components/command/CommandList.astro';
 import CommandDetail from '../components/command/CommandDetail.astro';
+import MobileLayout from '../components/layout/MobileLayout.astro';
 import { categories, commands } from '../data/generated/commands';
 
 // Estado inicial
@@ -15,82 +16,32 @@ const initialCommands = commands;
   <Header />
   
   <div class="min-h-screen bg-gray-50 dark:bg-gray-900">
-    <!-- Layout móvil y tablet -->
+    <!-- Layout móvil -->
     <div class="lg:hidden">
-      <!-- Contenido principal móvil -->
-      <main class="px-4 py-6">
-        <div class="mb-6">
-          <h2 class="text-xl sm:text-2xl font-bold text-gray-800 dark:text-gray-100 mb-4">Comandos disponibles</h2>
-          <div class="text-sm text-gray-600 dark:text-gray-400 mb-4">
-            <span id="mobile-command-count">{initialCommands.length}</span> comandos encontrados
-          </div>
-        </div>
-        
-        <!-- Preview inicial para móvil -->
-        <div id="mobile-preview-placeholder" class="mb-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 text-center">
-          <div class="text-gray-400 dark:text-gray-500 mb-4">
-            <svg class="h-16 w-16 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-            </svg>
-          </div>
-          <h3 class="text-lg font-semibold text-gray-700 dark:text-gray-200 mb-2">¡Bienvenido al CheatSheet!</h3>
-          <p class="text-gray-500 dark:text-gray-400 text-sm mb-4">Selecciona cualquier comando de la lista para ver sus detalles, ejemplos y parámetros.</p>
-          <div class="flex items-center justify-center space-x-2 text-xs text-gray-400 dark:text-gray-500">
-            <span>👆</span>
-            <span>Toca un comando para comenzar</span>
-          </div>
-        </div>
-        
-        <!-- Lista de comandos para móvil -->
-        <div id="mobile-command-list" class="space-y-4">
-          <CommandList 
-            commands={initialCommands}
-          />
-        </div>
-      </main>
-      
-      <!-- Modal/Overlay para detalles del comando en móvil -->
-      <div id="mobile-command-detail" class="fixed inset-0 bg-white dark:bg-gray-900 z-50 hidden overflow-y-auto">
-        <div class="p-4">
-          <div class="flex items-center justify-between mb-4">
-            <button 
-              onclick="closeMobileDetail()" 
-              class="flex items-center text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200"
-            >
-              <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-              </svg>
-              Volver
-            </button>
-          </div>
-          <div id="mobile-detail-content">
-            <!-- El contenido se cargará dinámicamente -->
-          </div>
-        </div>
-      </div>
+      <MobileLayout commands={initialCommands} />
     </div>
     
     <!-- Layout desktop -->
-    <div class="hidden lg:flex flex-1 min-h-screen">
-              <!-- Categorías - Fijas -->
-        <aside class="w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 p-6 sticky top-0 h-screen overflow-y-auto z-10">
-          <CategoryFilter 
-            categories={categories}
-            activeCategory="all"
-          />
-        </aside>
-  
-        <!-- Lista de comandos - Fija -->
-        <main class="flex-1 p-8 bg-white dark:bg-gray-800 sticky top-0 h-screen overflow-y-auto z-10">
-          <CommandList 
-            commands={initialCommands}
-          />
-        </main>
+    <div class="hidden lg:flex flex-1 min-h-screen bg-gray-50 dark:bg-gray-900">
+      <!-- Categorías - Fijas -->
+      <aside class="w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 p-6 sticky top-0 h-screen overflow-y-auto z-10 shadow-sm">
+        <CategoryFilter 
+          categories={categories}
+          activeCategory="all"
+        />
+      </aside>
+
+      <!-- Lista de comandos - Fija -->
+      <main class="flex-1 p-8 bg-white dark:bg-gray-800 sticky top-0 h-screen overflow-y-auto z-10 shadow-sm">
+        <CommandList 
+          commands={initialCommands}
+        />
+      </main>
 
       <!-- Detalles del comando -->
-      <aside id="command-detail-aside" class="w-1/2 min-w-96 max-w-[60%] p-6 pb-20 bg-white border-l border-gray-200 overflow-hidden relative transform-gpu">
+      <aside id="command-detail-aside" class="w-1/2 min-w-96 max-w-[60%] p-6 pb-20 bg-white dark:bg-gray-800 border-l border-gray-200 dark:border-gray-700 overflow-hidden relative transform-gpu shadow-sm">
         <!-- Resizer handle -->
-        <div id="resizer" class="absolute left-0 top-0 bottom-0 w-1 bg-gray-300 cursor-col-resize hover:bg-blue-500 transition-colors"></div>
+        <div id="resizer" class="absolute left-0 top-0 bottom-0 w-1 bg-gray-300 dark:bg-gray-600 cursor-col-resize hover:bg-blue-500 transition-colors"></div>
         
         <CommandDetail command={null} />
       </aside>
@@ -101,9 +52,9 @@ const initialCommands = commands;
 </BaseLayout>
 
 <script>
-import { getCommandById, commands } from '../data/commands';
+import { commands } from '../data/commands';
 
-// Funcionalidad de redimensionamiento del aside
+// Funcionalidad de redimensionamiento del aside (solo desktop)
 function initResizer() {
   const aside = document.getElementById('command-detail-aside') as HTMLElement;
   const resizer = document.getElementById('resizer') as HTMLElement;
@@ -154,131 +105,6 @@ function initResizer() {
 // Inicializar el resizer cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', initResizer);
 
-// Función para mostrar detalles en móvil
-function showMobileDetail(commandId: string) {
-  const command = getCommandById(commandId);
-  if (!command) return;
-
-  // Ocultar el placeholder inicial
-  const placeholder = document.getElementById('mobile-preview-placeholder');
-  if (placeholder) {
-    placeholder.style.display = 'none';
-  }
-
-  const modal = document.getElementById('mobile-command-detail');
-  const content = document.getElementById('mobile-detail-content');
-  
-  if (modal && content) {
-    // Generar el HTML del detalle
-    content.innerHTML = `
-      <div class="space-y-6">
-        <!-- Header -->
-        <div class="border-b border-gray-200 pb-6">
-          <div class="mb-4">
-            <h1 class="text-2xl sm:text-3xl font-mono font-bold text-blue-700 mb-2">${command.name}</h1>
-            ${command.isDangerous ? `
-              <div class="inline-flex items-center px-3 py-1 bg-red-100 text-red-700 text-sm font-bold rounded-full">
-                ⚠️ Usar con precaución
-              </div>
-            ` : ''}
-          </div>
-          
-          <div class="space-y-4">
-            <div>
-              <h3 class="font-semibold text-gray-700 mb-2">Sintaxis</h3>
-              <code class="block font-mono bg-gray-100 p-3 rounded text-gray-800 text-sm break-all">
-                ${command.syntax}
-              </code>
-            </div>
-            
-            <div>
-              <h3 class="font-semibold text-gray-700 mb-2">Descripción</h3>
-              <p class="text-gray-700 text-sm sm:text-base">${command.description}</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Ejemplos -->
-        <div>
-          <h2 class="text-lg sm:text-xl font-bold text-gray-800 mb-4">Ejemplos de uso</h2>
-          <div class="space-y-4">
-            ${command.examples.map((example: any) => `
-              <div class="border-l-4 border-blue-500 pl-4">
-                <code class="block font-mono bg-gray-800 text-green-400 p-3 rounded mb-2 text-sm break-all">
-                  $ ${example.command}
-                </code>
-                <p class="text-gray-700 text-sm">${example.description}</p>
-              </div>
-            `).join('')}
-          </div>
-        </div>
-
-        <!-- Parámetros -->
-        <div>
-          <h2 class="text-lg sm:text-xl font-bold text-gray-800 mb-4">Parámetros principales</h2>
-          <div class="grid gap-3">
-            ${command.parameters.map((param: any) => `
-              <div class="flex flex-col sm:flex-row sm:items-start space-y-1 sm:space-y-0 sm:space-x-3 p-3 bg-gray-50 rounded">
-                <code class="font-mono text-blue-600 font-semibold text-sm">${param.flag}</code>
-                <span class="text-gray-700 text-sm">${param.description}</span>
-              </div>
-            `).join('')}
-          </div>
-        </div>
-
-        <!-- Tags -->
-        <div>
-          <h2 class="text-lg sm:text-xl font-bold text-gray-800 mb-4">Tags relacionados</h2>
-          <div class="flex flex-wrap gap-2">
-            ${command.tags.map((tag: string) => `
-              <span class="px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full">${tag}</span>
-            `).join('')}
-          </div>
-        </div>
-      </div>
-    `;
-    
-    modal.classList.remove('hidden');
-    document.body.style.overflow = 'hidden'; // Prevenir scroll del body
-  }
-}
-
-// Función para cerrar el modal en móvil
-function closeMobileDetail() {
-  const modal = document.getElementById('mobile-command-detail');
-  if (modal) {
-    modal.classList.add('hidden');
-    document.body.style.overflow = 'auto'; // Restaurar scroll del body
-  }
-  
-  // Mostrar de nuevo el placeholder inicial
-  const placeholder = document.getElementById('mobile-preview-placeholder');
-  if (placeholder) {
-    placeholder.style.display = 'block';
-  }
-}
-
-// Hacer las funciones globales
-(window as any).showMobileDetail = showMobileDetail;
-(window as any).closeMobileDetail = closeMobileDetail;
-
-// Hacer los comandos disponibles globalmente para filtrado móvil
+// Hacer los comandos disponibles globalmente
 (window as any).__CHEATSHEET_COMMANDS__ = JSON.parse(`${JSON.stringify(commands)}`);
-
-// Detectar si estamos en móvil y modificar el comportamiento de los comandos
-window.addEventListener('DOMContentLoaded', () => {
-  const isMobile = window.innerWidth < 1024;
-  
-  if (isMobile) {
-    // Interceptar clics en comandos para mostrar modal en móvil
-    const originalShowPreview = (window as any).showPreview;
-    (window as any).showPreview = function(commandId: string) {
-      if (window.innerWidth < 1024) {
-        showMobileDetail(commandId);
-      } else {
-        originalShowPreview(commandId);
-      }
-    };
-  }
-});
 </script>

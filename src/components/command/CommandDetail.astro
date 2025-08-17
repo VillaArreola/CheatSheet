@@ -9,13 +9,13 @@ interface Props {
 const { command } = Astro.props;
 ---
 
-<aside class="w-full h-full transform-gpu">
+<aside class="w-full h-full transform-gpu bg-white dark:bg-gray-800">
   <!-- Estado inicial -->
   <div id="detail-placeholder" class="text-center py-12 h-full overflow-y-auto">
     <!-- Header con título -->
     <div class="mb-8">
-      <h2 class="text-2xl font-bold text-gray-800 mb-2">TechSec CheatSheet</h2>
-      <p class="text-gray-600">Tu guía de comandos de seguridad</p>
+      <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-2">TechSec CheatSheet</h2>
+      <p class="text-gray-600 dark:text-gray-400">Tu guía de comandos de seguridad</p>
     </div>
 
     <!-- Icono principal -->
@@ -26,13 +26,13 @@ const { command } = Astro.props;
     </div>
 
     <!-- Mensaje principal -->
-    <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6 mb-8 border border-blue-100">
-      <h3 class="text-lg font-semibold text-gray-800 mb-3">¡Bienvenido!</h3>
-      <p class="text-gray-600 text-sm leading-relaxed mb-4">
+    <div class="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl p-6 mb-8 border border-blue-100 dark:border-blue-800">
+      <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-3">¡Bienvenido!</h3>
+      <p class="text-gray-600 dark:text-gray-300 text-sm leading-relaxed mb-4">
         Selecciona cualquier comando de la lista para ver su documentación completa, 
         ejemplos de uso y todos los detalles técnicos.
       </p>
-      <div class="flex items-center justify-center space-x-2 text-xs text-blue-600 bg-blue-100 rounded-full px-4 py-2 inline-block">
+      <div class="flex items-center justify-center space-x-2 text-xs text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900/30 rounded-full px-4 py-2 inline-block">
         <span>💡</span>
         <span>Contenido completo de Notion</span>
       </div>
@@ -40,33 +40,33 @@ const { command } = Astro.props;
 
     <!-- Estadísticas rápidas -->
     <div class="grid grid-cols-2 gap-4 mb-8">
-      <div class="bg-gray-50 rounded-lg p-4 text-center">
-        <div class="text-2xl font-bold text-blue-600" id="total-commands">3</div>
-        <div class="text-xs text-gray-600">Comandos</div>
+      <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 text-center">
+        <div class="text-2xl font-bold text-blue-600 dark:text-blue-400" id="total-commands">3</div>
+        <div class="text-xs text-gray-600 dark:text-gray-400">Comandos</div>
       </div>
-      <div class="bg-gray-50 rounded-lg p-4 text-center">
-        <div class="text-2xl font-bold text-green-600" id="total-categories">3</div>
-        <div class="text-xs text-gray-600">Categorías</div>
+      <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 text-center">
+        <div class="text-2xl font-bold text-green-600 dark:text-green-400" id="total-categories">3</div>
+        <div class="text-xs text-gray-600 dark:text-gray-400">Categorías</div>
       </div>
     </div>
 
     <!-- Tips útiles -->
     <div class="text-left space-y-3">
-      <h4 class="text-sm font-semibold text-gray-700 mb-3 flex items-center">
+      <h4 class="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-3 flex items-center">
         <span class="mr-2">🚀</span>
         Tips útiles
       </h4>
-      <div class="space-y-2 text-xs text-gray-600">
+      <div class="space-y-2 text-xs text-gray-600 dark:text-gray-400">
         <div class="flex items-start space-x-2">
-          <span class="text-blue-500 mt-0.5">•</span>
+          <span class="text-blue-500 dark:text-blue-400 mt-0.5">•</span>
           <span>Usa los filtros de categoría para encontrar comandos específicos</span>
         </div>
         <div class="flex items-start space-x-2">
-          <span class="text-blue-500 mt-0.5">•</span>
+          <span class="text-blue-500 dark:text-blue-400 mt-0.5">•</span>
           <span>Puedes redimensionar este panel arrastrando el borde izquierdo</span>
         </div>
         <div class="flex items-start space-x-2">
-          <span class="text-blue-500 mt-0.5">•</span>
+          <span class="text-blue-500 dark:text-blue-400 mt-0.5">•</span>
           <span>El contenido se actualiza automáticamente desde Notion</span>
         </div>
       </div>
@@ -74,7 +74,7 @@ const { command } = Astro.props;
   </div>
 
   <!-- Contenido del detalle -->
-  <div id="detail-content" class="hidden relative h-full overflow-y-auto">
+  <div id="detail-content" class="hidden relative h-full overflow-y-auto bg-white dark:bg-gray-800">
     <div class="prose prose-lg max-w-none">
       <div id="markdown-content" class="space-y-4 leading-relaxed"></div>
     </div>
@@ -134,22 +134,22 @@ function applyTailwindStyles(html: string): string {
   return html
     .replace(/<(h[1-3])>/g, (match, tag: string) => {
       const classes: Record<string, string> = {
-        'h1': 'text-2xl font-bold mt-10 mb-6 text-gray-900',
-        'h2': 'text-xl font-bold mt-8 mb-4 text-gray-900',
-        'h3': 'text-lg font-bold mt-6 mb-3 text-gray-800'
+        'h1': 'text-2xl font-bold mt-10 mb-6 text-gray-900 dark:text-gray-100',
+        'h2': 'text-xl font-bold mt-8 mb-4 text-gray-900 dark:text-gray-100',
+        'h3': 'text-lg font-bold mt-6 mb-3 text-gray-800 dark:text-gray-200'
       };
       return `<${tag} class="${classes[tag]}">`;
     })
-    .replace(/<p>/g, '<p class="my-4 leading-relaxed text-gray-700">')
-    .replace(/<pre>/g, '<pre class="bg-gray-800 text-green-400 p-4 rounded-lg my-6 overflow-x-auto text-sm">')
-    .replace(/<code>/g, '<code class="bg-gray-200 px-2 py-1 rounded text-sm font-mono text-gray-900">')
-    .replace(/<a /g, '<a class="text-blue-600 hover:text-blue-800 hover:underline" ')
+    .replace(/<p>/g, '<p class="my-4 leading-relaxed text-gray-700 dark:text-gray-300">')
+    .replace(/<pre>/g, '<pre class="bg-gray-800 text-green-400 p-4 rounded-lg my-6 overflow-x-auto text-sm border border-gray-700">')
+    .replace(/<code>/g, '<code class="bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded text-sm font-mono text-gray-900 dark:text-gray-100">')
+    .replace(/<a /g, '<a class="text-blue-600 hover:text-blue-800 hover:underline dark:text-blue-400 dark:hover:text-blue-300" ')
     .replace(/<(ul|ol)>/g, '<$1 class="ml-6 mb-4">')
-    .replace(/<li>/g, '<li class="mb-2 text-gray-700">')
-    .replace(/<blockquote>/g, '<blockquote class="border-l-4 border-blue-500 pl-4 my-6 italic text-gray-700 bg-gray-50 py-2">')
-    .replace(/<table>/g, '<table class="w-full border-collapse border border-gray-300 my-6">')
-    .replace(/<th>/g, '<th class="border border-gray-300 px-3 py-2 bg-gray-100 text-left font-semibold text-gray-900">')
-    .replace(/<td>/g, '<td class="border border-gray-300 px-3 py-2 text-gray-700">');
+    .replace(/<li>/g, '<li class="mb-2 text-gray-700 dark:text-gray-300">')
+    .replace(/<blockquote>/g, '<blockquote class="border-l-4 border-blue-500 pl-4 my-6 italic text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-800 py-2 rounded-r">')
+    .replace(/<table>/g, '<table class="w-full border-collapse border border-gray-300 dark:border-gray-600 my-6 rounded-lg overflow-hidden">')
+    .replace(/<th>/g, '<th class="border border-gray-300 dark:border-gray-600 px-3 py-2 bg-gray-100 dark:bg-gray-700 text-left font-semibold text-gray-900 dark:text-gray-100">')
+    .replace(/<td>/g, '<td class="border border-gray-300 dark:border-gray-600 px-3 py-2 text-gray-700 dark:text-gray-300">');
 }
 
 // Cache para evitar recargar el mismo contenido
@@ -161,6 +161,7 @@ let currentLoadingCommand: string | null = null;
 
 // Función para cargar y mostrar el contenido markdown con optimizaciones
 async function loadCommandDetail(commandTitle: string) {
+  
   // Debounce: cancelar carga anterior si es diferente
   if (loadingTimeout) {
     clearTimeout(loadingTimeout);
@@ -173,11 +174,28 @@ async function loadCommandDetail(commandTitle: string) {
   
   currentLoadingCommand = commandTitle;
   
-  const placeholder = document.getElementById('detail-placeholder');
-  const content = document.getElementById('detail-content');
-  const markdownContent = document.getElementById('markdown-content');
+  // Detectar si estamos en móvil o desktop
+  const isMobile = window.innerWidth < 1024;
   
-  if (!placeholder || !content || !markdownContent) return;
+  let placeholder, content, markdownContent;
+  
+  if (isMobile) {
+    // En móvil, usar el contenedor móvil del nuevo layout
+    const mobileContainer = document.getElementById('mobile-detail-content');
+    if (!mobileContainer) return;
+    
+    // Crear elementos dinámicamente para móvil
+    placeholder = null;
+    content = mobileContainer;
+    markdownContent = mobileContainer;
+  } else {
+    // En desktop, usar los elementos existentes
+    placeholder = document.getElementById('detail-placeholder');
+    content = document.getElementById('detail-content');
+    markdownContent = document.getElementById('markdown-content');
+  }
+  
+  if (!content || !markdownContent) return;
 
   // Generar el nombre del archivo
   const fileName = commandTitle.toLowerCase().replace(/\s+/g, '').replace(/[^a-z0-9]/g, '');
@@ -186,23 +204,21 @@ async function loadCommandDetail(commandTitle: string) {
    if (contentCache.has(fileName)) {
      const cachedContent = contentCache.get(fileName);
      markdownContent.innerHTML = cachedContent;
-     placeholder.classList.add('hidden');
+     if (placeholder) placeholder.classList.add('hidden');
      content.classList.remove('hidden');
-     currentLoadingCommand = null;
-     console.log(`✅ Contenido cargado desde cache para: ${commandTitle}`);
-     
-           return;
-   }
+           currentLoadingCommand = null;
+      return;
+    }
 
   try {
     // Mostrar loading state
     markdownContent.innerHTML = `
-      <div class="flex items-center justify-center py-8">
-        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
-        <span class="ml-3 text-gray-600">Cargando contenido...</span>
+      <div class="flex items-center justify-center py-12">
+        <div class="animate-spin rounded-full h-10 w-10 border-4 border-blue-200 border-t-blue-600"></div>
+        <span class="ml-4 text-gray-600 dark:text-gray-400 font-medium">Cargando contenido...</span>
       </div>
     `;
-    placeholder.classList.add('hidden');
+    if (placeholder) placeholder.classList.add('hidden');
     content.classList.remove('hidden');
     
          // Hacer fetch del archivo markdown
@@ -231,8 +247,6 @@ async function loadCommandDetail(commandTitle: string) {
       requestAnimationFrame(() => {
         markdownContent.innerHTML = htmlContent;
         currentLoadingCommand = null;
-        console.log(`✅ Contenido markdown cargado para: ${commandTitle}`);
-        
       });
     
   } catch (error) {
@@ -240,14 +254,14 @@ async function loadCommandDetail(commandTitle: string) {
     
     // Mostrar mensaje de error
     markdownContent.innerHTML = `
-      <div class="text-center py-8">
-        <div class="text-red-400 mb-4">
+      <div class="text-center py-12">
+        <div class="text-red-400 dark:text-red-500 mb-4">
           <svg class="h-16 w-16 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
           </svg>
         </div>
-        <p class="text-red-500 text-sm">No se pudo cargar el contenido detallado</p>
-        <p class="text-gray-400 text-xs mt-2">Buscando: ${fileName}.md</p>
+        <p class="text-red-500 dark:text-red-400 text-sm font-medium">No se pudo cargar el contenido detallado</p>
+        <p class="text-gray-400 dark:text-gray-500 text-xs mt-2">Buscando: ${fileName}.md</p>
       </div>
     `;
     currentLoadingCommand = null;
@@ -299,35 +313,16 @@ window.addEventListener('DOMContentLoaded', () => {
   const originalShowPreview = (window as any).showPreview;
   
   if (originalShowPreview) {
-    (window as any).showPreview = function(commandId: string) {
+    (window as any).showPreview = function(commandTitle: string) {
       // Llamar a la función original
-      originalShowPreview(commandId);
+      originalShowPreview(commandTitle);
       
       // También cargar el detalle markdown
-      const commands = (window as any).__CHEATSHEET_COMMANDS__;
-      if (commands) {
-        const command = commands.find((c: any) => c.id === commandId);
-        if (command) {
-          console.log('🔍 Cargando detalle para:', command.title);
-          loadCommandDetail(command.title);
-        }
-      }
+      loadCommandDetail(commandTitle);
     };
   }
   
-  // También interceptar clics directos en las tarjetas de comandos
-  document.addEventListener('click', (event) => {
-    const target = event.target as HTMLElement;
-    const commandCard = target.closest('.command-card');
-    
-    if (commandCard) {
-      const commandTitle = commandCard.querySelector('h3')?.textContent;
-      if (commandTitle) {
-        console.log('🔍 Clic detectado en comando:', commandTitle);
-        loadCommandDetail(commandTitle);
-      }
-    }
-  });
+
 
 });
 </script>
