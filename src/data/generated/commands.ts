@@ -27,12 +27,13 @@ export interface Command {
 export const commands: Command[] = [
   {
     "id": "24fec7e7-4fc0-80ef-a008-f3585a1afc4e",
-    "title": "Dnsrecon",
+    "title": "Dnsrecon ",
     "command": "dnsrecon -d ejemplo.com -t std",
     "description": "Herramienta para enumerar registros DNS y realizar descubrimiento de subdominios.",
     "category": "DNS",
     "tags": [],
     "examples": [
+      "dnsrecon -d ejemplo.com -D subdomains.txt -t brt",
       "dnsrecon [opciones]",
       "dnsrecon -d ejemplo.com -t std",
       "dnsrecon -d ejemplo.com -D subdomains.txt -t brt",
@@ -40,7 +41,7 @@ export const commands: Command[] = [
     ],
     "dangerous": false,
     "platform": "Unix",
-    "syntax": "dnsrecon [opciones]",
+    "syntax": "dnsrecon -d ejemplo.com -D subdomains.txt -t brt",
     "parameters": [
       {
         "param": "-d",
@@ -70,7 +71,7 @@ export const commands: Command[] = [
       "Documentación"
     ],
     "created_at": "2025-08-14T20:53:00.000Z",
-    "updated_at": "2025-08-17T00:55:00.000Z"
+    "updated_at": "2025-08-18T00:23:00.000Z"
   },
   {
     "id": "252ec7e7-4fc0-8011-b047-f847e6967442",

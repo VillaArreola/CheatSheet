@@ -1,13 +1,18 @@
 ---
 layout: ../../layouts/cheatlayout.astro
-title: Dnsrecon
+title: Dnsrecon 
 ---
 
 
-`dnsrecon` — Enumeración de DNS
+# Dnsrecon — Enumeración de DN
 
 
----
+## **🏴‍☠️  Ejemplo**
+
+
+```bash
+dnsrecon -d ejemplo.com -D subdomains.txt -t brt
+```
 
 
 ### **📌 Descripción breve**
