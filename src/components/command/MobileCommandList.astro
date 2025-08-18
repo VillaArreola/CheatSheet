@@ -1,0 +1,143 @@
+---
+import CommandCard from './CommandCard.astro';
+
+interface Props {
+  commands: any[];
+  selectedCommand?: string;
+}
+
+const { commands, selectedCommand } = Astro.props;
+---
+
+<div id="mobile-command-list-container" class="space-y-4">
+  {commands.map((command: any) => (
+    <CommandCard
+      command={command}
+      isSelected={command.id === selectedCommand}
+      onClick={`showPreview('${command.title}')`}
+    />
+  ))}
+</div>
+
+<script>
+import { commands } from '../../data/generated/commands';
+
+function showPreview(commandTitle: string) {
+  // Esta función se intercepta en MobileLayout
+}
+
+// Función para filtrar comandos por categoría (versión móvil)
+function filterMobileCommandsByCategory(category: string) {
+  const container = document.getElementById('mobile-command-list-container');
+  if (!container) {
+    return;
+  }
+  
+  const allCommands = (window as any).__CHEATSHEET_COMMANDS__ || commands;
+  let filteredCommands;
+  
+  if (category === 'all') {
+    filteredCommands = allCommands;
+  } else {
+    // Mapeo de categorías para compatibilidad
+    const categoryMap: { [key: string]: string[] } = {
+      'scan': ['scan', 'escan', 'dns'],
+      'escan': ['escan', 'scan', 'dns'],
+      'e-can': ['escan', 'scan', 'dns'],
+      'python': ['python'],
+      'linux': ['linux'],
+      'security': ['security'],
+      'network': ['network'],
+      'database': ['database'],
+      'web': ['web'],
+      'git': ['git'],
+      'docker': ['docker']
+    };
+    
+    const targetCategories = categoryMap[category.toLowerCase()] || [category.toLowerCase()];
+    filteredCommands = allCommands.filter((cmd: any) => {
+      return targetCategories.includes(cmd.category.toLowerCase());
+    });
+  }
+  
+  // Actualizar contador móvil
+  const counter = document.getElementById('mobile-command-count');
+  if (counter) {
+    counter.textContent = filteredCommands.length.toString();
+  }
+  
+  // Regenerar la lista de comandos
+  if (filteredCommands.length === 0) {
+    container.innerHTML = `
+      <div class="text-center py-8">
+        <div class="text-gray-400 dark:text-gray-500 text-4xl mb-3">🔍</div>
+        <h3 class="text-base font-medium text-gray-900 dark:text-gray-100 mb-2">
+          No se encontraron comandos
+        </h3>
+        <p class="text-gray-600 dark:text-gray-400 text-sm mb-3">
+          No hay comandos en esta categoría
+        </p>
+        <button 
+          onclick="filterMobileCommandsByCategory('all')" 
+          class="px-3 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors text-sm"
+        >
+          Ver todos los comandos
+        </button>
+      </div>
+    `;
+  } else {
+    const htmlContent = filteredCommands.map((command: any) => `
+      <div class="command-card cursor-pointer transition-transform hover:scale-[1.02] active:scale-[0.98]" onclick="showPreview('${command.title}')">
+        <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow hover:shadow-lg transition-shadow border border-gray-200 dark:border-gray-700">
+          <div class="flex flex-col gap-3">
+            <div class="flex items-center">
+              <div class="w-2 h-2 rounded-full mr-3 flex-shrink-0 bg-${getCategoryColor(command.category)}-400 dark:bg-${getCategoryColor(command.category)}-500"></div>
+              <h3 class="text-base font-mono font-semibold text-${getCategoryColor(command.category)}-700 dark:text-${getCategoryColor(command.category)}-400 truncate">
+                ${command.title}
+              </h3>
+              ${command.dangerous ? `
+                <span class="bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300 text-xs font-bold px-2 py-1 rounded-full ml-2 flex-shrink-0">⚠️</span>
+              ` : ''}
+            </div>
+            <div>
+              <code class="font-mono text-xs text-gray-700 dark:text-gray-200 bg-gray-50 dark:bg-gray-800 px-3 py-2 rounded-md break-all border border-gray-200 dark:border-gray-600 block w-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                ${command.syntax || command.command}
+              </code>
+            </div>
+          </div>
+        </div>
+      </div>
+    `).join('');
+    
+    container.innerHTML = htmlContent;
+  }
+}
+
+// Función para obtener el color de categoría
+function getCategoryColor(category: string): string {
+  const colorMap: { [key: string]: string } = {
+    'dns': 'blue',
+    'linux': 'green',
+    'security': 'red',
+    'network': 'indigo',
+    'database': 'purple',
+    'web': 'orange',
+    'git': 'teal',
+    'docker': 'cyan',
+    'scan': 'blue',
+    'escan': 'blue',
+    'python': 'green'
+  };
+  
+  return colorMap[category.toLowerCase()] || 'gray';
+}
+
+// Escuchar eventos de cambio de categoría
+window.addEventListener('categoryChanged', (event: any) => {
+  filterMobileCommandsByCategory(event.detail.category);
+});
+
+// Declarar globalmente
+(window as any).showPreview = showPreview;
+(window as any).filterMobileCommandsByCategory = filterMobileCommandsByCategory;
+</script>

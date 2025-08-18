@@ -4,7 +4,7 @@ title: Dnsrecon
 ---
 
 
-# Dnsrecon — Enumeración de DN
+# Dnsrecon — Enumeración de DNS
 
 
 ## **🏴‍☠️  Ejemplo**

@@ -71,7 +71,30 @@ export const commands: Command[] = [
       "Documentación"
     ],
     "created_at": "2025-08-14T20:53:00.000Z",
-    "updated_at": "2025-08-18T00:57:00.000Z"
+    "updated_at": "2025-08-18T01:51:00.000Z"
+  },
+  {
+    "id": "253ec7e7-4fc0-80e2-bdb9-e54621c69807",
+    "title": "Ls ",
+    "command": "ls -la /home/usuario/documentos",
+    "description": " listar archivos y directorios",
+    "category": "Linux",
+    "tags": [],
+    "examples": [
+      "ls -la /home/usuario/documentos"
+    ],
+    "dangerous": false,
+    "platform": "Unix",
+    "syntax": "ls -la /home/usuario/documentos",
+    "parameters": [],
+    "output": "",
+    "notes": "",
+    "references": [
+      "Manual de ls",
+      "Guía de comandos Linux"
+    ],
+    "created_at": "2025-08-18T01:16:00.000Z",
+    "updated_at": "2025-08-18T01:52:00.000Z"
   },
   {
     "id": "252ec7e7-4fc0-8011-b047-f847e6967442",
@@ -107,7 +130,7 @@ export const commands: Command[] = [
       "Descargar Python 3.11"
     ],
     "created_at": "2025-08-17T02:46:00.000Z",
-    "updated_at": "2025-08-17T02:48:00.000Z"
+    "updated_at": "2025-08-18T01:50:00.000Z"
   }
 ];
 
@@ -132,10 +155,16 @@ function getCategoryColor(category: string): string {
     'database': 'purple',
     'web': 'orange',
     'git': 'teal',
-    'docker': 'cyan'
+    'docker': 'cyan',
+    'scan': 'blue',
+    'escan': 'blue',
+    'python': 'green',
+    'text': 'purple',
+    'files': 'orange',
+    'all': 'gray'
   };
   
-  return colorMap[category.toLowerCase()] || 'gray';
+  return colorMap[category.toLowerCase()] || 'blue';
 }
 
 export function getCommandById(id: string): Command | undefined {

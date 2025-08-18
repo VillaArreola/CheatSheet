@@ -1,5 +1,5 @@
 ---
-import CommandList from '../command/CommandList.astro';
+import MobileCommandList from '../command/MobileCommandList.astro';
 
 interface Props {
   commands: any[];
@@ -21,7 +21,7 @@ const { commands: commandList } = Astro.props;
     
     <!-- Lista de comandos -->
     <div class="p-4 bg-white dark:bg-gray-800">
-      <CommandList commands={commandList} />
+      <MobileCommandList commands={commandList} />
     </div>
   </div>
 

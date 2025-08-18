@@ -33,6 +33,14 @@ const initialCommands = commands;
 
       <!-- Lista de comandos - Fija -->
       <main class="flex-1 p-8 bg-white dark:bg-gray-800 sticky top-0 h-screen overflow-y-auto z-10 shadow-sm">
+        <div class="mb-6">
+          <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
+            Comandos disponibles
+          </h2>
+          <p class="text-sm text-gray-600 dark:text-gray-400">
+            Mostrando <span id="command-count" class="font-medium">{initialCommands.length}</span> comandos
+          </p>
+        </div>
         <CommandList 
           commands={initialCommands}
         />
@@ -52,7 +60,7 @@ const initialCommands = commands;
 </BaseLayout>
 
 <script>
-import { commands } from '../data/commands';
+import { commands, categories } from '../data/generated/commands';
 
 // Funcionalidad de redimensionamiento del aside (solo desktop)
 function initResizer() {
