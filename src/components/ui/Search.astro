@@ -8,6 +8,7 @@
     </svg>
   </div>
   <input 
+    id="search-input"
     type="text" 
     placeholder="Buscar comandos..." 
     class="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base bg-gray-50 dark:bg-gray-700 focus:bg-white dark:focus:bg-gray-600 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 transition-colors touch-manipulation"
@@ -19,5 +20,75 @@
 </div>
 
 <script>
-// TODO: Implementar búsqueda en tiempo real
+let searchTimeout: ReturnType<typeof setTimeout>;
+
+function performSearch(query: string) {
+  if (!(window as any).__CHEATSHEET_COMMANDS__) return;
+  
+  const commands = (window as any).__CHEATSHEET_COMMANDS__;
+  const searchTerm = query.toLowerCase().trim();
+  
+  if (searchTerm === '') {
+    // Si no hay búsqueda, mostrar todos los comandos
+    window.dispatchEvent(new CustomEvent('searchCleared'));
+    return;
+  }
+  
+  // Filtrar comandos que coincidan con el término de búsqueda
+  const filteredCommands = commands.filter((command: any) => {
+    const title = command.title?.toLowerCase() || '';
+    const commandText = (command.syntax || command.command || '').toLowerCase();
+    const description = command.description?.toLowerCase() || '';
+    const tags = command.tags?.join(' ').toLowerCase() || '';
+    
+    return title.includes(searchTerm) || 
+           commandText.includes(searchTerm) || 
+           description.includes(searchTerm) || 
+           tags.includes(searchTerm);
+  });
+  
+  // Emitir evento con los resultados de búsqueda
+  window.dispatchEvent(new CustomEvent('searchResults', { 
+    detail: { 
+      query: searchTerm,
+      results: filteredCommands 
+    } 
+  }));
+}
+
+// Configurar el evento de búsqueda
+document.addEventListener('DOMContentLoaded', () => {
+  const searchInput = document.getElementById('search-input') as HTMLInputElement;
+  
+  if (searchInput) {
+    searchInput.addEventListener('input', (e) => {
+      const target = e.target as HTMLInputElement;
+      const query = target.value;
+      
+      // Limpiar timeout anterior
+      clearTimeout(searchTimeout);
+      
+      // Establecer nuevo timeout para búsqueda con debounce
+      searchTimeout = setTimeout(() => {
+        performSearch(query);
+      }, 300);
+    });
+    
+    // Limpiar búsqueda al hacer focus si está vacío
+    searchInput.addEventListener('focus', () => {
+      if (searchInput.value === '') {
+        window.dispatchEvent(new CustomEvent('searchCleared'));
+      }
+    });
+  }
+});
+
+// Función global para limpiar búsqueda
+(window as any).clearSearch = () => {
+  const searchInput = document.getElementById('search-input') as HTMLInputElement;
+  if (searchInput) {
+    searchInput.value = '';
+    window.dispatchEvent(new CustomEvent('searchCleared'));
+  }
+};
 </script>

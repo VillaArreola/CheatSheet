@@ -158,6 +158,91 @@ window.addEventListener('categoryChanged', (event: any) => {
   filterCommandsByCategory(event.detail.category);
 });
 
+// Escuchar resultados de búsqueda
+window.addEventListener('searchResults', (event: any) => {
+  const { results } = event.detail;
+  displaySearchResults(results);
+});
+
+// Escuchar cuando se limpia la búsqueda
+window.addEventListener('searchCleared', () => {
+  // Restaurar vista de categoría actual
+  const activeCategory = document.querySelector('.category-btn.active');
+  if (activeCategory) {
+    const categoryId = activeCategory.getAttribute('onclick')?.match(/'([^']+)'/)?.[1];
+    if (categoryId) {
+      filterCommandsByCategory(categoryId);
+    }
+  } else {
+    // Si no hay categoría activa, mostrar todos
+    filterCommandsByCategory('all');
+  }
+});
+
+// Función para mostrar resultados de búsqueda
+function displaySearchResults(results: any[]) {
+  const container = document.getElementById('desktop-command-list-container');
+  if (!container) return;
+  
+  // Actualizar contador
+  const counter = document.getElementById('command-count');
+  if (counter) {
+    counter.textContent = results.length.toString();
+  }
+  
+  // Actualizar título
+  const title = document.querySelector('main h2');
+  if (title) {
+    title.textContent = `Resultados de búsqueda (${results.length})`;
+  }
+  
+  if (results.length === 0) {
+    container.innerHTML = `
+      <div class="text-center py-12">
+        <div class="text-gray-400 dark:text-gray-500 text-6xl mb-4">🔍</div>
+        <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">
+          No se encontraron resultados
+        </h3>
+        <p class="text-gray-600 dark:text-gray-400 mb-4">
+          Intenta con otros términos de búsqueda
+        </p>
+        <button 
+          onclick="clearSearch()" 
+          class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors"
+        >
+          Limpiar búsqueda
+        </button>
+      </div>
+    `;
+  } else {
+    // Mostrar resultados de búsqueda
+    const htmlContent = results.map((command: any) => `
+        <div class="command-card cursor-pointer transition-transform hover:scale-[1.02] active:scale-[0.98]" onclick="showPreview('${command.title}')">
+          <div class="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-lg shadow hover:shadow-lg transition-shadow border border-gray-200 dark:border-gray-700">
+            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+              <div class="flex items-center flex-1 min-w-0">
+                <div class="w-2 h-2 rounded-full mr-3 flex-shrink-0 bg-${getCategoryColor(command.category)}-400 dark:bg-${getCategoryColor(command.category)}-500"></div>
+                <h3 class="text-lg sm:text-xl font-mono font-semibold text-${getCategoryColor(command.category)}-700 dark:text-${getCategoryColor(command.category)}-400 truncate">
+                  ${command.title}
+                </h3>
+                ${command.dangerous ? `
+                  <span class="bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300 text-xs font-bold px-2 py-1 rounded-full ml-2 flex-shrink-0">⚠️</span>
+                ` : ''}
+              </div>
+              <div class="flex-shrink-0 w-full sm:w-auto">
+                <code class="font-mono text-xs sm:text-sm text-gray-700 dark:text-gray-200 bg-gray-50 dark:bg-gray-800 px-3 py-2 rounded-md break-all border border-gray-200 dark:border-gray-600 block w-full sm:w-auto hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                  ${command.syntax || command.command}
+                </code>
+              </div>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    
+    container.innerHTML = htmlContent;
+  }
+}
+
 // Declarar globalmente
 (window as any).showPreview = showPreview;
 (window as any).filterCommandsByCategory = filterCommandsByCategory;
