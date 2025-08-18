@@ -1,0 +1,23 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://cheatsheet.villaarreola.com/sitemap.xml
+
+# Crawl-delay para ser respetuoso con el servidor
+Crawl-delay: 1
+
+# No permitir acceso a archivos de configuración
+Disallow: /_astro/
+Disallow: /src/
+Disallow: /node_modules/
+Disallow: /package.json
+Disallow: /package-lock.json
+Disallow: /astro.config.mjs
+Disallow: /tsconfig.json
+Disallow: /tailwind.config.mjs
+
+# Permitir acceso a recursos estáticos
+Allow: /favicon.svg
+Allow: /og-image.jpg
+Allow: /comando/

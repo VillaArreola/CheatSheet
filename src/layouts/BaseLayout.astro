@@ -1,11 +1,20 @@
 ---
 import '../styles/global.css';
+import GoogleAnalytics from '../components/analytics/GoogleAnalytics.astro';
 
 interface Props {
   title: string;
+  description?: string;
+  image?: string;
+  canonical?: string;
 }
 
-const { title } = Astro.props;
+const { 
+  title, 
+  description = "Tu guía completa de comandos de seguridad y hacking ético. Documentación actualizada desde Notion con las mejores prácticas para pentesting, CTF y seguridad informática.",
+  image = "/og-image.jpg",
+  canonical = Astro.url.href
+} = Astro.props;
 ---
 
 <html lang="es">
@@ -14,11 +23,41 @@ const { title } = Astro.props;
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
     <meta name="generator" content={Astro.generator} />
+    
+    <!-- SEO Meta Tags -->
     <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="author" content="Villa Arreola" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href={canonical} />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={new URL(image, Astro.url)} />
+    <meta property="og:site_name" content="TechSec Cheatsheet" />
+    <meta property="og:locale" content="es_ES" />
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content={canonical} />
+    <meta property="twitter:title" content={title} />
+    <meta property="twitter:description" content={description} />
+    <meta property="twitter:image" content={new URL(image, Astro.url)} />
+    <meta property="twitter:creator" content="@VillaArreola" />
+    
+    <!-- Additional Meta Tags -->
+    <meta name="keywords" content="hacking ético, pentesting, comandos linux, seguridad informática, CTF, cheatsheet, comandos terminal, cybersecurity" />
+    <meta name="theme-color" content="#3B82F6" />
+    <meta name="msapplication-TileColor" content="#3B82F6" />
+    
+    <GoogleAnalytics />
     <script>
       // Prevenir flash inicial y exponer funciones globales de tema antes del render
       (function() {
-        const applyTheme = (theme) => {
+        const applyTheme = (theme: string) => {
           if (theme === 'dark') {
             document.documentElement.classList.add('dark');
             localStorage.setItem('theme', 'dark');
@@ -40,8 +79,8 @@ const { title } = Astro.props;
         }
 
         // Exponer helpers globales
-        window.__applyTheme = applyTheme;
-        window.__toggleTheme = () => {
+        (window as any).__applyTheme = applyTheme;
+        (window as any).__toggleTheme = () => {
           const isDark = document.documentElement.classList.contains('dark');
           applyTheme(isDark ? 'light' : 'dark');
         };
@@ -49,11 +88,11 @@ const { title } = Astro.props;
         // Delegación: cualquier click en #dark-mode-toggle alterna el tema
         window.addEventListener('DOMContentLoaded', () => {
           document.addEventListener('click', (ev) => {
-            const target = ev.target;
+            const target = ev.target as HTMLElement;
             if (target && typeof target.closest === 'function') {
               const btn = target.closest('#dark-mode-toggle');
               if (btn) {
-                window.__toggleTheme();
+                (window as any).__toggleTheme();
               }
             }
           });
