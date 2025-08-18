@@ -30,7 +30,7 @@ export const commands: Command[] = [
     "title": "Dnsrecon ",
     "command": "dnsrecon -d ejemplo.com -t std",
     "description": "Herramienta para enumerar registros DNS y realizar descubrimiento de subdominios.",
-    "category": "DNS",
+    "category": "Escan",
     "tags": [],
     "examples": [
       "dnsrecon -d ejemplo.com -D subdomains.txt -t brt",
@@ -71,7 +71,7 @@ export const commands: Command[] = [
       "Documentación"
     ],
     "created_at": "2025-08-14T20:53:00.000Z",
-    "updated_at": "2025-08-18T00:23:00.000Z"
+    "updated_at": "2025-08-18T00:57:00.000Z"
   },
   {
     "id": "252ec7e7-4fc0-8011-b047-f847e6967442",

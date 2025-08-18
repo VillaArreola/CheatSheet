@@ -71,22 +71,21 @@ const categoryColor = getCategoryColor(command.category);
 
 <div class="command-card cursor-pointer transition-transform hover:scale-[1.02] active:scale-[0.98]" onclick={onClick}>
   <Card className={`p-4 sm:p-6 ${isSelected ? 'ring-2 ring-blue-500' : ''} hover:shadow-lg transition-shadow`}>
-    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-3 sm:mb-2">
-      <div class="flex items-start mb-2 sm:mb-0">
-        <h3 class={`text-lg sm:text-xl font-mono font-semibold ${colorMap[categoryColor]} break-words`}>
+    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+      <div class="flex items-center flex-1 min-w-0">
+        <div class={`w-2 h-2 rounded-full mr-3 flex-shrink-0 bg-${categoryColor}-400 dark:bg-${categoryColor}-500`}></div>
+        <h3 class={`text-lg sm:text-xl font-mono font-semibold ${colorMap[categoryColor]} truncate`}>
           {command.title}
         </h3>
         {command.dangerous && 
           <span class="bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300 text-xs font-bold px-2 py-1 rounded-full ml-2 flex-shrink-0">⚠️</span>
         }
       </div>
-      <span class="font-mono text-xs sm:text-sm text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-700 px-2 py-1 rounded break-all">{command.syntax || command.command}</span>
-    </div>
-    <p class="text-gray-700 dark:text-gray-300 mb-4 text-sm sm:text-base leading-relaxed">{command.description}</p>
-    <div class="flex flex-wrap gap-2">
-      {command.tags.map(tag => (
-        <Badge color="gray" size="sm">{tag}</Badge>
-      ))}
+      <div class="flex-shrink-0 w-full sm:w-auto">
+        <code class="font-mono text-xs sm:text-sm text-gray-700 dark:text-gray-200 bg-gray-50 dark:bg-gray-800 px-3 py-2 rounded-md break-all border border-gray-200 dark:border-gray-600 block w-full sm:w-auto hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+          {command.syntax || command.command}
+        </code>
+      </div>
     </div>
   </Card>
 </div>
