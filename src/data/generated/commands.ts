@@ -101,7 +101,7 @@ export const commands: Command[] = [
     "title": "movipy",
     "command": "python Generador_video.py",
     "description": "Genera videos a partir de imagenes ",
-    "category": "python",
+    "category": "Python",
     "tags": [],
     "examples": [
       "# Verificar versión actual\npython --version",
@@ -130,7 +130,56 @@ export const commands: Command[] = [
       "Descargar Python 3.11"
     ],
     "created_at": "2025-08-17T02:46:00.000Z",
-    "updated_at": "2025-08-18T01:50:00.000Z"
+    "updated_at": "2025-10-10T02:36:00.000Z"
+  },
+  {
+    "id": "288ec7e7-4fc0-80b3-81ca-f99965597cc9",
+    "title": "Rclone",
+    "command": "rclone sync \"source\"   \"Destino\\\"   -P ",
+    "description": "Como usar Rclone",
+    "category": "Config",
+    "tags": [],
+    "examples": [
+      "rclone sync \"source\"   \"Destino\\\"   -P  --exclude \"\"",
+      "rclone [comando] [origen] [destino] [opciones]",
+      "rclone sync ./MisFotos gdrive:/Fotos --progress --dry-run",
+      "rclone mount gdrive:/ ~/GDrive",
+      "rclone sync ./Documentos gdrive:/Backup/Documentos -P --delete-after",
+      "rclone copy ./notas gdrive:/pdfs --include \"*.pdf\" -P",
+      "rclone sync \"C:\\OBS\" \"P:\\OBS\" -P --exclude \"*.tmp\" --exclude \"*.bak\""
+    ],
+    "dangerous": false,
+    "platform": "Unix",
+    "syntax": "rclone sync \"source\"   \"Destino\\\"   -P  --exclude \"\"",
+    "parameters": [
+      {
+        "param": "-listremotes",
+        "description": "Lista las particones remotas",
+        "example": "rclone listremotes"
+      },
+      {
+        "param": "-config delete ''",
+        "description": "Elimina el directorio deseado",
+        "example": "|"
+      },
+      {
+        "param": "--dry-run",
+        "description": "Muestra un apreview sobre el comando a ejecutar.",
+        "example": "rcloud   -comand —dry-run"
+      },
+      {
+        "param": "--update",
+        "description": "Actualiza solo lo mas reciente",
+        "example": "rclone —command —update"
+      }
+    ],
+    "output": "",
+    "notes": "- Antes de sincronizar, **usa** **`--dry-run`** para evitar errores fatales.\n- **Programar backups automáticos** con `cron`\n- Rclone puede cifrar tus datos con `rclone config` → tipo `crypt7`",
+    "references": [
+      "Documentación"
+    ],
+    "created_at": "2025-10-10T01:31:00.000Z",
+    "updated_at": "2025-10-10T02:36:00.000Z"
   }
 ];
 
@@ -156,15 +205,13 @@ function getCategoryColor(category: string): string {
     'web': 'orange',
     'git': 'teal',
     'docker': 'cyan',
-    'scan': 'blue',
     'escan': 'blue',
     'python': 'green',
-    'text': 'purple',
-    'files': 'orange',
+    'config': 'purple',
     'all': 'gray'
   };
   
-  return colorMap[category.toLowerCase()] || 'blue';
+  return colorMap[category.toLowerCase()] || 'gray';
 }
 
 export function getCommandById(id: string): Command | undefined {
