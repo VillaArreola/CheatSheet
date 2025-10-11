@@ -114,4 +114,23 @@ function selectCategory(category: string) {
 
 // Declarar globalmente
 (window as any).selectCategory = selectCategory;
+
+// Mantener una variable CSS con la altura del header para offsets sticky
+function setHeaderHeightVar() {
+  const headerEl = document.querySelector('header');
+  if (!headerEl) return;
+  const headerHeightPx = headerEl.getBoundingClientRect().height;
+  document.documentElement.style.setProperty('--header-h', `${headerHeightPx}px`);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  setHeaderHeightVar();
+  const headerEl = document.querySelector('header');
+  if (headerEl && 'ResizeObserver' in window) {
+    const ro = new ResizeObserver(() => setHeaderHeightVar());
+    ro.observe(headerEl as Element);
+  }
+});
+
+window.addEventListener('resize', setHeaderHeightVar);
 </script>

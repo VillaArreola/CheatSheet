@@ -1,8 +1,6 @@
-
-
 ---
 layout: ../../layouts/cheatlayout.astro
-title: Rclone
+title: Crypto (4)
 ---
 
 

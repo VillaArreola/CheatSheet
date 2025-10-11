@@ -75,6 +75,398 @@ export const commands: Command[] = [
     "updated_at": "2025-10-10T02:47:00.000Z"
   },
   {
+    "id": "289ec7e7-4fc0-80f3-94a2-d44201ce22a6",
+    "title": "Crypto (1)",
+    "command": "rclone sync \"source\"   \"Destino\\\"   -P ",
+    "description": "Como usar Rclone",
+    "category": "Cifrado",
+    "tags": [],
+    "examples": [
+      "rclone sync \"source\"   \"Destino\\\"   -P  --exclude \"\"",
+      "rclone [comando] [origen] [destino] [opciones]",
+      "rclone sync ./MisFotos gdrive:/Fotos --progress --dry-run",
+      "rclone mount gdrive:/ ~/GDrive",
+      "rclone sync ./Documentos gdrive:/Backup/Documentos -P --delete-after",
+      "rclone copy ./notas gdrive:/pdfs --include \"*.pdf\" -P",
+      "rclone sync \"C:\\OBS\" \"P:\\OBS\" -P --exclude \"*.tmp\" --exclude \"*.bak\""
+    ],
+    "dangerous": false,
+    "platform": "Unix",
+    "syntax": "rclone sync \"source\"   \"Destino\\\"   -P  --exclude \"\"",
+    "parameters": [
+      {
+        "param": "-listremotes",
+        "description": "Lista las particones remotas",
+        "example": "rclone listremotes"
+      },
+      {
+        "param": "-config delete ''",
+        "description": "Elimina el directorio deseado",
+        "example": "|"
+      },
+      {
+        "param": "--dry-run",
+        "description": "Muestra un apreview sobre el comando a ejecutar.",
+        "example": "rcloud   -comand —dry-run"
+      },
+      {
+        "param": "--update",
+        "description": "Actualiza solo lo mas reciente",
+        "example": "rclone —command —update"
+      }
+    ],
+    "output": "",
+    "notes": "- Antes de sincronizar, **usa** **`--dry-run`** para evitar errores fatales.\n- **Programar backups automáticos** con `cron`\n- Rclone puede cifrar tus datos con `rclone config` → tipo `crypt7`",
+    "references": [
+      "Documentación"
+    ],
+    "created_at": "2025-10-11T00:29:00.000Z",
+    "updated_at": "2025-10-11T00:29:00.000Z"
+  },
+  {
+    "id": "289ec7e7-4fc0-80c3-9aef-e7ddf1a8c7ab",
+    "title": "Crypto (2)",
+    "command": "rclone sync \"source\"   \"Destino\\\"   -P ",
+    "description": "Como usar Rclone",
+    "category": "Cifrado",
+    "tags": [],
+    "examples": [
+      "rclone sync \"source\"   \"Destino\\\"   -P  --exclude \"\"",
+      "rclone [comando] [origen] [destino] [opciones]",
+      "rclone sync ./MisFotos gdrive:/Fotos --progress --dry-run",
+      "rclone mount gdrive:/ ~/GDrive",
+      "rclone sync ./Documentos gdrive:/Backup/Documentos -P --delete-after",
+      "rclone copy ./notas gdrive:/pdfs --include \"*.pdf\" -P",
+      "rclone sync \"C:\\OBS\" \"P:\\OBS\" -P --exclude \"*.tmp\" --exclude \"*.bak\""
+    ],
+    "dangerous": false,
+    "platform": "Unix",
+    "syntax": "rclone sync \"source\"   \"Destino\\\"   -P  --exclude \"\"",
+    "parameters": [
+      {
+        "param": "-listremotes",
+        "description": "Lista las particones remotas",
+        "example": "rclone listremotes"
+      },
+      {
+        "param": "-config delete ''",
+        "description": "Elimina el directorio deseado",
+        "example": "|"
+      },
+      {
+        "param": "--dry-run",
+        "description": "Muestra un apreview sobre el comando a ejecutar.",
+        "example": "rcloud   -comand —dry-run"
+      },
+      {
+        "param": "--update",
+        "description": "Actualiza solo lo mas reciente",
+        "example": "rclone —command —update"
+      }
+    ],
+    "output": "",
+    "notes": "- Antes de sincronizar, **usa** **`--dry-run`** para evitar errores fatales.\n- **Programar backups automáticos** con `cron`\n- Rclone puede cifrar tus datos con `rclone config` → tipo `crypt7`",
+    "references": [
+      "Documentación"
+    ],
+    "created_at": "2025-10-11T00:29:00.000Z",
+    "updated_at": "2025-10-11T00:29:00.000Z"
+  },
+  {
+    "id": "289ec7e7-4fc0-8010-9ed8-e658712ad6ba",
+    "title": "Crypto (3)",
+    "command": "rclone sync \"source\"   \"Destino\\\"   -P ",
+    "description": "Como usar Rclone",
+    "category": "Cifrado",
+    "tags": [],
+    "examples": [
+      "rclone sync \"source\"   \"Destino\\\"   -P  --exclude \"\"",
+      "rclone [comando] [origen] [destino] [opciones]",
+      "rclone sync ./MisFotos gdrive:/Fotos --progress --dry-run",
+      "rclone mount gdrive:/ ~/GDrive",
+      "rclone sync ./Documentos gdrive:/Backup/Documentos -P --delete-after",
+      "rclone copy ./notas gdrive:/pdfs --include \"*.pdf\" -P",
+      "rclone sync \"C:\\OBS\" \"P:\\OBS\" -P --exclude \"*.tmp\" --exclude \"*.bak\""
+    ],
+    "dangerous": false,
+    "platform": "Unix",
+    "syntax": "rclone sync \"source\"   \"Destino\\\"   -P  --exclude \"\"",
+    "parameters": [
+      {
+        "param": "-listremotes",
+        "description": "Lista las particones remotas",
+        "example": "rclone listremotes"
+      },
+      {
+        "param": "-config delete ''",
+        "description": "Elimina el directorio deseado",
+        "example": "|"
+      },
+      {
+        "param": "--dry-run",
+        "description": "Muestra un apreview sobre el comando a ejecutar.",
+        "example": "rcloud   -comand —dry-run"
+      },
+      {
+        "param": "--update",
+        "description": "Actualiza solo lo mas reciente",
+        "example": "rclone —command —update"
+      }
+    ],
+    "output": "",
+    "notes": "- Antes de sincronizar, **usa** **`--dry-run`** para evitar errores fatales.\n- **Programar backups automáticos** con `cron`\n- Rclone puede cifrar tus datos con `rclone config` → tipo `crypt7`",
+    "references": [
+      "Documentación"
+    ],
+    "created_at": "2025-10-11T00:29:00.000Z",
+    "updated_at": "2025-10-11T00:29:00.000Z"
+  },
+  {
+    "id": "289ec7e7-4fc0-803d-97a0-c6a64453da30",
+    "title": "Crypto (4)",
+    "command": "rclone sync \"source\"   \"Destino\\\"   -P ",
+    "description": "Como usar Rclone",
+    "category": "Cifrado",
+    "tags": [],
+    "examples": [
+      "rclone sync \"source\"   \"Destino\\\"   -P  --exclude \"\"",
+      "rclone [comando] [origen] [destino] [opciones]",
+      "rclone sync ./MisFotos gdrive:/Fotos --progress --dry-run",
+      "rclone mount gdrive:/ ~/GDrive",
+      "rclone sync ./Documentos gdrive:/Backup/Documentos -P --delete-after",
+      "rclone copy ./notas gdrive:/pdfs --include \"*.pdf\" -P",
+      "rclone sync \"C:\\OBS\" \"P:\\OBS\" -P --exclude \"*.tmp\" --exclude \"*.bak\""
+    ],
+    "dangerous": false,
+    "platform": "Unix",
+    "syntax": "rclone sync \"source\"   \"Destino\\\"   -P  --exclude \"\"",
+    "parameters": [
+      {
+        "param": "-listremotes",
+        "description": "Lista las particones remotas",
+        "example": "rclone listremotes"
+      },
+      {
+        "param": "-config delete ''",
+        "description": "Elimina el directorio deseado",
+        "example": "|"
+      },
+      {
+        "param": "--dry-run",
+        "description": "Muestra un apreview sobre el comando a ejecutar.",
+        "example": "rcloud   -comand —dry-run"
+      },
+      {
+        "param": "--update",
+        "description": "Actualiza solo lo mas reciente",
+        "example": "rclone —command —update"
+      }
+    ],
+    "output": "",
+    "notes": "- Antes de sincronizar, **usa** **`--dry-run`** para evitar errores fatales.\n- **Programar backups automáticos** con `cron`\n- Rclone puede cifrar tus datos con `rclone config` → tipo `crypt7`",
+    "references": [
+      "Documentación"
+    ],
+    "created_at": "2025-10-11T00:29:00.000Z",
+    "updated_at": "2025-10-11T00:29:00.000Z"
+  },
+  {
+    "id": "289ec7e7-4fc0-805b-9622-e7de7946cc06",
+    "title": "Crypto (5)",
+    "command": "rclone sync \"source\"   \"Destino\\\"   -P ",
+    "description": "Como usar Rclone",
+    "category": "Cifrado",
+    "tags": [],
+    "examples": [
+      "rclone sync \"source\"   \"Destino\\\"   -P  --exclude \"\"",
+      "rclone [comando] [origen] [destino] [opciones]",
+      "rclone sync ./MisFotos gdrive:/Fotos --progress --dry-run",
+      "rclone mount gdrive:/ ~/GDrive",
+      "rclone sync ./Documentos gdrive:/Backup/Documentos -P --delete-after",
+      "rclone copy ./notas gdrive:/pdfs --include \"*.pdf\" -P",
+      "rclone sync \"C:\\OBS\" \"P:\\OBS\" -P --exclude \"*.tmp\" --exclude \"*.bak\""
+    ],
+    "dangerous": false,
+    "platform": "Unix",
+    "syntax": "rclone sync \"source\"   \"Destino\\\"   -P  --exclude \"\"",
+    "parameters": [
+      {
+        "param": "-listremotes",
+        "description": "Lista las particones remotas",
+        "example": "rclone listremotes"
+      },
+      {
+        "param": "-config delete ''",
+        "description": "Elimina el directorio deseado",
+        "example": "|"
+      },
+      {
+        "param": "--dry-run",
+        "description": "Muestra un apreview sobre el comando a ejecutar.",
+        "example": "rcloud   -comand —dry-run"
+      },
+      {
+        "param": "--update",
+        "description": "Actualiza solo lo mas reciente",
+        "example": "rclone —command —update"
+      }
+    ],
+    "output": "",
+    "notes": "- Antes de sincronizar, **usa** **`--dry-run`** para evitar errores fatales.\n- **Programar backups automáticos** con `cron`\n- Rclone puede cifrar tus datos con `rclone config` → tipo `crypt7`",
+    "references": [
+      "Documentación"
+    ],
+    "created_at": "2025-10-11T00:29:00.000Z",
+    "updated_at": "2025-10-11T00:29:00.000Z"
+  },
+  {
+    "id": "289ec7e7-4fc0-80cd-a9eb-d215b14c817a",
+    "title": "Crypto (6)",
+    "command": "rclone sync \"source\"   \"Destino\\\"   -P ",
+    "description": "Como usar Rclone",
+    "category": "Cifrado",
+    "tags": [],
+    "examples": [
+      "rclone sync \"source\"   \"Destino\\\"   -P  --exclude \"\"",
+      "rclone [comando] [origen] [destino] [opciones]",
+      "rclone sync ./MisFotos gdrive:/Fotos --progress --dry-run",
+      "rclone mount gdrive:/ ~/GDrive",
+      "rclone sync ./Documentos gdrive:/Backup/Documentos -P --delete-after",
+      "rclone copy ./notas gdrive:/pdfs --include \"*.pdf\" -P",
+      "rclone sync \"C:\\OBS\" \"P:\\OBS\" -P --exclude \"*.tmp\" --exclude \"*.bak\""
+    ],
+    "dangerous": false,
+    "platform": "Unix",
+    "syntax": "rclone sync \"source\"   \"Destino\\\"   -P  --exclude \"\"",
+    "parameters": [
+      {
+        "param": "-listremotes",
+        "description": "Lista las particones remotas",
+        "example": "rclone listremotes"
+      },
+      {
+        "param": "-config delete ''",
+        "description": "Elimina el directorio deseado",
+        "example": "|"
+      },
+      {
+        "param": "--dry-run",
+        "description": "Muestra un apreview sobre el comando a ejecutar.",
+        "example": "rcloud   -comand —dry-run"
+      },
+      {
+        "param": "--update",
+        "description": "Actualiza solo lo mas reciente",
+        "example": "rclone —command —update"
+      }
+    ],
+    "output": "",
+    "notes": "- Antes de sincronizar, **usa** **`--dry-run`** para evitar errores fatales.\n- **Programar backups automáticos** con `cron`\n- Rclone puede cifrar tus datos con `rclone config` → tipo `crypt7`",
+    "references": [
+      "Documentación"
+    ],
+    "created_at": "2025-10-11T00:29:00.000Z",
+    "updated_at": "2025-10-11T00:29:00.000Z"
+  },
+  {
+    "id": "289ec7e7-4fc0-803f-8b50-d4da632a9442",
+    "title": "Crypto (7)",
+    "command": "rclone sync \"source\"   \"Destino\\\"   -P ",
+    "description": "Como usar Rclone",
+    "category": "Cifrado",
+    "tags": [],
+    "examples": [
+      "rclone sync \"source\"   \"Destino\\\"   -P  --exclude \"\"",
+      "rclone [comando] [origen] [destino] [opciones]",
+      "rclone sync ./MisFotos gdrive:/Fotos --progress --dry-run",
+      "rclone mount gdrive:/ ~/GDrive",
+      "rclone sync ./Documentos gdrive:/Backup/Documentos -P --delete-after",
+      "rclone copy ./notas gdrive:/pdfs --include \"*.pdf\" -P",
+      "rclone sync \"C:\\OBS\" \"P:\\OBS\" -P --exclude \"*.tmp\" --exclude \"*.bak\""
+    ],
+    "dangerous": false,
+    "platform": "Unix",
+    "syntax": "rclone sync \"source\"   \"Destino\\\"   -P  --exclude \"\"",
+    "parameters": [
+      {
+        "param": "-listremotes",
+        "description": "Lista las particones remotas",
+        "example": "rclone listremotes"
+      },
+      {
+        "param": "-config delete ''",
+        "description": "Elimina el directorio deseado",
+        "example": "|"
+      },
+      {
+        "param": "--dry-run",
+        "description": "Muestra un apreview sobre el comando a ejecutar.",
+        "example": "rcloud   -comand —dry-run"
+      },
+      {
+        "param": "--update",
+        "description": "Actualiza solo lo mas reciente",
+        "example": "rclone —command —update"
+      }
+    ],
+    "output": "",
+    "notes": "- Antes de sincronizar, **usa** **`--dry-run`** para evitar errores fatales.\n- **Programar backups automáticos** con `cron`\n- Rclone puede cifrar tus datos con `rclone config` → tipo `crypt7`",
+    "references": [
+      "Documentación"
+    ],
+    "created_at": "2025-10-11T00:29:00.000Z",
+    "updated_at": "2025-10-11T00:29:00.000Z"
+  },
+  {
+    "id": "289ec7e7-4fc0-80c0-8fb9-d57bf9ec498e",
+    "title": "Crypto (8)",
+    "command": "rclone sync \"source\"   \"Destino\\\"   -P ",
+    "description": "Como usar Rclone",
+    "category": "Cifrado",
+    "tags": [],
+    "examples": [
+      "rclone sync \"source\"   \"Destino\\\"   -P  --exclude \"\"",
+      "rclone [comando] [origen] [destino] [opciones]",
+      "rclone sync ./MisFotos gdrive:/Fotos --progress --dry-run",
+      "rclone mount gdrive:/ ~/GDrive",
+      "rclone sync ./Documentos gdrive:/Backup/Documentos -P --delete-after",
+      "rclone copy ./notas gdrive:/pdfs --include \"*.pdf\" -P",
+      "rclone sync \"C:\\OBS\" \"P:\\OBS\" -P --exclude \"*.tmp\" --exclude \"*.bak\""
+    ],
+    "dangerous": false,
+    "platform": "Unix",
+    "syntax": "rclone sync \"source\"   \"Destino\\\"   -P  --exclude \"\"",
+    "parameters": [
+      {
+        "param": "-listremotes",
+        "description": "Lista las particones remotas",
+        "example": "rclone listremotes"
+      },
+      {
+        "param": "-config delete ''",
+        "description": "Elimina el directorio deseado",
+        "example": "|"
+      },
+      {
+        "param": "--dry-run",
+        "description": "Muestra un apreview sobre el comando a ejecutar.",
+        "example": "rcloud   -comand —dry-run"
+      },
+      {
+        "param": "--update",
+        "description": "Actualiza solo lo mas reciente",
+        "example": "rclone —command —update"
+      }
+    ],
+    "output": "",
+    "notes": "- Antes de sincronizar, **usa** **`--dry-run`** para evitar errores fatales.\n- **Programar backups automáticos** con `cron`\n- Rclone puede cifrar tus datos con `rclone config` → tipo `crypt7`",
+    "references": [
+      "Documentación"
+    ],
+    "created_at": "2025-10-11T00:29:00.000Z",
+    "updated_at": "2025-10-11T00:29:00.000Z"
+  },
+  {
     "id": "24fec7e7-4fc0-80ef-a008-f3585a1afc4e",
     "title": "Dnsrecon ",
     "command": "dnsrecon -d ejemplo.com -t std",
@@ -246,99 +638,17 @@ export const categories = [
 // Función para asignar colores a categorías
 function getCategoryColor(category: string): string {
   const colorMap: { [key: string]: string } = {
-    // Categorías existentes
-    'cifrado': 'purple',
-    'Cifrado': 'purple',
-    'escan': 'blue',
-    'Escan': 'blue',
+    'dns': 'blue',
     'linux': 'green',
-    'Linux': 'green',
-    'python': 'green',
-    'Python': 'green',
-    'config': 'indigo',
-    'Config': 'indigo',
-    
-    // Categorías comunes de seguridad
     'security': 'red',
     'network': 'indigo',
-    'web': 'orange',
     'database': 'purple',
-    'dns': 'blue',
-    'recon': 'blue',
-    'scan': 'blue',
-    'enumeration': 'blue',
-    'exploitation': 'red',
-    'post-exploitation': 'red',
-    'forensics': 'purple',
-    'malware': 'red',
-    'crypto': 'purple',
-    'steganography': 'purple',
-    'reverse': 'red',
-    'pwn': 'red',
-    'ctf': 'orange',
-    'osint': 'blue',
-    'social': 'orange',
-    'wireless': 'indigo',
-    'mobile': 'cyan',
-    'cloud': 'blue',
-    'container': 'cyan',
-    'docker': 'cyan',
-    'kubernetes': 'cyan',
-    
-    // Herramientas y lenguajes
+    'web': 'orange',
     'git': 'teal',
-    'bash': 'green',
-    'powershell': 'blue',
-    'javascript': 'yellow',
-    'php': 'purple',
-    'sql': 'orange',
-    'xml': 'green',
-    'json': 'yellow',
-    'yaml': 'blue',
-    'toml': 'gray',
-    'ini': 'gray',
-    'csv': 'green',
-    'log': 'gray',
-    'text': 'gray',
-    'files': 'orange',
-    'archive': 'purple',
-    'compression': 'purple',
-    
-    // Sistemas operativos
-    'windows': 'blue',
-    'macos': 'gray',
-    'android': 'green',
-    'ios': 'gray',
-    
-    // Redes y protocolos
-    'http': 'orange',
-    'https': 'orange',
-    'ftp': 'blue',
-    'ssh': 'green',
-    'telnet': 'blue',
-    'smtp': 'orange',
-    'pop3': 'orange',
-    'imap': 'orange',
-    'ldap': 'blue',
-    'kerberos': 'purple',
-    'ntlm': 'blue',
-    'smb': 'blue',
-    'nfs': 'blue',
-    'snmp': 'blue',
-    'dhcp': 'blue',
-    'tcp': 'blue',
-    'udp': 'blue',
-    'icmp': 'blue',
-    
-    // Categorías especiales
-    'all': 'gray',
-    'general': 'gray',
-    'misc': 'gray',
-    'other': 'gray',
-    'unknown': 'gray'
+    'docker': 'cyan'
   };
   
-  return colorMap[category.toLowerCase()] || 'blue';
+  return colorMap[category.toLowerCase()] || 'gray';
 }
 
 export function getCommandById(id: string): Command | undefined {
