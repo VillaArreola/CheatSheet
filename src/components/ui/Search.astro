@@ -23,10 +23,25 @@
 let searchTimeout: ReturnType<typeof setTimeout>;
 
 function performSearch(query: string) {
+  const searchTerm = query.toLowerCase().trim();
+  
+  // Detectar si estamos en la página de inicio o en una página de comando
+  const isHomePage = window.location.pathname === '/';
+  
+  if (!isHomePage) {
+    // Si no estamos en la página de inicio, redirigir con el término de búsqueda
+    if (searchTerm) {
+      window.location.href = `/?search=${encodeURIComponent(searchTerm)}`;
+    } else {
+      window.location.href = '/';
+    }
+    return;
+  }
+  
+  // Si estamos en la página de inicio, realizar la búsqueda normal
   if (!(window as any).__CHEATSHEET_COMMANDS__) return;
   
   const commands = (window as any).__CHEATSHEET_COMMANDS__;
-  const searchTerm = query.toLowerCase().trim();
   
   if (searchTerm === '') {
     // Si no hay búsqueda, mostrar todos los comandos
@@ -61,25 +76,46 @@ document.addEventListener('DOMContentLoaded', () => {
   const searchInput = document.getElementById('search-input') as HTMLInputElement;
   
   if (searchInput) {
+    // Manejar input (búsqueda mientras escribes)
     searchInput.addEventListener('input', (e) => {
       const target = e.target as HTMLInputElement;
       const query = target.value;
       
-      // Limpiar timeout anterior
-      clearTimeout(searchTimeout);
-      
-      // Establecer nuevo timeout para búsqueda con debounce
-      searchTimeout = setTimeout(() => {
+      // Solo buscar en tiempo real si estamos en la página de inicio
+      if (window.location.pathname === '/') {
+        // Limpiar timeout anterior
+        clearTimeout(searchTimeout);
+        
+        // Establecer nuevo timeout para búsqueda con debounce
+        searchTimeout = setTimeout(() => {
+          performSearch(query);
+        }, 300);
+      }
+    });
+    
+    // Manejar Enter para buscar/redirigir
+    searchInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        const query = searchInput.value;
         performSearch(query);
-      }, 300);
+      }
     });
     
     // Limpiar búsqueda al hacer focus si está vacío
     searchInput.addEventListener('focus', () => {
-      if (searchInput.value === '') {
+      if (searchInput.value === '' && window.location.pathname === '/') {
         window.dispatchEvent(new CustomEvent('searchCleared'));
       }
     });
+    
+    // Si hay parámetro de búsqueda en la URL, aplicarlo
+    const urlParams = new URLSearchParams(window.location.search);
+    const searchParam = urlParams.get('search');
+    if (searchParam && window.location.pathname === '/') {
+      searchInput.value = searchParam;
+      performSearch(searchParam);
+    }
   }
 });
 
@@ -88,7 +124,15 @@ document.addEventListener('DOMContentLoaded', () => {
   const searchInput = document.getElementById('search-input') as HTMLInputElement;
   if (searchInput) {
     searchInput.value = '';
-    window.dispatchEvent(new CustomEvent('searchCleared'));
+    if (window.location.pathname === '/') {
+      window.dispatchEvent(new CustomEvent('searchCleared'));
+      // Limpiar el parámetro de búsqueda de la URL
+      const url = new URL(window.location.href);
+      url.searchParams.delete('search');
+      window.history.pushState({}, '', url.pathname);
+    } else {
+      window.location.href = '/';
+    }
   }
 };
 </script>

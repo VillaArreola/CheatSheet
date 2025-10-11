@@ -1,0 +1,338 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/layout/Header.astro';
+import Footer from '../components/layout/Footer.astro';
+---
+
+<BaseLayout 
+  title="Términos y Condiciones - TechSec Cheatsheet"
+  description="Términos y condiciones de uso de TechSec Cheatsheet. Uso educativo, responsabilidades y limitaciones legales."
+>
+  <Header />
+  
+  <main class="min-h-screen bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-4xl mx-auto">
+      <article class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8 md:p-12">
+        <h1 class="text-4xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+          Términos y Condiciones
+        </h1>
+        
+        <p class="text-sm text-gray-600 dark:text-gray-400 mb-8">
+          Última actualización: 11 de octubre de 2025
+        </p>
+
+        <div class="prose prose-lg dark:prose-invert max-w-none">
+          <div class="bg-red-50 dark:bg-red-900/20 border-l-4 border-red-500 rounded-lg p-6 mb-8">
+            <h3 class="text-lg font-semibold text-red-900 dark:text-red-100 mb-2">
+              ⚠️ Aviso Legal Importante
+            </h3>
+            <p class="text-red-800 dark:text-red-200 text-sm leading-relaxed">
+              Todo el contenido de este sitio web está destinado exclusivamente para fines educativos, 
+              de investigación en seguridad informática y uso ético. El uso indebido de la información 
+              proporcionada puede ser ilegal. El usuario es el único responsable del uso que haga de esta información.
+            </p>
+          </div>
+
+          <section class="mb-8">
+            <h2 class="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-4">
+              1. Aceptación de los Términos
+            </h2>
+            <p class="text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
+              Al acceder y utilizar TechSec Cheatsheet ("el Sitio"), aceptas estar sujeto a estos Términos y Condiciones 
+              de Uso, todas las leyes y regulaciones aplicables, y aceptas que eres responsable del cumplimiento de 
+              todas las leyes locales aplicables.
+            </p>
+            <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
+              Si no estás de acuerdo con alguno de estos términos, tienes prohibido usar o acceder a este sitio. 
+              Los materiales contenidos en este sitio web están protegidos por las leyes de propiedad intelectual 
+              y derechos de autor aplicables.
+            </p>
+          </section>
+
+          <section class="mb-8">
+            <h2 class="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-4">
+              2. Uso Educativo y Ético
+            </h2>
+            
+            <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-3 mt-6">
+              2.1 Propósito del Sitio
+            </h3>
+            <p class="text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
+              TechSec Cheatsheet es una plataforma educativa diseñada para:
+            </p>
+            <ul class="list-disc list-inside text-gray-700 dark:text-gray-300 mb-4 space-y-2">
+              <li>Profesionales de seguridad informática en ejercicio de sus funciones legítimas</li>
+              <li>Estudiantes de ciberseguridad y tecnologías de la información</li>
+              <li>Investigadores de seguridad que trabajan en entornos controlados y autorizados</li>
+              <li>Participantes en competencias CTF (Capture The Flag) y entornos de práctica legales</li>
+              <li>Administradores de sistemas que necesitan proteger sus infraestructuras</li>
+            </ul>
+
+            <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-3 mt-6">
+              2.2 Uso Prohibido
+            </h3>
+            <p class="text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
+              Está estrictamente prohibido utilizar la información de este sitio para:
+            </p>
+            <ul class="list-disc list-inside text-gray-700 dark:text-gray-300 mb-4 space-y-2">
+              <li>Acceder sin autorización a sistemas, redes o dispositivos</li>
+              <li>Realizar actividades ilegales o maliciosas</li>
+              <li>Causar daño, interrupción o degradación de servicios</li>
+              <li>Violar la privacidad o seguridad de terceros</li>
+              <li>Distribuir malware, virus o código malicioso</li>
+              <li>Realizar ataques de denegación de servicio (DoS/DDoS)</li>
+              <li>Cualquier actividad que viole las leyes locales, nacionales o internacionales</li>
+            </ul>
+          </section>
+
+          <section class="mb-8">
+            <h2 class="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-4">
+              3. Licencia de Uso
+            </h2>
+            <p class="text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
+              Se te concede una licencia limitada, no exclusiva, intransferible y revocable para:
+            </p>
+            <ul class="list-disc list-inside text-gray-700 dark:text-gray-300 mb-4 space-y-2">
+              <li>Acceder y visualizar el contenido del sitio para uso personal y educativo</li>
+              <li>Descargar temporalmente copias de los materiales para visualización personal no comercial</li>
+              <li>Compartir enlaces al sitio web con atribución apropiada</li>
+            </ul>
+            <p class="text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
+              Esta licencia NO te permite:
+            </p>
+            <ul class="list-disc list-inside text-gray-700 dark:text-gray-300 mb-4 space-y-2">
+              <li>Modificar o copiar los materiales sin autorización</li>
+              <li>Usar los materiales para fines comerciales sin permiso explícito</li>
+              <li>Intentar aplicar ingeniería inversa al software del sitio</li>
+              <li>Eliminar los avisos de derechos de autor u otras notaciones propietarias</li>
+              <li>Transferir los materiales a otra persona o "reflejar" los materiales en otro servidor</li>
+            </ul>
+          </section>
+
+          <section class="mb-8">
+            <h2 class="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-4">
+              4. Descargo de Responsabilidad
+            </h2>
+            
+            <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-3 mt-6">
+              4.1 Exactitud de la Información
+            </h3>
+            <p class="text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
+              Los materiales en el sitio web de TechSec Cheatsheet se proporcionan "tal cual". No ofrecemos garantías, 
+              expresas o implícitas, y por la presente renunciamos y negamos todas las demás garantías, incluyendo 
+              sin limitación, garantías implícitas o condiciones de comerciabilidad, idoneidad para un propósito 
+              particular, o no infracción de propiedad intelectual u otra violación de derechos.
+            </p>
+
+            <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-3 mt-6">
+              4.2 Contenido de Terceros
+            </h3>
+            <p class="text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
+              El sitio puede contener enlaces a sitios web de terceros o referencias a herramientas y software externos. 
+              No somos responsables del contenido, exactitud o disponibilidad de estos recursos externos.
+            </p>
+          </section>
+
+          <section class="mb-8">
+            <h2 class="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-4">
+              5. Limitaciones de Responsabilidad
+            </h2>
+            <p class="text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
+              En ningún caso TechSec Cheatsheet o sus proveedores serán responsables de cualquier daño 
+              (incluyendo, sin limitación, daños por pérdida de datos o beneficios, o debido a la interrupción 
+              del negocio) que surjan del uso o la imposibilidad de usar los materiales en el sitio web de 
+              TechSec Cheatsheet, incluso si TechSec Cheatsheet o un representante autorizado de TechSec Cheatsheet 
+              ha sido notificado verbalmente o por escrito de la posibilidad de tal daño.
+            </p>
+            <div class="bg-yellow-50 dark:bg-yellow-900/20 border-l-4 border-yellow-500 rounded-lg p-6 mb-4">
+              <p class="text-yellow-900 dark:text-yellow-100 text-sm leading-relaxed">
+                <strong>Importante:</strong> El usuario es el único responsable de sus acciones. TechSec Cheatsheet 
+                no será responsable de ningún daño directo, indirecto, incidental, consecuente o punitivo que surja 
+                del uso indebido de la información proporcionada.
+              </p>
+            </div>
+          </section>
+
+          <section class="mb-8">
+            <h2 class="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-4">
+              6. Propiedad Intelectual
+            </h2>
+            <p class="text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
+              El contenido, organización, gráficos, diseño, compilación, traducción magnética, conversión digital 
+              y otros asuntos relacionados con el Sitio están protegidos por los derechos de autor, marcas comerciales 
+              y otras leyes aplicables.
+            </p>
+            <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
+              La copia, redistribución, uso o publicación por parte del usuario de cualquier parte del Sitio, 
+              excepto lo expresamente permitido en estos términos, está estrictamente prohibida sin permiso previo 
+              por escrito.
+            </p>
+          </section>
+
+          <section class="mb-8">
+            <h2 class="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-4">
+              7. Exactitud de los Materiales
+            </h2>
+            <p class="text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
+              Los materiales que aparecen en el sitio web de TechSec Cheatsheet pueden incluir errores técnicos, 
+              tipográficos o fotográficos. TechSec Cheatsheet no garantiza que ninguno de los materiales en su 
+              sitio web sean precisos, completos o actuales.
+            </p>
+            <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
+              TechSec Cheatsheet puede realizar cambios en los materiales contenidos en su sitio web en cualquier 
+              momento sin previo aviso. Sin embargo, TechSec Cheatsheet no se compromete a actualizar los materiales.
+            </p>
+          </section>
+
+          <section class="mb-8">
+            <h2 class="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-4">
+              8. Conducta del Usuario
+            </h2>
+            <p class="text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
+              Al utilizar este sitio, te comprometes a:
+            </p>
+            <ul class="list-disc list-inside text-gray-700 dark:text-gray-300 mb-4 space-y-2">
+              <li>Usar el sitio solo para fines legales y educativos</li>
+              <li>No intentar obtener acceso no autorizado a ninguna parte del sitio</li>
+              <li>No interferir con el funcionamiento adecuado del sitio</li>
+              <li>No usar el sitio de ninguna manera que pueda dañar, deshabilitar, sobrecargar o deteriorar el sitio</li>
+              <li>Cumplir con todas las leyes locales, estatales, nacionales e internacionales aplicables</li>
+              <li>Respetar los derechos de propiedad intelectual</li>
+            </ul>
+          </section>
+
+          <section class="mb-8">
+            <h2 class="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-4">
+              9. Entornos de Prueba
+            </h2>
+            <p class="text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
+              Recomendamos encarecidamente que cualquier práctica o prueba de los comandos y técnicas presentados 
+              en este sitio se realice ÚNICAMENTE en:
+            </p>
+            <ul class="list-disc list-inside text-gray-700 dark:text-gray-300 mb-4 space-y-2">
+              <li>Máquinas virtuales personales</li>
+              <li>Entornos de laboratorio controlados</li>
+              <li>Plataformas CTF autorizadas (HackTheBox, TryHackMe, etc.)</li>
+              <li>Sistemas propios con autorización explícita</li>
+              <li>Entornos de prueba de penetración con contrato legal</li>
+            </ul>
+          </section>
+
+          <section class="mb-8">
+            <h2 class="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-4">
+              10. Modificaciones del Servicio
+            </h2>
+            <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
+              TechSec Cheatsheet se reserva el derecho de modificar, suspender o descontinuar, temporal o 
+              permanentemente, el servicio (o cualquier parte del mismo) con o sin previo aviso y sin 
+              responsabilidad ante ti o cualquier tercero.
+            </p>
+          </section>
+
+          <section class="mb-8">
+            <h2 class="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-4">
+              11. Ley Aplicable
+            </h2>
+            <p class="text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
+              Estos términos y condiciones se rigen e interpretan de acuerdo con las leyes aplicables, 
+              sin tener en cuenta sus disposiciones sobre conflictos de leyes.
+            </p>
+            <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
+              Nuestro incumplimiento para hacer cumplir cualquier derecho o disposición de estos Términos 
+              no se considerará una renuncia a esos derechos. Si alguna disposición de estos Términos se 
+              considera inválida o inaplicable por un tribunal, las disposiciones restantes de estos 
+              Términos permanecerán en vigor.
+            </p>
+          </section>
+
+          <section class="mb-8">
+            <h2 class="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-4">
+              12. Modificaciones de los Términos
+            </h2>
+            <p class="text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
+              TechSec Cheatsheet puede revisar estos términos de servicio en cualquier momento sin previo aviso. 
+              Al utilizar este sitio web, aceptas estar sujeto a la versión actual de estos términos de servicio.
+            </p>
+            <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
+              Es tu responsabilidad revisar periódicamente estos Términos para estar al tanto de cualquier cambio. 
+              Tu uso continuado del sitio después de cualquier cambio constituye tu aceptación de los nuevos términos.
+            </p>
+          </section>
+
+          <section class="mb-8">
+            <h2 class="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-4">
+              13. Indemnización
+            </h2>
+            <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
+              Aceptas defender, indemnizar y mantener indemne a TechSec Cheatsheet y sus licenciantes, licenciatarios, 
+              empleados, contratistas, agentes, funcionarios y directores, de y contra todas y cada una de las 
+              reclamaciones, daños, obligaciones, pérdidas, responsabilidades, costos o deudas, y gastos (incluidos, 
+              entre otros, los honorarios de abogados), que resulten de tu uso y acceso al sitio, o de tu violación 
+              de estos Términos.
+            </p>
+          </section>
+
+          <section class="mb-8">
+            <h2 class="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-4">
+              14. Contacto
+            </h2>
+            <p class="text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
+              Si tienes alguna pregunta sobre estos Términos y Condiciones, puedes contactarnos:
+            </p>
+            <ul class="list-none text-gray-700 dark:text-gray-300 space-y-2">
+              <li><strong>Autor:</strong> Villa Arreola</li>
+              <li><strong>Twitter:</strong> <a href="https://twitter.com/VillaArreola" target="_blank" rel="noopener noreferrer" 
+                  class="text-blue-600 dark:text-blue-400 hover:underline">@VillaArreola</a></li>
+            </ul>
+          </section>
+
+          <section class="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700">
+            <div class="bg-green-50 dark:bg-green-900/20 rounded-lg p-6">
+              <h3 class="text-lg font-semibold text-green-900 dark:text-green-100 mb-2">
+                🛡️ Hacking Ético y Responsable
+              </h3>
+              <p class="text-green-800 dark:text-green-200 text-sm leading-relaxed mb-3">
+                Este sitio promueve el hacking ético y la seguridad informática responsable. Recordamos que:
+              </p>
+              <ul class="list-disc list-inside text-green-800 dark:text-green-200 text-sm space-y-1">
+                <li>Siempre obtén autorización antes de realizar cualquier prueba de seguridad</li>
+                <li>Respeta la privacidad y los datos de terceros</li>
+                <li>Reporta vulnerabilidades de manera responsable</li>
+                <li>Utiliza tus conocimientos para proteger, no para dañar</li>
+                <li>Conoce y respeta las leyes de tu jurisdicción</li>
+              </ul>
+            </div>
+          </section>
+        </div>
+
+        <div class="mt-10 pt-8 border-t border-gray-200 dark:border-gray-700 flex flex-wrap gap-4">
+          <a href="/" class="inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+            </svg>
+            Volver al inicio
+          </a>
+          <a href="/privacy" class="inline-flex items-center text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-300 transition-colors">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+            </svg>
+            Ver Política de Privacidad
+          </a>
+        </div>
+      </article>
+    </div>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<style>
+  .prose h2 {
+    scroll-margin-top: 6rem;
+  }
+  
+  .prose h3 {
+    scroll-margin-top: 6rem;
+  }
+</style>
+
