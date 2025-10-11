@@ -33,13 +33,34 @@ interface Props {
 
 const { command, isSelected = false, onClick } = Astro.props;
 
+// Función para asignar colores a categorías
+function getCategoryColor(category: string): string {
+  const colorMap: { [key: string]: string } = {
+    'cifrado': 'purple',
+    'Cifrado': 'purple',
+    'escan': 'blue',
+    'Escan': 'blue',
+    'linux': 'green',
+    'Linux': 'green',
+    'python': 'green',
+    'Python': 'green',
+    'config': 'indigo',
+    'Config': 'indigo',
+    'all': 'gray'
+  };
+  
+  return colorMap[category] || 'blue';
+}
+
+const categoryColor = getCategoryColor(command.category);
+
 ---
 
 <div class="command-card cursor-pointer transition-transform hover:scale-[1.02] active:scale-[0.98]" onclick={onClick}>
   <Card className={`p-4 sm:p-6 ${isSelected ? 'ring-2 ring-blue-500' : ''} hover:shadow-lg transition-shadow`}>
     <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
       <div class="flex items-center flex-1 min-w-0">
-        <h3 class="text-lg sm:text-xl font-mono font-semibold text-gray-700 dark:text-gray-400 truncate">
+        <h3 class={`text-lg sm:text-xl font-mono font-semibold text-${categoryColor}-700 dark:text-${categoryColor}-400 truncate`}>
           {command.title}
         </h3>
         {command.dangerous && 

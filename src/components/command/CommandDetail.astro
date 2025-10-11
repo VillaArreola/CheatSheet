@@ -45,7 +45,7 @@ const { command } = Astro.props;
         <div class="text-xs text-gray-600 dark:text-gray-400">Comandos</div>
       </div>
       <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 text-center">
-        <div class="text-2xl font-bold text-green-600 dark:text-green-400" id="total-categories">3</div>
+        <div class="text-2xl font-bold text-green-600 dark:text-green-400" id="total-categories">0</div>
         <div class="text-xs text-gray-600 dark:text-gray-400">Categorías</div>
       </div>
     </div>
@@ -313,10 +313,12 @@ function updateStats() {
     }
   }
   
-  if (categories) {
+  // Obtener categorías únicas de los comandos
+  if (commands) {
+    const uniqueCategories = [...new Set(commands.map(cmd => cmd.category))];
     const totalCategories = document.getElementById('total-categories');
     if (totalCategories) {
-      totalCategories.textContent = categories.length.toString();
+      totalCategories.textContent = uniqueCategories.length.toString();
     }
   }
 }

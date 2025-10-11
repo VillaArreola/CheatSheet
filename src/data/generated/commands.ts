@@ -26,6 +26,55 @@ export interface Command {
 
 export const commands: Command[] = [
   {
+    "id": "288ec7e7-4fc0-800e-90f1-e425d8390bee",
+    "title": "Crypto",
+    "command": "rclone sync \"source\"   \"Destino\\\"   -P ",
+    "description": "Como usar Rclone",
+    "category": "Cifrado",
+    "tags": [],
+    "examples": [
+      "rclone sync \"source\"   \"Destino\\\"   -P  --exclude \"\"",
+      "rclone [comando] [origen] [destino] [opciones]",
+      "rclone sync ./MisFotos gdrive:/Fotos --progress --dry-run",
+      "rclone mount gdrive:/ ~/GDrive",
+      "rclone sync ./Documentos gdrive:/Backup/Documentos -P --delete-after",
+      "rclone copy ./notas gdrive:/pdfs --include \"*.pdf\" -P",
+      "rclone sync \"C:\\OBS\" \"P:\\OBS\" -P --exclude \"*.tmp\" --exclude \"*.bak\""
+    ],
+    "dangerous": false,
+    "platform": "Unix",
+    "syntax": "rclone sync \"source\"   \"Destino\\\"   -P  --exclude \"\"",
+    "parameters": [
+      {
+        "param": "-listremotes",
+        "description": "Lista las particones remotas",
+        "example": "rclone listremotes"
+      },
+      {
+        "param": "-config delete ''",
+        "description": "Elimina el directorio deseado",
+        "example": "|"
+      },
+      {
+        "param": "--dry-run",
+        "description": "Muestra un apreview sobre el comando a ejecutar.",
+        "example": "rcloud   -comand —dry-run"
+      },
+      {
+        "param": "--update",
+        "description": "Actualiza solo lo mas reciente",
+        "example": "rclone —command —update"
+      }
+    ],
+    "output": "",
+    "notes": "- Antes de sincronizar, **usa** **`--dry-run`** para evitar errores fatales.\n- **Programar backups automáticos** con `cron`\n- Rclone puede cifrar tus datos con `rclone config` → tipo `crypt7`",
+    "references": [
+      "Documentación"
+    ],
+    "created_at": "2025-10-10T02:47:00.000Z",
+    "updated_at": "2025-10-10T02:47:00.000Z"
+  },
+  {
     "id": "24fec7e7-4fc0-80ef-a008-f3585a1afc4e",
     "title": "Dnsrecon ",
     "command": "dnsrecon -d ejemplo.com -t std",
@@ -197,21 +246,99 @@ export const categories = [
 // Función para asignar colores a categorías
 function getCategoryColor(category: string): string {
   const colorMap: { [key: string]: string } = {
-    'dns': 'blue',
+    // Categorías existentes
+    'cifrado': 'purple',
+    'Cifrado': 'purple',
+    'escan': 'blue',
+    'Escan': 'blue',
     'linux': 'green',
+    'Linux': 'green',
+    'python': 'green',
+    'Python': 'green',
+    'config': 'indigo',
+    'Config': 'indigo',
+    
+    // Categorías comunes de seguridad
     'security': 'red',
     'network': 'indigo',
-    'database': 'purple',
     'web': 'orange',
-    'git': 'teal',
+    'database': 'purple',
+    'dns': 'blue',
+    'recon': 'blue',
+    'scan': 'blue',
+    'enumeration': 'blue',
+    'exploitation': 'red',
+    'post-exploitation': 'red',
+    'forensics': 'purple',
+    'malware': 'red',
+    'crypto': 'purple',
+    'steganography': 'purple',
+    'reverse': 'red',
+    'pwn': 'red',
+    'ctf': 'orange',
+    'osint': 'blue',
+    'social': 'orange',
+    'wireless': 'indigo',
+    'mobile': 'cyan',
+    'cloud': 'blue',
+    'container': 'cyan',
     'docker': 'cyan',
-    'escan': 'blue',
-    'python': 'green',
-    'config': 'purple',
-    'all': 'gray'
+    'kubernetes': 'cyan',
+    
+    // Herramientas y lenguajes
+    'git': 'teal',
+    'bash': 'green',
+    'powershell': 'blue',
+    'javascript': 'yellow',
+    'php': 'purple',
+    'sql': 'orange',
+    'xml': 'green',
+    'json': 'yellow',
+    'yaml': 'blue',
+    'toml': 'gray',
+    'ini': 'gray',
+    'csv': 'green',
+    'log': 'gray',
+    'text': 'gray',
+    'files': 'orange',
+    'archive': 'purple',
+    'compression': 'purple',
+    
+    // Sistemas operativos
+    'windows': 'blue',
+    'macos': 'gray',
+    'android': 'green',
+    'ios': 'gray',
+    
+    // Redes y protocolos
+    'http': 'orange',
+    'https': 'orange',
+    'ftp': 'blue',
+    'ssh': 'green',
+    'telnet': 'blue',
+    'smtp': 'orange',
+    'pop3': 'orange',
+    'imap': 'orange',
+    'ldap': 'blue',
+    'kerberos': 'purple',
+    'ntlm': 'blue',
+    'smb': 'blue',
+    'nfs': 'blue',
+    'snmp': 'blue',
+    'dhcp': 'blue',
+    'tcp': 'blue',
+    'udp': 'blue',
+    'icmp': 'blue',
+    
+    // Categorías especiales
+    'all': 'gray',
+    'general': 'gray',
+    'misc': 'gray',
+    'other': 'gray',
+    'unknown': 'gray'
   };
   
-  return colorMap[category.toLowerCase()] || 'gray';
+  return colorMap[category.toLowerCase()] || 'blue';
 }
 
 export function getCommandById(id: string): Command | undefined {

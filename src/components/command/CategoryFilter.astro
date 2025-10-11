@@ -29,7 +29,7 @@ const { categories, activeCategory = 'all', className = '' } = Astro.props;
     >
       <div class="flex items-center justify-between">
         <div class="flex items-center">
-          <span class="font-medium text-gray-700 dark:text-gray-400">
+          <span class={`font-medium text-${category.color}-700 dark:text-${category.color}-400`}>
             {category.name}
           </span>
         </div>
