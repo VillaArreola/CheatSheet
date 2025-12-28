@@ -42,24 +42,12 @@ function filterCommandsByCategory(category: string) {
   if (category === 'all') {
     filteredCommands = allCommands;
   } else {
-    // Mapeo de categorías para compatibilidad
-    const categoryMap: { [key: string]: string[] } = {
-      'scan': ['scan', 'escan', 'dns'],
-      'escan': ['escan', 'scan', 'dns'],
-      'e-can': ['escan', 'scan', 'dns'],
-      'python': ['python'],
-      'linux': ['linux'],
-      'security': ['security'],
-      'network': ['network'],
-      'database': ['database'],
-      'web': ['web'],
-      'git': ['git'],
-      'docker': ['docker']
-    };
-    
-    const targetCategories = categoryMap[category.toLowerCase()] || [category.toLowerCase()];
+    // Filtrado dinámico: comparar el ID de categoría con los comandos
+    // El ID se genera: category.toLowerCase().replace(/\s+/g, '-')
     filteredCommands = allCommands.filter((cmd: any) => {
-      return targetCategories.includes(cmd.category.toLowerCase());
+      // Convertir el nombre de categoría del comando al mismo formato de ID
+      const cmdCategoryId = cmd.category.toLowerCase().replace(/\s+/g, '-');
+      return cmdCategoryId === category;
     });
   }
   

@@ -1,6 +1,6 @@
 ---
 layout: ../../layouts/cheatlayout.astro
-title: Dnsrecon 
+title: Dnsrecon
 ---
 
 

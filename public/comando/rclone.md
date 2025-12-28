@@ -94,15 +94,87 @@ rclone sync "C:\OBS" "P:\OBS" -P --exclude "*.tmp" --exclude "*.bak"
 ---
 
 
-### **📤 Salida esperada**
+### **📤 Escript en Python**
 
 
 ```plain text
-2025/10/09 21:16:56 NOTICE:
-Transferred:       13.275 MiB / 13.275 MiB, 100%, 0 B/s, ETA -
-Checks:               131 / 131, 100%, Listed 767
-Transferred:          241 / 241, 100%
-Elapsed time:         0.2s
+import subprocess
+import datetime
+import os
+import sys
+
+# === CONFIGURACIÓN ===
+source = r"C:/Users/villa/Documents/OBS"
+dest_Local = r"X:/OBS"
+dest_pcloud = r"P:/OBS"
+log_dir = r"C:/Users/villa/Documents"
+log_filename = "rclone-sync.log"
+log_path = os.path.join(log_dir, log_filename)
+
+Ignore_file = os.path.join(source, ".rcloneignore")
+
+# === CREAR DIRECTORIO DE LOGS ===
+if not os.path.exists(log_dir):
+    os.makedirs(log_dir, exist_ok=True)
+    print(f"📁 Created log directory: {log_dir}")
+
+# === VERIFICAR RUTAS ===
+if not os.path.exists(source):
+    print(f"❌ Source path not found: {source}")
+    sys.exit(1)
+
+
+dest = ""
+for _ in range(3):
+    case = input("Select destination (1 for Local, 2 for pCloud): ")
+    if case == "1":
+        dest = dest_Local
+        break
+    elif case == "2":
+        dest = dest_pcloud
+        break
+    else:
+        print(" ⚠️ Selecciona una opción válida. ⚠️ \n")
+
+if not os.path.exists(dest):
+    print(f"❌ Destination path not found: {dest} ↗️   Verifica que la unidad esté montada.")
+    sys.exit(1)
+
+
+dry_run = input("Run in dry-run mode? (y/n): ").strip().lower() == 'y'
+
+# === COMANDO RCLONE ===
+command = [
+    "rclone", "sync", source, dest,
+    "--dry-run" if dry_run else None,
+    "--progress",
+    "--stats", "1s",
+    "--exclude-from", Ignore_file,
+    "--log-file", log_path,
+    "--log-level", "INFO"
+
+]
+
+# === EJECUCIÓN ===
+print(f"\n🔄 Starting sync from {source} → {dest}\n")
+
+
+
+try:
+    subprocess.run(command, check=True)
+    status = "✅ Sync completed successfully!"
+    print(status)
+except subprocess.CalledProcessError as e:
+    status = f"❌ Sync failed: {e}"
+    print(status)
+
+# === LOG ===
+with open(log_path, "a", encoding="utf-8") as log:
+    timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+    log.write(f"\n[{timestamp}] {status}\n")
+
+print(f"🪄 Log saved to: {log_path}")
 ```
 
 

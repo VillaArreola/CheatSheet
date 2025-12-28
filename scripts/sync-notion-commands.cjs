@@ -43,7 +43,7 @@ export const commands: Command[] = ${JSON.stringify(commands, null, 2)};
 export const categories = [
   { id: 'all', name: 'Todos los comandos', color: 'gray', count: commands.length },
   ...([...new Set(commands.map(cmd => cmd.category))].sort().map(category => ({
-    id: category.toLowerCase().replace(/\s+/g, '-'),
+    id: category.toLowerCase().replace(/\\s+/g, '-'),
     name: category,
     color: getCategoryColor(category),
     count: commands.filter(cmd => cmd.category === category).length

