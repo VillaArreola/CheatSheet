@@ -6,22 +6,13 @@ title: zsh
 
 # 🎯 ZSH Cheatsheet - Configuracion y Atajos
 
-> Todos los aliases, funciones y atajos disponibles en tu .zshrc configurado para Kali Linux
+> Descarga la .zshrc  configurado para Kali Linux   [https://github.com/VillaArreola/startctf](https://github.com/VillaArreola/startctf)
 
 ---
 
 
 ## 📋 Tabla de contenidos
 
-1. [Herramientas Pro](about:blank#herramientas-pro)
-2. [Aliases de Sistema](about:blank#aliases-de-sistema)
-3. [Aliases de Red & Pentesting](about:blank#aliases-de-red--pentesting)
-4. [Aliases Git](about:blank#aliases-git)
-5. [Funciones Pro](about:blank#funciones-pro)
-6. [Nmap Presets](about:blank#nmap-presets)
-7. [Reverse Shells & Listeners](about:blank#reverse-shells--listeners)
-8. [Utilidades](about:blank#utilidades)
-9. [Atajos de Teclado](about:blank#atajos-de-teclado)
 
 ---
 
