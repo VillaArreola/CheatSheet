@@ -1,32 +1,12 @@
 User-agent: *
 Allow: /
-
-# Sitemap
-Sitemap: https://cheatsheet.villaarreola.com/sitemap.xml
-
-# Crawl-delay para ser respetuoso con el servidor
-Crawl-delay: 1
-
-# No permitir acceso a archivos de configuración y build
-Disallow: /_astro/
-Disallow: /src/
-Disallow: /node_modules/
-Disallow: /package.json
-Disallow: /package-lock.json
-Disallow: /astro.config.mjs
-Disallow: /tsconfig.json
-Disallow: /tailwind.config.mjs
-Disallow: /.git/
-Disallow: /.env
-
-# Permitir acceso a páginas importantes
-Allow: /privacy
-Allow: /terms
 Allow: /comando/
+# Bloqueamos lo que realmente no debe ser indexado
+Disallow: /_astro/
+Disallow: /api/
 
-# Permitir acceso a recursos estáticos
-Allow: /favicon.svg
-Allow: /favicon.ico
-Allow: /og-image.jpg
-Allow: /*.css
-Allow: /*.js
+# Bloqueo de IA (opcional pero recomendado para proteger tus apuntes)
+User-agent: GPTBot
+Disallow: /
+
+Sitemap: https://cheats.villaarreola.com/sitemap.xml
