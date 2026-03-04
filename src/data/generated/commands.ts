@@ -26,6 +26,33 @@ export interface Command {
 
 export const commands: Command[] = [
   {
+    "id": "311ec7e7-4fc0-8022-a399-e5b5846b4f50",
+    "title": "Curl",
+    "command": "dnsrecon -d ejemplo.com -t std",
+    "description": "Peticiones web",
+    "category": "Escan",
+    "tags": [],
+    "examples": [
+      "curl -v http://10.129.234.57:8080",
+      "\"Busqueda\" > Coincidencia exacta de la frase\nsite:site.com > Busqueda unicamente en el dominio seleccionado.",
+      "dnsrecon -d ejemplo.com -t std",
+      "dnsrecon -d ejemplo.com -D subdomains.txt -t brt",
+      "dnsrecon -d ejemplo.com -t axfr"
+    ],
+    "dangerous": false,
+    "platform": "Unix",
+    "syntax": "curl -v http://10.129.234.57:8080",
+    "parameters": [],
+    "output": "",
+    "notes": "- El tipo `std` obtiene registros básicos (A, AAAA, MX, NS, TXT).\n- Usar `t goo` para buscar subdominios indexados en Google.\n- Con diccionarios grandes, limitar el tiempo de consulta con `-lifetime`.",
+    "references": [
+      "Repositorio oficial",
+      "Documentación"
+    ],
+    "created_at": "2026-02-24T01:02:00.000Z",
+    "updated_at": "2026-03-03T02:09:00.000Z"
+  },
+  {
     "id": "24fec7e7-4fc0-80ef-a008-f3585a1afc4e",
     "title": "Dnsrecon",
     "command": "dnsrecon -d ejemplo.com -t std",
@@ -72,6 +99,33 @@ export const commands: Command[] = [
     ],
     "created_at": "2025-08-14T20:53:00.000Z",
     "updated_at": "2025-12-28T22:13:00.000Z"
+  },
+  {
+    "id": "28aec7e7-4fc0-8080-b36c-c6da57b219e3",
+    "title": "Google Dorking",
+    "command": "dnsrecon -d ejemplo.com -t std",
+    "description": "Realizar busquedas avanzadas con filtros en google.",
+    "category": "OSINT",
+    "tags": [],
+    "examples": [
+      "\"Busqueda\" > Coincidencia exacta de la frase\nsite:site.com > Busqueda unicamente en el dominio seleccionado.",
+      "\"Busqueda\" > Coincidencia exacta de la frase\nsite:site.com > Busqueda unicamente en el dominio seleccionado.",
+      "dnsrecon -d ejemplo.com -t std",
+      "dnsrecon -d ejemplo.com -D subdomains.txt -t brt",
+      "dnsrecon -d ejemplo.com -t axfr"
+    ],
+    "dangerous": false,
+    "platform": "Unix",
+    "syntax": "\"Busqueda\" > Coincidencia exacta de la frase\nsite:site.com > Busqueda unicamente en el dominio seleccionado.",
+    "parameters": [],
+    "output": "",
+    "notes": "- El tipo `std` obtiene registros básicos (A, AAAA, MX, NS, TXT).\n- Usar `t goo` para buscar subdominios indexados en Google.\n- Con diccionarios grandes, limitar el tiempo de consulta con `-lifetime`.",
+    "references": [
+      "Repositorio oficial",
+      "Documentación"
+    ],
+    "created_at": "2025-10-12T22:59:00.000Z",
+    "updated_at": "2026-03-03T02:09:00.000Z"
   },
   {
     "id": "253ec7e7-4fc0-80e2-bdb9-e54621c69807",
@@ -180,6 +234,56 @@ export const commands: Command[] = [
     ],
     "created_at": "2025-10-10T01:31:00.000Z",
     "updated_at": "2025-10-12T23:27:00.000Z"
+  },
+  {
+    "id": "289ec7e7-4fc0-805d-b274-f6e0f779ad51",
+    "title": "venv",
+    "command": "rclone sync \"source\"   \"Destino\\\"   -P ",
+    "description": "Como usar Rclone",
+    "category": "Config",
+    "tags": [],
+    "examples": [
+      "python -m venv",
+      "Crear env en windows \npython -m venv name\n\nActivar env en PS:\n\n.venv\\Scripts\\Activate.ps1\n\nActivar env en Linux:\nsource name/bin/activate",
+      "python -m venv name\n\nActivar env en Linux:\nsource name/bin/activate",
+      "rclone sync ./MisFotos gdrive:/Fotos --progress --dry-run",
+      "rclone mount gdrive:/ ~/GDrive",
+      "rclone sync ./Documentos gdrive:/Backup/Documentos -P --delete-after",
+      "rclone copy ./notas gdrive:/pdfs --include \"*.pdf\" -P",
+      "rclone sync \"C:\\OBS\" \"P:\\OBS\" -P --exclude \"*.tmp\" --exclude \"*.bak\""
+    ],
+    "dangerous": false,
+    "platform": "Unix",
+    "syntax": "python -m venv",
+    "parameters": [
+      {
+        "param": "-listremotes",
+        "description": "Lista las particones remotas",
+        "example": "rclone listremotes"
+      },
+      {
+        "param": "-config delete ''",
+        "description": "Elimina el directorio deseado",
+        "example": "|"
+      },
+      {
+        "param": "--dry-run",
+        "description": "Muestra un apreview sobre el comando a ejecutar.",
+        "example": "rcloud   -comand —dry-run"
+      },
+      {
+        "param": "--update",
+        "description": "Actualiza solo lo mas reciente",
+        "example": "rclone —command —update"
+      }
+    ],
+    "output": "",
+    "notes": "- Antes de sincronizar, **usa** **`--dry-run`** para evitar errores fatales.\n- **Programar backups automáticos** con `cron`\n- Rclone puede cifrar tus datos con `rclone config` → tipo `crypt7`",
+    "references": [
+      "Documentación"
+    ],
+    "created_at": "2025-10-11T19:21:00.000Z",
+    "updated_at": "2026-03-03T02:09:00.000Z"
   },
   {
     "id": "2d7ec7e7-4fc0-8054-a7ea-de3d27892a26",
@@ -295,7 +399,7 @@ export const commands: Command[] = [
     "notes": "",
     "references": [],
     "created_at": "2025-12-28T04:22:00.000Z",
-    "updated_at": "2025-12-28T23:44:00.000Z"
+    "updated_at": "2026-03-03T02:08:00.000Z"
   }
 ];
 

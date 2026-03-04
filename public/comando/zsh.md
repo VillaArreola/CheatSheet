@@ -11,9 +11,6 @@ title: zsh
 ---
 
 
-## 📋 Tabla de contenidos
-
-
 ---
 
 
