@@ -58,11 +58,11 @@ const categoryColor = getCategoryColor(command.category);
 const slug = command.title.toLowerCase().replace(/\s+/g, '').replace(/[^a-z0-9]/g, '');
 ---
 
-<div class="command-card cursor-pointer transition-transform hover:scale-[1.02] active:scale-[0.98]" onclick={onClick}>
-  <Card className={`p-4 sm:p-6 ${isSelected ? 'ring-2 ring-blue-500' : ''} hover:shadow-lg transition-shadow`}>
+<div class="command-card cursor-pointer transition-transform duration-200 hover:scale-[1.015] active:scale-[0.99]" onclick={onClick}>
+  <Card className={`p-4 sm:p-6 ${isSelected ? 'ring-2 ring-sky-500' : ''} group`}>
     <div class="flex items-center gap-3">
       <div class="flex-1 min-w-0">
-        <h3 class="text-lg sm:text-xl font-mono font-semibold text-blue-700 dark:text-blue-400 truncate">
+        <h3 class="text-lg sm:text-xl font-mono font-semibold text-slate-800 dark:text-slate-100 truncate group-hover:text-sky-700 dark:group-hover:text-sky-300 transition-colors">
           {command.title}
         </h3>
       </div>
@@ -72,7 +72,7 @@ const slug = command.title.toLowerCase().replace(/\s+/g, '').replace(/[^a-z0-9]/
       <a 
         href={`/${slug}`}
         onclick="event.stopPropagation()"
-        class="flex-shrink-0 text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors p-2 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg"
+        class="flex-shrink-0 text-sky-600 dark:text-sky-300 hover:text-sky-800 dark:hover:text-sky-200 transition-colors p-2 hover:bg-sky-50 dark:hover:bg-sky-900/20 rounded-lg"
         title="Ver página completa"
       >
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

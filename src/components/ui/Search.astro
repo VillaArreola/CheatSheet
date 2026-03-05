@@ -1,138 +1,183 @@
 ---
+interface Props {
+  commands: Array<{
+    id: string;
+    title: string;
+    description?: string;
+    category: string;
+    command?: string;
+    syntax?: string;
+    tags?: string[];
+  }>;
+}
+
+const { commands } = Astro.props;
+
+function slugify(value: string): string {
+  return value.toLowerCase().replace(/\s+/g, '').replace(/[^a-z0-9]/g, '');
+}
+
+const commandData = commands.map(cmd => ({
+  title: cmd.title,
+  description: cmd.description || '',
+  category: cmd.category,
+  slug: slugify(cmd.title),
+  tags: (cmd.tags || []).join(' '),
+}));
 ---
 
-<div class="relative w-full">
-  <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-    <svg class="h-5 w-5 text-gray-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+<div class="relative w-full" id="search-wrapper">
+  <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none" aria-hidden="true">
+    <svg class="h-5 w-5 text-slate-400 dark:text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
     </svg>
   </div>
-  <input 
+  <input
     id="search-input"
-    type="text" 
-    placeholder="Buscar comandos..." 
-    class="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base bg-gray-50 dark:bg-gray-700 focus:bg-white dark:focus:bg-gray-600 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 transition-colors touch-manipulation"
+    type="search"
+    placeholder="Buscar comandos..."
+    aria-label="Buscar comandos"
+    aria-autocomplete="list"
+    aria-controls="search-results"
+    aria-expanded="false"
+    role="combobox"
+    class="w-full pl-10 pr-4 py-2.5 sm:py-3 border border-slate-200/90 dark:border-slate-700 rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 text-sm sm:text-base bg-white/85 dark:bg-slate-800/85 focus:bg-white dark:focus:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 transition-all touch-manipulation shadow-sm"
     autocomplete="off"
     autocorrect="off"
     autocapitalize="off"
     spellcheck="false"
-  >
+  />
+  <div
+    id="search-results"
+    role="listbox"
+    aria-label="Resultados de búsqueda"
+    class="hidden absolute top-full left-0 right-0 mt-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl shadow-xl z-[60] max-h-80 overflow-y-auto"
+  ></div>
 </div>
 
-<script>
-let searchTimeout: ReturnType<typeof setTimeout>;
+<script define:vars={{ commandData }}>
+  const input = document.getElementById('search-input');
+  const results = document.getElementById('search-results');
 
-function performSearch(query: string) {
-  const searchTerm = query.toLowerCase().trim();
-  
-  // Detectar si estamos en la página de inicio o en una página de comando
-  const isHomePage = window.location.pathname === '/';
-  
-  if (!isHomePage) {
-    // Si no estamos en la página de inicio, redirigir con el término de búsqueda
-    if (searchTerm) {
-      window.location.href = `/?search=${encodeURIComponent(searchTerm)}`;
-    } else {
-      window.location.href = '/';
+  if (input && results) {
+    let activeIndex = -1;
+    let filtered = [];
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
     }
-    return;
-  }
-  
-  // Si estamos en la página de inicio, realizar la búsqueda normal
-  if (!(window as any).__CHEATSHEET_COMMANDS__) return;
-  
-  const commands = (window as any).__CHEATSHEET_COMMANDS__;
-  
-  if (searchTerm === '') {
-    // Si no hay búsqueda, mostrar todos los comandos
-    window.dispatchEvent(new CustomEvent('searchCleared'));
-    return;
-  }
-  
-  // Filtrar comandos que coincidan con el término de búsqueda
-  const filteredCommands = commands.filter((command: any) => {
-    const title = command.title?.toLowerCase() || '';
-    const commandText = (command.syntax || command.command || '').toLowerCase();
-    const description = command.description?.toLowerCase() || '';
-    const tags = command.tags?.join(' ').toLowerCase() || '';
-    
-    return title.includes(searchTerm) || 
-           commandText.includes(searchTerm) || 
-           description.includes(searchTerm) || 
-           tags.includes(searchTerm);
-  });
-  
-  // Emitir evento con los resultados de búsqueda
-  window.dispatchEvent(new CustomEvent('searchResults', { 
-    detail: { 
-      query: searchTerm,
-      results: filteredCommands 
-    } 
-  }));
-}
 
-// Configurar el evento de búsqueda
-document.addEventListener('DOMContentLoaded', () => {
-  const searchInput = document.getElementById('search-input') as HTMLInputElement;
-  
-  if (searchInput) {
-    // Manejar input (búsqueda mientras escribes)
-    searchInput.addEventListener('input', (e) => {
-      const target = e.target as HTMLInputElement;
-      const query = target.value;
-      
-      // Solo buscar en tiempo real si estamos en la página de inicio
-      if (window.location.pathname === '/') {
-        // Limpiar timeout anterior
-        clearTimeout(searchTimeout);
-        
-        // Establecer nuevo timeout para búsqueda con debounce
-        searchTimeout = setTimeout(() => {
-          performSearch(query);
-        }, 300);
+    function highlight(text, query) {
+      const idx = text.toLowerCase().indexOf(query.toLowerCase());
+      if (idx === -1) return escapeHtml(text);
+      return (
+        escapeHtml(text.slice(0, idx)) +
+        '<mark class="bg-sky-200 dark:bg-sky-700 rounded px-0.5">' +
+        escapeHtml(text.slice(idx, idx + query.length)) +
+        '</mark>' +
+        escapeHtml(text.slice(idx + query.length))
+      );
+    }
+
+    function closeResults() {
+      results.classList.add('hidden');
+      input.setAttribute('aria-expanded', 'false');
+      activeIndex = -1;
+      filtered = [];
+    }
+
+    function setActive(index) {
+      const items = results.querySelectorAll('[role="option"]');
+      items.forEach((el, i) => {
+        const isActive = i === index;
+        el.setAttribute('aria-selected', String(isActive));
+        el.classList.toggle('bg-slate-100', isActive);
+        el.classList.toggle('dark:bg-slate-800', isActive);
+      });
+      activeIndex = index;
+    }
+
+    function renderResults(query) {
+      const term = query.trim();
+      if (!term) {
+        closeResults();
+        return;
       }
+
+      const lower = term.toLowerCase();
+      filtered = commandData
+        .filter(cmd => {
+          const haystack = [cmd.title, cmd.description, cmd.category, cmd.tags].join(' ').toLowerCase();
+          return haystack.includes(lower);
+        })
+        .slice(0, 8);
+
+      if (filtered.length === 0) {
+        results.innerHTML = `<p class="px-4 py-3 text-sm text-slate-500 dark:text-slate-400">Sin resultados para "<strong>${escapeHtml(term)}</strong>"</p>`;
+      } else {
+        results.innerHTML = filtered
+          .map(
+            (cmd, i) => `
+            <a
+              href="/${cmd.slug}"
+              role="option"
+              aria-selected="false"
+              data-index="${i}"
+              class="flex flex-col px-4 py-3 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors border-b border-slate-100 dark:border-slate-700/60 last:border-0 focus:outline-none focus-visible:bg-slate-100 dark:focus-visible:bg-slate-700"
+            >
+              <span class="font-semibold text-sm text-slate-800 dark:text-slate-100 font-mono">${highlight(cmd.title, term)}</span>
+              ${cmd.description ? `<span class="text-xs text-slate-500 dark:text-slate-400 mt-0.5 line-clamp-1">${escapeHtml(cmd.description)}</span>` : ''}
+              <span class="text-[10px] uppercase tracking-wider text-sky-600 dark:text-sky-400 mt-0.5">${escapeHtml(cmd.category)}</span>
+            </a>
+          `
+          )
+          .join('');
+      }
+
+      results.classList.remove('hidden');
+      input.setAttribute('aria-expanded', 'true');
+      activeIndex = -1;
+    }
+
+    input.addEventListener('input', e => {
+      renderResults(e.target.value);
     });
-    
-    // Manejar Enter para buscar/redirigir
-    searchInput.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') {
+
+    input.addEventListener('keydown', e => {
+      if (results.classList.contains('hidden')) return;
+      const items = results.querySelectorAll('[role="option"]');
+
+      if (e.key === 'ArrowDown') {
         e.preventDefault();
-        const query = searchInput.value;
-        performSearch(query);
+        setActive(Math.min(activeIndex + 1, items.length - 1));
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        setActive(Math.max(activeIndex - 1, -1));
+      } else if (e.key === 'Enter' && activeIndex >= 0) {
+        e.preventDefault();
+        items[activeIndex].click();
+      } else if (e.key === 'Escape') {
+        closeResults();
+        input.blur();
       }
     });
-    
-    // Limpiar búsqueda al hacer focus si está vacío
-    searchInput.addEventListener('focus', () => {
-      if (searchInput.value === '' && window.location.pathname === '/') {
-        window.dispatchEvent(new CustomEvent('searchCleared'));
-      }
-    });
-    
-    // Si hay parámetro de búsqueda en la URL, aplicarlo
-    const urlParams = new URLSearchParams(window.location.search);
-    const searchParam = urlParams.get('search');
-    if (searchParam && window.location.pathname === '/') {
-      searchInput.value = searchParam;
-      performSearch(searchParam);
-    }
-  }
-});
 
-// Función global para limpiar búsqueda
-(window as any).clearSearch = () => {
-  const searchInput = document.getElementById('search-input') as HTMLInputElement;
-  if (searchInput) {
-    searchInput.value = '';
-    if (window.location.pathname === '/') {
-      window.dispatchEvent(new CustomEvent('searchCleared'));
-      // Limpiar el parámetro de búsqueda de la URL
-      const url = new URL(window.location.href);
-      url.searchParams.delete('search');
-      window.history.pushState({}, '', url.pathname);
-    } else {
-      window.location.href = '/';
-    }
+    input.addEventListener('blur', () => {
+      setTimeout(() => {
+        if (!document.activeElement?.closest('#search-results')) {
+          closeResults();
+        }
+      }, 150);
+    });
+
+    document.addEventListener('click', e => {
+      if (!e.target.closest('#search-wrapper')) {
+        closeResults();
+      }
+    });
   }
-};
 </script>

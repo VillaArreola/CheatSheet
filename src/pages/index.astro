@@ -2,119 +2,370 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/layout/Header.astro';
 import Footer from '../components/layout/Footer.astro';
-import CategoryFilter from '../components/command/CategoryFilter.astro';
-import CommandList from '../components/command/CommandList.astro';
-import CommandDetail from '../components/command/CommandDetail.astro';
-import MobileLayout from '../components/layout/MobileLayout.astro';
-import { categories, commands } from '../data/generated/commands';
+import { commands } from '../data/generated/commands';
 
-// Estado inicial
-const initialCommands = commands;
+const totalCommands = commands.length;
+const totalCategories = new Set(commands.map((cmd) => cmd.category)).size;
 ---
 
-<BaseLayout 
-  title="TechSec Cheatsheet - Comandos de Seguridad y Hacking Ético"
-  description="Tu guía completa de comandos de seguridad y hacking ético. Documentación actualizada desde Notion con las mejores prácticas para pentesting, CTF y seguridad informática."
+<BaseLayout
+  title="TechSec Cheatsheet - Dashboard"
+  description="Explora categorias y comandos desde un dashboard unificado."
 >
   <Header />
-  
-  <!-- Layout móvil -->
-  <div class="lg:hidden min-h-screen bg-gray-50 dark:bg-gray-900">
-    <MobileLayout commands={initialCommands} />
-  </div>
-  
-  <!-- Layout desktop -->
-  <div class="hidden lg:flex bg-gray-50 dark:bg-gray-900">
-    <!-- Categorías - Fijas -->
-    <aside class="w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 p-6 sticky top-[var(--header-h)] h-[calc(100vh-var(--header-h))] overflow-y-auto z-10 shadow-sm">
-      <CategoryFilter 
-        categories={categories}
-        activeCategory="all"
-      />
-    </aside>
 
-    <!-- Lista de comandos - Fija -->
-    <main class="flex-1 p-8 bg-white dark:bg-gray-800 sticky top-[var(--header-h)] h-[calc(100vh-var(--header-h))] overflow-y-auto z-10 shadow-sm">
-      <div class="mb-6">
-        <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
-          Comandos disponibles
-        </h2>
-        <p class="text-sm text-gray-600 dark:text-gray-400">
-          Mostrando <span id="command-count" class="font-medium">{initialCommands.length}</span> comandos
-        </p>
+  <div class="px-3 lg:px-4 py-3 lg:py-4 min-h-[calc(100dvh-var(--header-h))]">
+    <div class="lg:hidden mb-3 flex justify-end">
+      <button id="mobile-nav-toggle" aria-expanded="false" aria-controls="mobile-nav-drawer" aria-label="Abrir navegación" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/85 dark:bg-slate-800/85 border border-slate-200/80 dark:border-slate-700/80 text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-sky-50 dark:hover:bg-slate-700 transition-colors">
+        <span aria-hidden="true">☰</span>
+        Explorar
+      </button>
+    </div>
+
+    <div class="flex gap-3 lg:gap-4 h-[calc(100dvh-var(--header-h)-2rem)]">
+      <aside class="hidden lg:flex w-16 glass-panel rounded-2xl p-2 h-full z-20">
+        <nav id="nav-rail-desktop" class="w-full flex flex-col items-center gap-2"></nav>
+      </aside>
+
+      <aside class="hidden lg:flex w-[20rem] glass-panel rounded-2xl h-full z-20 flex-col overflow-hidden">
+        <div class="px-4 py-3 border-b border-slate-200/70 dark:border-slate-700/70 flex items-center justify-between">
+          <div>
+            <p class="text-[11px] uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">Explorador</p>
+            <h3 id="explorer-title-desktop" class="text-sm font-semibold text-slate-800 dark:text-slate-100">Categorias</h3>
+          </div>
+          <button id="explorer-back-desktop" class="hidden px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200">Atras</button>
+        </div>
+        <div id="explorer-content-desktop" class="p-3 overflow-y-auto"></div>
+      </aside>
+
+      <main class="flex-1 glass-panel rounded-2xl h-full overflow-y-auto">
+        <div class="max-w-4xl mx-auto p-5 lg:p-8 pb-20">
+          <p class="text-[11px] font-semibold uppercase tracking-[0.15em] text-slate-500 dark:text-slate-400 mb-3">Dashboard</p>
+          <h1 class="text-4xl sm:text-5xl font-black text-slate-900 dark:text-slate-100 mb-3">TechSec Cheatsheet</h1>
+          <p class="text-slate-600 dark:text-slate-300 text-lg max-w-3xl mb-8">
+            Bienvenido. Usa el explorador lateral para navegar por grupos, categorias y comandos.
+            Mantienes rutas directas por slug como <code class="font-mono">/dnsrecon</code>, <code class="font-mono">/curl</code> o <code class="font-mono">/zsh</code>.
+          </p>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+            <div class="surface-elevated p-5">
+              <p class="text-xs uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400 mb-1">Comandos</p>
+              <p class="text-3xl font-extrabold text-sky-700 dark:text-sky-300">{totalCommands}</p>
+            </div>
+            <div class="surface-elevated p-5">
+              <p class="text-xs uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400 mb-1">Categorias</p>
+              <p class="text-3xl font-extrabold text-emerald-700 dark:text-emerald-300">{totalCategories}</p>
+            </div>
+            <div class="surface-elevated p-5">
+              <p class="text-xs uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400 mb-1">Favoritos</p>
+              <p id="favorites-counter" class="text-3xl font-extrabold text-amber-600 dark:text-amber-300">0</p>
+            </div>
+          </div>
+
+          <div class="surface-elevated p-6">
+            <h2 class="text-xl font-bold text-slate-900 dark:text-slate-100 mb-3">Flujo recomendado</h2>
+            <ol class="space-y-2 text-slate-600 dark:text-slate-300 list-decimal list-inside">
+              <li>Selecciona un grupo en la barra lateral (Todas, Linux, OSINT, etc.).</li>
+              <li>Abre una categoria del panel explorador.</li>
+              <li>Elige un comando para navegar a su ruta dedicada.</li>
+            </ol>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <div id="mobile-nav-overlay" class="lg:hidden fixed inset-0 bg-slate-950/50 opacity-0 pointer-events-none transition-opacity duration-200 z-40"></div>
+  <aside id="mobile-nav-drawer" role="dialog" aria-modal="true" aria-label="Navegación" class="lg:hidden fixed top-[var(--header-h)] left-0 w-[95vw] max-w-[430px] h-[calc(100vh-var(--header-h))] glass-panel border-r border-slate-200/70 dark:border-slate-700/70 z-50 transform -translate-x-full transition-transform duration-250">
+    <div class="h-full flex">
+      <div class="w-16 border-r border-slate-200/70 dark:border-slate-700/70 p-2">
+        <nav id="nav-rail-mobile" class="w-full flex flex-col items-center gap-2"></nav>
       </div>
-      <CommandList 
-        commands={initialCommands}
-        selectedCommand=""
-      />
-    </main>
-
-    <!-- Detalles del comando -->
-    <aside id="command-detail-aside" class="w-1/2 min-w-96 max-w-[60%] p-6 pb-20 bg-white dark:bg-gray-800 border-l border-gray-200 dark:border-gray-700 sticky top-[var(--header-h)] h-[calc(100vh-var(--header-h))] overflow-y-auto relative transform-gpu shadow-sm z-10">
-      <!-- Resizer handle -->
-      <div id="resizer" class="absolute left-0 top-0 bottom-0 w-1 bg-gray-300 dark:bg-gray-600 cursor-col-resize hover:bg-blue-500 transition-colors"></div>
-      
-      <CommandDetail command={null} />
-    </aside>
-  </div>
+      <div class="flex-1 flex flex-col min-w-0">
+        <div class="px-4 py-3 border-b border-slate-200/70 dark:border-slate-700/70 flex items-center justify-between">
+          <div>
+            <p class="text-[11px] uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">Explorador</p>
+            <h3 id="explorer-title-mobile" class="text-sm font-semibold text-slate-800 dark:text-slate-100">Categorias</h3>
+          </div>
+          <div class="flex items-center gap-2">
+            <button id="explorer-back-mobile" class="hidden px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200">Atras</button>
+            <button id="mobile-nav-close" class="w-9 h-9 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200">✕</button>
+          </div>
+        </div>
+        <div id="explorer-content-mobile" class="p-3 overflow-y-auto"></div>
+      </div>
+    </div>
+  </aside>
 
   <Footer />
 </BaseLayout>
 
-<script>
-import { commands, categories } from '../data/generated/commands';
+<script define:vars={{ commands }}>
+const railGroups = [
+  { id: 'all', label: 'Todas', icon: 'all' },
+  { id: 'favorites', label: 'Favoritos', icon: 'favorites' },
+  { id: 'linux', label: 'Linux', icon: 'linux' },
+  { id: 'windows', label: 'Windows', icon: 'windows' },
+  { id: 'osint', label: 'OSINT', icon: 'osint' },
+  { id: 'network', label: 'Red', icon: 'network' },
+  { id: 'web', label: 'Web', icon: 'web' },
+];
 
-// Funcionalidad de redimensionamiento del aside (solo desktop)
-function initResizer() {
-  const aside = document.getElementById('command-detail-aside') as HTMLElement;
-  const resizer = document.getElementById('resizer') as HTMLElement;
-  
-  if (!aside || !resizer) return;
-  
-  let isResizing = false;
-  let startX: number;
-  let startWidth: number;
-  
-  resizer.addEventListener('mousedown', (e) => {
-    isResizing = true;
-    startX = e.clientX;
-    startWidth = aside.offsetWidth;
-    
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseup', handleMouseUp);
-    
-    // Prevenir selección de texto durante el resize
-    e.preventDefault();
-  });
-  
-  function handleMouseMove(e: MouseEvent) {
-    if (!isResizing || !aside) return;
-    
-    const deltaX = startX - e.clientX;
-    const newWidth = startWidth + deltaX;
-    
-    // Obtener el ancho total de la ventana
-    const windowWidth = window.innerWidth;
-    
-    // Calcular límites en píxeles basados en porcentajes
-    const minWidth = 384; // min-w-96 (384px)
-    const maxWidth = windowWidth * 0.6; // 60% del ancho de la ventana
-    
-    if (newWidth >= minWidth && newWidth <= maxWidth) {
-      aside.style.width = `${newWidth}px`;
-    }
-  }
-  
-  function handleMouseUp() {
-    isResizing = false;
-    document.removeEventListener('mousemove', handleMouseMove);
-    document.removeEventListener('mouseup', handleMouseUp);
+const railIcons = {
+  all: '<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="3" y="4" width="7" height="7" rx="1.5"/><rect x="14" y="4" width="7" height="7" rx="1.5"/><rect x="3" y="13" width="7" height="7" rx="1.5"/><rect x="14" y="13" width="7" height="7" rx="1.5"/></svg>',
+  favorites: '<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M12 3.75l2.55 5.16 5.7.83-4.12 4.02.97 5.68L12 16.8l-5.1 2.64.98-5.68-4.13-4.02 5.71-.83L12 3.75z" stroke-linejoin="round"/></svg>',
+  linux: '<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M12 3.5c2.1 0 3.8 1.7 3.8 3.8v2.3A2.4 2.4 0 0113.4 12h-2.8a2.4 2.4 0 01-2.4-2.4V7.3c0-2.1 1.7-3.8 3.8-3.8z"/><path d="M6.7 16.1c0-1.8 1.5-3.3 3.3-3.3h4c1.8 0 3.3 1.5 3.3 3.3V20H6.7v-3.9z"/></svg>',
+  windows: '<svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M3.5 4.7l7-1v8.1h-7V4.7zm8 7V3.5l9-1.3v9.5h-9zM3.5 12.8h7v7.5l-7-1v-6.5zm8 7.7v-7.7h9v9l-9-1.3z"/></svg>',
+  osint: '<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="10.5" cy="10.5" r="5.5"/><path d="M15 15l5.2 5.2" stroke-linecap="round"/><path d="M10.5 7.8v5.4M7.8 10.5h5.4" stroke-linecap="round"/></svg>',
+  network: '<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="3" y="4" width="6.5" height="4.5" rx="1"/><rect x="14.5" y="4" width="6.5" height="4.5" rx="1"/><rect x="8.8" y="15.5" width="6.5" height="4.5" rx="1"/><path d="M6.25 8.5v3.2h11.5V8.5M12 11.7v3.8"/></svg>',
+  web: '<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="12" cy="12" r="8.5"/><path d="M3.8 12h16.4M12 3.5c2.6 2.3 4.1 5.3 4.1 8.5S14.6 18.2 12 20.5M12 3.5c-2.6 2.3-4.1 5.3-4.1 8.5s1.5 6.2 4.1 8.5"/></svg>',
+};
+
+const state = {
+  group: 'all',
+  view: 'categories',
+  category: null,
+};
+
+const favoritesKey = 'cheatsheet-favorites-v1';
+const navStateKey = 'cheatsheet-nav-state-v1';
+
+function slugify(value) {
+  return value.toLowerCase().replace(/\s+/g, '').replace(/[^a-z0-9]/g, '');
+}
+
+function getFavorites() {
+  try {
+    const raw = localStorage.getItem(favoritesKey);
+    return new Set(raw ? JSON.parse(raw) : []);
+  } catch {
+    return new Set();
   }
 }
 
-// Inicializar el resizer cuando el DOM esté listo
-document.addEventListener('DOMContentLoaded', initResizer);
+function saveFavorites(favorites) {
+  localStorage.setItem(favoritesKey, JSON.stringify(Array.from(favorites)));
+  const counter = document.getElementById('favorites-counter');
+  if (counter) counter.textContent = `${favorites.size}`;
+}
 
-// Hacer los comandos disponibles globalmente
-(window as any).__CHEATSHEET_COMMANDS__ = JSON.parse(`${JSON.stringify(commands)}`);
+function loadNavState() {
+  try {
+    const raw = localStorage.getItem(navStateKey);
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
+}
+
+function saveNavState() {
+  localStorage.setItem(navStateKey, JSON.stringify({
+    group: state.group,
+    view: state.view,
+    category: state.category,
+  }));
+}
+
+function normalizeText(cmd) {
+  return [cmd.title, cmd.description, cmd.command, cmd.syntax, cmd.platform, (cmd.tags || []).join(' '), cmd.category]
+    .join(' ')
+    .toLowerCase();
+}
+
+function commandInGroup(cmd, groupId, favorites) {
+  const text = normalizeText(cmd);
+  if (groupId === 'all') return true;
+  if (groupId === 'favorites') return favorites.has(cmd.id);
+  if (groupId === 'linux') return text.includes('linux') || text.includes('bash') || text.includes('zsh') || text.includes('unix');
+  if (groupId === 'windows') return text.includes('windows') || text.includes('powershell') || text.includes('cmd ');
+  if (groupId === 'osint') return text.includes('osint') || text.includes('dork') || text.includes('recon') || text.includes('enum');
+  if (groupId === 'network') return text.includes('dns') || text.includes('network') || text.includes('scan') || text.includes('port');
+  if (groupId === 'web') return text.includes('http') || text.includes('web') || text.includes('url') || text.includes('curl');
+  return true;
+}
+
+function getGroupCommands(groupId, favorites) {
+  return commands.filter((cmd) => commandInGroup(cmd, groupId, favorites));
+}
+
+function getGroupCategories(groupId, favorites) {
+  const filtered = getGroupCommands(groupId, favorites);
+  return [...new Set(filtered.map((cmd) => cmd.category))].sort((a, b) => a.localeCompare(b, 'es'));
+}
+
+function renderRail(targetId, favorites) {
+  const target = document.getElementById(targetId);
+  if (!target) return;
+
+  const currentMode = (window.__getThemeMode && window.__getThemeMode()) || 'vault';
+  const themeControls = `
+    <div class="mt-auto pt-3 flex flex-col items-center gap-2 border-t border-slate-200/60 dark:border-slate-700/60">
+      <button type="button" data-theme-mode="vault" class="w-5 h-5 rounded-full cursor-pointer opacity-${currentMode === 'vault' ? '100' : '40'} hover:opacity-100" style="background:linear-gradient(145deg,#0f172a,#1e3a8a)" title="Blue" aria-label="Blue"></button>
+      <button type="button" data-theme-mode="black" class="w-5 h-5 rounded-full border border-slate-600 cursor-pointer opacity-${currentMode === 'black' ? '100' : '40'} hover:opacity-100" style="background:#050505" title="Dark" aria-label="Dark"></button>
+    </div>
+  `;
+
+  target.innerHTML = `${railGroups.map((group) => {
+    const active = state.group === group.id;
+    return `<button type="button" data-action="set-group" data-group="${group.id}" class="relative w-11 h-11 rounded-xl flex items-center justify-center transition-all border ${active ? 'bg-sky-600 text-white border-sky-600 shadow-lg shadow-sky-500/30' : 'bg-white/85 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300 border-slate-200/80 dark:border-slate-700/80 hover:bg-sky-50 dark:hover:bg-slate-700'}" title="${group.label}" aria-label="${group.label}">${railIcons[group.icon] || railIcons.all}${group.id === 'favorites' && favorites.size > 0 ? `<span class=\"absolute -mt-6 ml-4 text-[10px] px-1 rounded bg-rose-500 text-white\">${favorites.size}</span>` : ''}</button>`;
+  }).join('')}${themeControls}`;
+}
+
+function renderExplorer(targetId, titleId, backId, favorites) {
+  const target = document.getElementById(targetId);
+  const titleEl = document.getElementById(titleId);
+  const backBtn = document.getElementById(backId);
+  if (!target || !titleEl || !backBtn) return;
+
+  const groupLabel = railGroups.find((item) => item.id === state.group)?.label || 'Todas';
+  if (state.view === 'categories') {
+    const categories = getGroupCategories(state.group, favorites);
+    titleEl.textContent = groupLabel;
+    backBtn.classList.add('hidden');
+    target.innerHTML = categories.map((category) => {
+      const count = getGroupCommands(state.group, favorites).filter((cmd) => cmd.category === category).length;
+      return `<button type="button" data-action="open-category" data-category="${category}" class="w-full mb-2 px-3 py-3 rounded-xl border border-slate-200/70 dark:border-slate-700/70 bg-white/80 dark:bg-slate-800/75 hover:bg-sky-50 dark:hover:bg-slate-700 transition-colors text-left flex items-center justify-between"><span class="font-semibold text-sm text-slate-800 dark:text-slate-100">${category}</span><span class="text-xs font-semibold px-2 py-1 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300">${count}</span></button>`;
+    }).join('');
+    return;
+  }
+
+  titleEl.textContent = state.category || groupLabel;
+  backBtn.classList.remove('hidden');
+  const list = getGroupCommands(state.group, favorites).filter((cmd) => cmd.category === state.category).sort((a, b) => a.title.localeCompare(b.title, 'es'));
+  target.innerHTML = list.map((cmd) => {
+    const cmdSlug = slugify(cmd.title);
+    const isFavorite = favorites.has(cmd.id);
+    return `<a href="/${cmdSlug}" data-action="open-command" data-command="${cmdSlug}" class="w-full mb-2 px-3 py-3 rounded-xl border text-left flex items-center justify-between transition-all bg-white/80 dark:bg-slate-800/75 border-slate-200/70 dark:border-slate-700/70 hover:bg-sky-50 dark:hover:bg-slate-700"><div><p class="font-semibold text-sm text-slate-800 dark:text-slate-100">${cmd.title}</p>${cmd.description ? `<p class=\"text-xs mt-1 text-slate-500 dark:text-slate-400 line-clamp-1\">${cmd.description}</p>` : ''}</div><span data-action="toggle-favorite" data-id="${cmd.id}" class="ml-3 text-base ${isFavorite ? 'text-amber-500' : 'text-slate-400'}" title="Favorito">★</span></a>`;
+  }).join('');
+}
+
+function renderAllNavigation() {
+  const favorites = getFavorites();
+  saveFavorites(favorites);
+  renderRail('nav-rail-desktop', favorites);
+  renderRail('nav-rail-mobile', favorites);
+  renderExplorer('explorer-content-desktop', 'explorer-title-desktop', 'explorer-back-desktop', favorites);
+  renderExplorer('explorer-content-mobile', 'explorer-title-mobile', 'explorer-back-mobile', favorites);
+}
+
+function openMobileDrawer() {
+  const drawer = document.getElementById('mobile-nav-drawer');
+  const overlay = document.getElementById('mobile-nav-overlay');
+  const toggle = document.getElementById('mobile-nav-toggle');
+  if (!drawer || !overlay) return;
+  drawer.classList.remove('-translate-x-full');
+  drawer.classList.add('translate-x-0');
+  overlay.classList.remove('opacity-0', 'pointer-events-none');
+  overlay.classList.add('opacity-100');
+  document.body.style.overflow = 'hidden';
+  toggle?.setAttribute('aria-expanded', 'true');
+}
+
+function closeMobileDrawer() {
+  const drawer = document.getElementById('mobile-nav-drawer');
+  const overlay = document.getElementById('mobile-nav-overlay');
+  const toggle = document.getElementById('mobile-nav-toggle');
+  if (!drawer || !overlay) return;
+  drawer.classList.add('-translate-x-full');
+  drawer.classList.remove('translate-x-0');
+  overlay.classList.add('opacity-0', 'pointer-events-none');
+  overlay.classList.remove('opacity-100');
+  document.body.style.overflow = '';
+  toggle?.setAttribute('aria-expanded', 'false');
+}
+
+function wireActions() {
+  if (window.__homeDashboardWired) return;
+  window.__homeDashboardWired = true;
+
+  document.addEventListener('click', (event) => {
+    const target = event.target;
+    if (!(target instanceof HTMLElement)) return;
+    const actionEl = target.closest('[data-action]');
+    if (!(actionEl instanceof HTMLElement)) return;
+    const action = actionEl.dataset.action;
+
+    if (action === 'set-group') {
+      state.group = actionEl.dataset.group || 'all';
+      state.view = 'categories';
+      state.category = null;
+      saveNavState();
+      renderAllNavigation();
+      return;
+    }
+
+    if (action === 'open-category') {
+      state.category = actionEl.dataset.category || null;
+      state.view = 'commands';
+      saveNavState();
+      renderAllNavigation();
+      return;
+    }
+
+    if (action === 'open-command') {
+      event.preventDefault();
+      const commandSlug = actionEl.dataset.command;
+      saveNavState();
+      if (commandSlug) {
+        window.location.href = `/${commandSlug}`;
+      }
+      return;
+    }
+
+    if (action === 'toggle-favorite') {
+      event.preventDefault();
+      event.stopPropagation();
+      const id = actionEl.dataset.id;
+      if (!id) return;
+      const favorites = getFavorites();
+      if (favorites.has(id)) favorites.delete(id);
+      else favorites.add(id);
+      saveFavorites(favorites);
+      renderAllNavigation();
+    }
+  });
+
+  ['explorer-back-desktop', 'explorer-back-mobile'].forEach((id) => {
+    const button = document.getElementById(id);
+    if (!button) return;
+    button.onclick = () => {
+      state.view = 'categories';
+      state.category = null;
+      saveNavState();
+      renderAllNavigation();
+    };
+  });
+}
+
+function initPage() {
+  const saved = loadNavState();
+  if (saved && railGroups.some((group) => group.id === saved.group)) {
+    state.group = saved.group;
+  }
+
+  if (saved?.view === 'commands' && saved.category) {
+    const allowed = getGroupCategories(state.group, getFavorites());
+    if (allowed.includes(saved.category)) {
+      state.view = 'commands';
+      state.category = saved.category;
+    }
+  }
+
+  renderAllNavigation();
+  wireActions();
+  const mobileToggle = document.getElementById('mobile-nav-toggle');
+  const mobileClose = document.getElementById('mobile-nav-close');
+  const mobileOverlay = document.getElementById('mobile-nav-overlay');
+  if (mobileToggle) mobileToggle.onclick = openMobileDrawer;
+  if (mobileClose) mobileClose.onclick = closeMobileDrawer;
+  if (mobileOverlay) mobileOverlay.onclick = closeMobileDrawer;
+
+  if (!window.__homeThemeBound) {
+    window.__homeThemeBound = true;
+    window.addEventListener('themeModeChanged', renderAllNavigation);
+  }
+}
+
+document.addEventListener('DOMContentLoaded', initPage);
+document.addEventListener('astro:page-load', initPage);
 </script>

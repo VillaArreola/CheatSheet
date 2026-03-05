@@ -3,9 +3,29 @@
 @tailwind utilities;
 
 @layer base {
+  /* Default = dark (vault). The site never uses a light theme. */
+  :root {
+    color-scheme: dark;
+    --bg-start: #0b1220;
+    --bg-mid: #0f1a2d;
+    --bg-end: #131f26;
+    --surface: rgba(15, 23, 42, 0.62);
+    --surface-border: rgba(148, 163, 184, 0.2);
+    --shadow-soft: 0 18px 48px -24px rgba(2, 6, 23, 0.7);
+  }
+
+  .dark.theme-black {
+    color-scheme: dark;
+    --bg-start: #030303;
+    --bg-mid: #070707;
+    --bg-end: #0b0b0b;
+    --surface: rgba(6, 6, 6, 0.8);
+    --surface-border: rgba(71, 85, 105, 0.35);
+    --shadow-soft: 0 18px 48px -24px rgba(0, 0, 0, 0.9);
+  }
+
   html {
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-      Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    font-family: 'Manrope', 'Segoe UI', sans-serif;
     font-size: 16px; /* Base font size for better mobile readability */
     line-height: 1.6;
   }
@@ -16,8 +36,7 @@
   }
   
   code {
-    font-family: Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono,
-      Bitstream Vera Sans Mono, Courier New, monospace;
+    font-family: 'JetBrains Mono', Menlo, Monaco, Consolas, monospace;
     font-size: 0.875em; /* Slightly smaller code font for better mobile fit */
   }
   
@@ -30,6 +49,13 @@
   * {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+  }
+
+  .site-bg {
+    background:
+      radial-gradient(1200px circle at 0% -10%, rgba(14, 165, 233, 0.22), transparent 60%),
+      radial-gradient(900px circle at 100% 0%, rgba(34, 197, 94, 0.16), transparent 55%),
+      linear-gradient(135deg, var(--bg-start), var(--bg-mid) 45%, var(--bg-end));
   }
 }
 
@@ -91,5 +117,168 @@
   /* Responsive grid */
   .grid-responsive {
     @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3;
+  }
+
+  .glass-panel {
+    background: var(--surface);
+    border: 1px solid var(--surface-border);
+    box-shadow: var(--shadow-soft);
+    backdrop-filter: blur(10px);
+  }
+
+  .surface-elevated {
+    @apply rounded-2xl border border-slate-200/70 dark:border-slate-700/70;
+    background: linear-gradient(160deg, rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.78));
+    box-shadow: var(--shadow-soft);
+  }
+
+  .dark .surface-elevated {
+    background: linear-gradient(160deg, rgba(30, 41, 59, 0.88), rgba(15, 23, 42, 0.8));
+  }
+
+  .dark.theme-black .surface-elevated {
+    background: linear-gradient(160deg, rgba(8, 8, 8, 0.92), rgba(14, 14, 14, 0.86));
+    border-color: rgba(71, 85, 105, 0.35);
+  }
+
+  .soft-reveal {
+    animation: soft-reveal 0.55s ease-out both;
+  }
+
+  @keyframes soft-reveal {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes theme-pop {
+    0%   { transform: scale(0.82); }
+    55%  { transform: scale(1.14); }
+    100% { transform: scale(1.10); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .soft-reveal {
+      animation: none;
+      opacity: 1;
+      transform: none;
+    }
+
+    @keyframes theme-pop {
+      0%, 100% { transform: scale(1.10); }
+    }
+  }
+
+  /* ── Prose / markdown-content overrides ─────────────────────── */
+  .dark #markdown-content.prose {
+    --tw-prose-body: theme('colors.slate.300');
+    --tw-prose-headings: theme('colors.slate.100');
+    --tw-prose-lead: theme('colors.slate.400');
+    --tw-prose-links: theme('colors.sky.400');
+    --tw-prose-bold: theme('colors.slate.100');
+    --tw-prose-counters: theme('colors.slate.400');
+    --tw-prose-bullets: theme('colors.sky.500');
+    --tw-prose-hr: theme('colors.slate.700');
+    --tw-prose-quotes: theme('colors.slate.300');
+    --tw-prose-quote-borders: theme('colors.sky.500');
+    --tw-prose-captions: theme('colors.slate.400');
+    --tw-prose-code: theme('colors.emerald.400');
+    --tw-prose-pre-code: theme('colors.emerald.300');
+    --tw-prose-pre-bg: theme('colors.slate.950');
+    --tw-prose-th-borders: theme('colors.slate.600');
+    --tw-prose-td-borders: theme('colors.slate.700');
+  }
+
+  #markdown-content.prose {
+    line-height: 1.85;
+  }
+
+  #markdown-content.prose p {
+    margin-top: 0.9rem;
+    margin-bottom: 0.9rem;
+  }
+
+  #markdown-content.prose pre {
+    border: 1px solid theme('colors.slate.700');
+    border-radius: 0.75rem;
+    margin-top: 1rem;
+    margin-bottom: 1.25rem;
+    padding: 1rem 1.25rem;
+  }
+
+  #markdown-content.prose code:not(pre code) {
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid theme('colors.slate.700');
+    border-radius: 0.35rem;
+    padding: 0.18em 0.5em;
+    font-size: 0.84em;
+    color: theme('colors.emerald.400');
+  }
+
+  #markdown-content.prose h2 {
+    border-left: 3px solid theme('colors.sky.500');
+    padding-left: 0.75rem;
+    margin-top: 2.2rem;
+    margin-bottom: 1rem;
+  }
+
+  #markdown-content.prose h3 {
+    color: theme('colors.sky.300');
+    margin-top: 1.8rem;
+    margin-bottom: 0.75rem;
+  }
+
+  #markdown-content.prose strong {
+    display: block;
+    margin-top: 1.25rem;
+    margin-bottom: 0.35rem;
+  }
+
+  #markdown-content.prose ul,
+  #markdown-content.prose ol {
+    margin-top: 0.75rem;
+    margin-bottom: 0.75rem;
+    padding-left: 1.5rem;
+  }
+
+  #markdown-content.prose li {
+    margin-top: 0.35rem;
+    margin-bottom: 0.35rem;
+  }
+
+  #markdown-content.prose table {
+    font-size: 0.875rem;
+    border-collapse: collapse;
+    width: 100%;
+  }
+
+  #markdown-content.prose thead th {
+    background: rgba(14, 165, 233, 0.12);
+    color: theme('colors.sky.300');
+    font-weight: 600;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid theme('colors.slate.700');
+  }
+
+  #markdown-content.prose tbody td {
+    padding: 0.45rem 0.75rem;
+    border: 1px solid theme('colors.slate.700/60');
+    color: theme('colors.slate.300');
+  }
+
+  #markdown-content.prose tbody tr:nth-child(even) td {
+    background: rgba(15, 23, 42, 0.35);
+  }
+
+  #markdown-content.prose blockquote {
+    border-left-color: theme('colors.sky.500');
+    background: rgba(14, 165, 233, 0.07);
+    border-radius: 0 0.5rem 0.5rem 0;
+    padding: 0.75rem 1rem;
   }
 }

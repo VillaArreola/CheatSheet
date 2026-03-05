@@ -1,129 +1,42 @@
 ---
 import Search from '../ui/Search.astro';
-import { categories } from '../../data/generated/commands';
+import { commands } from '../../data/generated/commands';
 ---
 
-<header class="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-40">
-  <div class="flex flex-col sm:flex-row justify-between items-center p-4 gap-4 sm:gap-0 max-w-7xl mx-auto w-full">
-    <div class="flex items-center gap-3">
-      <a href="/" class="flex items-center gap-3 hover:opacity-80 transition-opacity">
-        <img src="/MVLOGO.png" alt="Villa Arreola Logo" class="h-8 w-8 sm:h-10 sm:w-10" />
-        <span class="text-xl sm:text-2xl font-bold text-gray-800 dark:text-gray-100">Cheatsheet</span>
+<header class="glass-panel sticky top-0 z-40 border-b border-white/40 dark:border-slate-700/60">
+  <div class="flex flex-row items-center justify-between p-3 sm:p-4 gap-3 max-w-7xl mx-auto w-full">
+    <div class="shrink-0">
+      <a href="/" class="flex items-center gap-2 sm:gap-3 transition-transform duration-200 hover:scale-[1.01]">
+        <img src="/MVLOGO.png" alt="Villa Arreola Logo" width="40" height="40" class="h-8 w-8 sm:h-10 sm:w-10 rounded-xl ring-2 ring-sky-200/70 dark:ring-sky-800/70" />
+        <div class="leading-tight">
+          <span class="block text-lg sm:text-2xl font-extrabold text-slate-800 dark:text-slate-100">Cheatsheet</span>
+          <span class="hidden sm:block text-xs tracking-[0.16em] uppercase text-slate-500 dark:text-slate-400">TechSec Vault</span>
+        </div>
       </a>
     </div>
-    <div class="flex items-center gap-4 w-full sm:w-auto">
-      <div class="flex-1 sm:flex-initial sm:max-w-md">
-        <Search />
+    <div class="flex items-center gap-3 flex-1 min-w-0">
+      <div class="flex-1 min-w-0">
+        <Search commands={commands} />
       </div>
-             <nav class="hidden sm:flex items-center gap-6">
-         <a href="https://ctf.villaarreola.com" target="_blank" rel="noopener noreferrer" class="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100 transition-colors">
-           CTF Writeups
-         </a>
-         <span class="text-gray-400 dark:text-gray-500 font-light">|</span>
-         <a href="https://kb.villaarreola.com" target="_blank" rel="noopener noreferrer" class="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100 transition-colors">
-           Knowledge Base
-         </a>
-       </nav>
+      <nav aria-label="Sitios relacionados" class="hidden sm:flex items-center gap-6 px-4 py-2 rounded-full bg-white/70 dark:bg-slate-800/70 border border-slate-200/70 dark:border-slate-700/70 shrink-0">
+        <a href="https://ctf.villaarreola.com" target="_blank" rel="noopener noreferrer" class="text-slate-600 dark:text-slate-300 hover:text-sky-700 dark:hover:text-sky-300 transition-colors">
+          CTF Writeups
+        </a>
+        <span aria-hidden="true" class="text-slate-300 dark:text-slate-600 font-light">|</span>
+        <a href="https://kb.villaarreola.com" target="_blank" rel="noopener noreferrer" class="text-slate-600 dark:text-slate-300 hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors">
+          Knowledge Base
+        </a>
+      </nav>
     </div>
   </div>
-  
-  <!-- Selector de categorías (solo móvil) -->
-  <div class="lg:hidden px-4 pb-4">
-         <!-- Enlaces de navegación móvil -->
-     <div class="flex items-center justify-center gap-4 mb-4">
-       <a href="https://ctf.villaarreola.com" target="_blank" rel="noopener noreferrer" class="text-sm text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100 transition-colors">
-         CTF Writeups
-       </a>
-       <span class="text-gray-400 dark:text-gray-500 font-light">|</span>
-       <a href="https://kb.villaarreola.com" target="_blank" rel="noopener noreferrer" class="text-sm text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100 transition-colors">
-         Knowledge Base
-       </a>
-     </div>
-    
-    <div class="flex items-start flex-col space-y-3">
-      <span class="text-sm font-medium text-gray-600 dark:text-gray-300">Categorías:</span>
-      <div class="flex flex-wrap gap-2 w-full">
-        {categories.map(category => (
-          <button 
-            onclick={`selectCategory('${category.id}')`} 
-            class={`category-btn px-4 py-2 text-sm rounded-full transition-colors min-h-[44px] touch-manipulation ${category.id === 'all' ? 'active' : ''}`}
-          >
-            {category.name}
-          </button>
-        ))}
-      </div>
-    </div>
-  </div>
+
 </header>
 
-<style>
-.category-btn {
-  background-color: #f3f4f6;
-  color: #6b7280;
-  border: 1px solid transparent;
-}
-
-.category-btn:hover {
-  background-color: #e5e7eb;
-  color: #374151;
-}
-
-.category-btn.active {
-  background-color: #3b82f6;
-  color: white;
-  border-color: #2563eb;
-}
-
-.category-btn.active:hover {
-  background-color: #2563eb;
-}
-
-/* Dark mode styles */
-.dark .category-btn {
-  background-color: #374151;
-  color: #d1d5db;
-}
-
-.dark .category-btn:hover {
-  background-color: #4b5563;
-  color: #f3f4f6;
-}
-
-.dark .category-btn.active {
-  background-color: #3b82f6;
-  color: white;
-  border-color: #2563eb;
-}
-
-.dark .category-btn.active:hover {
-  background-color: #2563eb;
-}
-</style>
-
 <script>
-function selectCategory(category: string) {
-  // Actualizar estilos de botones
-  document.querySelectorAll('.category-btn').forEach(btn => {
-    btn.classList.remove('active');
-  });
-  
-  (event?.target as HTMLElement)?.classList.add('active');
-  
-  // Emitir evento para que otros componentes reaccionen
-  window.dispatchEvent(new CustomEvent('categoryChanged', { 
-    detail: { category } 
-  }));
-}
-
-// Declarar globalmente
-(window as any).selectCategory = selectCategory;
-
-// Mantener una variable CSS con la altura del header para offsets sticky
 function setHeaderHeightVar() {
   const headerEl = document.querySelector('header');
   if (!headerEl) return;
-  const headerHeightPx = headerEl.getBoundingClientRect().height;
-  document.documentElement.style.setProperty('--header-h', `${headerHeightPx}px`);
+  document.documentElement.style.setProperty('--header-h', `${headerEl.getBoundingClientRect().height}px`);
 }
 
 document.addEventListener('DOMContentLoaded', () => {

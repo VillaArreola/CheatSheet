@@ -2,6 +2,7 @@
 import '../styles/global.css';
 import GoogleAnalytics from '../components/analytics/GoogleAnalytics.astro';
 import CookieBanner from '../components/ui/CookieBanner.astro';
+import { ClientRouter } from 'astro:transitions';
 
 interface Props {
   title: string;
@@ -21,6 +22,9 @@ const {
 <html lang="es">
   <head>
     <meta charset="utf-8" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
     
     <!-- Favicons -->
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
@@ -32,6 +36,7 @@ const {
     <link rel="manifest" href="/site.webmanifest" />
     
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
+    <meta name="color-scheme" content="dark" />
     <meta name="generator" content={Astro.generator} />
     
     <!-- SEO Meta Tags -->
@@ -62,55 +67,82 @@ const {
     <meta name="keywords" content="hacking ético, pentesting, comandos linux, seguridad informática, CTF, cheatsheet, comandos terminal, cybersecurity" />
     <meta name="theme-color" content="#3B82F6" />
     <meta name="msapplication-TileColor" content="#3B82F6" />
+    <ClientRouter />
     
     <GoogleAnalytics />
     <script>
       // Prevenir flash inicial y exponer funciones globales de tema antes del render
       (function() {
-        const applyTheme = (theme: string) => {
-          if (theme === 'dark') {
-            document.documentElement.classList.add('dark');
-            localStorage.setItem('theme', 'dark');
+        const STORAGE_KEY = 'theme-mode';
+        const VALID_MODES = ['black', 'vault'];
+
+        const applyThemeMode = (mode: string) => {
+          const normalizedMode = VALID_MODES.includes(mode) ? mode : 'vault';
+          const root = document.documentElement;
+
+          root.classList.remove('dark', 'theme-black', 'theme-vault');
+
+          root.classList.add('dark');
+          if (normalizedMode === 'black') {
+            root.classList.add('theme-black');
           } else {
-            document.documentElement.classList.remove('dark');
-            localStorage.setItem('theme', 'light');
+            root.classList.add('theme-vault');
           }
+
+          localStorage.setItem(STORAGE_KEY, normalizedMode);
+          window.dispatchEvent(new CustomEvent('themeModeChanged', { detail: { mode: normalizedMode } }));
         };
 
-        // Inicialización: savedTheme > prefersDark
-        const savedTheme = localStorage.getItem('theme');
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        if (savedTheme) {
-          applyTheme(savedTheme);
-        } else if (prefersDark) {
-          applyTheme('dark');
-        } else {
-          applyTheme('light');
-        }
+        const getCurrentMode = () => {
+          const savedThemeMode = localStorage.getItem(STORAGE_KEY);
+          if (savedThemeMode && VALID_MODES.includes(savedThemeMode)) return savedThemeMode;
+          return 'vault';
+        };
+
+        applyThemeMode(getCurrentMode());
+
+        // Propagar clases de tema al documento entrante ANTES del swap de View Transitions
+        // Evita el flash blanco cuando ClientRouter navega entre páginas
+        document.addEventListener('astro:before-swap', (e: any) => {
+          const mode = getCurrentMode();
+          const root = e.newDocument.documentElement;
+          root.classList.remove('dark', 'theme-black', 'theme-vault');
+          root.classList.add('dark');
+          root.classList.add(mode === 'black' ? 'theme-black' : 'theme-vault');
+        });
 
         // Exponer helpers globales
-        (window as any).__applyTheme = applyTheme;
+        (window as any).__setThemeMode = (mode: string) => applyThemeMode(mode);
+        (window as any).__getThemeMode = () => getCurrentMode();
         (window as any).__toggleTheme = () => {
-          const isDark = document.documentElement.classList.contains('dark');
-          applyTheme(isDark ? 'light' : 'dark');
+          const current = getCurrentMode();
+          const next = current === 'vault' ? 'black' : 'vault';
+          applyThemeMode(next);
         };
 
-        // Delegación: cualquier click en #dark-mode-toggle alterna el tema
+        // Delegación: toggle ciclico y selector explicito
         window.addEventListener('DOMContentLoaded', () => {
           document.addEventListener('click', (ev) => {
             const target = ev.target as HTMLElement;
-            if (target && typeof target.closest === 'function') {
-              const btn = target.closest('#dark-mode-toggle');
-              if (btn) {
-                (window as any).__toggleTheme();
-              }
+            if (!target || typeof target.closest !== 'function') return;
+
+            const toggleButton = target.closest('#dark-mode-toggle');
+            if (toggleButton) {
+              (window as any).__toggleTheme();
+              return;
+            }
+
+            const modeButton = target.closest('[data-theme-mode]') as HTMLElement | null;
+            if (modeButton?.dataset?.themeMode) {
+              (window as any).__setThemeMode(modeButton.dataset.themeMode);
+              return;
             }
           });
         });
       })();
     </script>
   </head>
-  <body class="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
+  <body class="site-bg min-h-screen text-slate-900 dark:text-slate-100 transition-colors duration-200">
     <slot />
     <CookieBanner />
   </body>

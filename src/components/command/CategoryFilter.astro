@@ -17,23 +17,24 @@ const { categories, activeCategory = 'all', className = '' } = Astro.props;
 
 ---
 
-<nav class={`space-y-2 ${className}`}>
+<nav class={`space-y-2 soft-reveal ${className}`}>
   {categories.map(category => (
     <button
       onclick={`filterByCategory('${category.id}')`}
       class={`
-        category-filter-btn w-full text-left px-4 py-3 rounded-lg 
-        hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors
-        ${activeCategory === category.id ? 'bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700' : ''}
+        category-filter-btn w-full text-left px-4 py-3 rounded-xl
+        transition-all duration-200 border border-slate-200/70 dark:border-slate-700/70
+        bg-white/80 dark:bg-slate-800/75 hover:bg-sky-50 dark:hover:bg-slate-700/80
+        ${activeCategory === category.id ? 'active ring-2 ring-sky-200 dark:ring-sky-800' : ''}
       `}
     >
       <div class="flex items-center justify-between">
         <div class="flex items-center">
-          <span class="font-medium text-green-700 dark:text-green-400">
+          <span class="font-semibold text-slate-700 dark:text-slate-200">
             {category.name}
           </span>
         </div>
-        <span class="text-sm text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-600 px-2 py-1 rounded-full">
+        <span class="text-xs text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-700 px-2.5 py-1 rounded-full font-semibold">
           {category.count}
         </span>
       </div>
@@ -62,12 +63,12 @@ const { categories, activeCategory = 'all', className = '' } = Astro.props;
 
 <style>
 .category-filter-btn.active {
-  background-color: #f3f4f6;
-  border: 1px solid #d1d5db;
+  background: linear-gradient(120deg, rgba(14, 165, 233, 0.16), rgba(16, 185, 129, 0.12));
+  border-color: rgba(14, 165, 233, 0.45);
 }
 
 .dark .category-filter-btn.active {
-  background-color: #374151;
-  border: 1px solid #4b5563;
+  background: linear-gradient(120deg, rgba(2, 132, 199, 0.25), rgba(5, 150, 105, 0.22));
+  border-color: rgba(14, 165, 233, 0.5);
 }
 </style>

@@ -1,177 +1,27 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/layout/Header.astro';
-import Footer from '../components/layout/Footer.astro';
 import { commands } from '../data/generated/commands';
+import fs from 'node:fs/promises';
+import { marked } from 'marked';
 
 export async function getStaticPaths() {
-  return commands.map((command) => {
-    // Generar el slug del comando (mismo algoritmo que usa loadCommandDetail)
-    const slug = command.title.toLowerCase().replace(/\s+/g, '').replace(/[^a-z0-9]/g, '');
-    
-    return {
-      params: { slug },
-      props: { command },
-    };
-  });
+  return commands.map((item) => ({
+    params: { slug: item.title.toLowerCase().replace(/\s+/g, '').replace(/[^a-z0-9]/g, '') },
+    props: { command: item },
+  }));
 }
 
 const { command } = Astro.props;
 const { slug } = Astro.params;
 
-// Función para obtener el color de la categoría
-function getCategoryColor(category: string): string {
-  const colorMap: { [key: string]: string } = {
-    'Cifrado': 'purple',
-    'dns': 'blue',
-    'linux': 'green',
-    'security': 'red',
-    'network': 'indigo',
-    'database': 'purple',
-    'web': 'orange',
-    'git': 'teal',
-    'docker': 'cyan',
-    'scan': 'blue',
-    'escan': 'blue',
-    'python': 'green'
-  };
-  
-  return colorMap[category] || 'gray';
-}
-
-const categoryColor = getCategoryColor(command.category);
----
-
-<BaseLayout 
-  title={`${command.title} - TechSec Cheatsheet`}
-  description={command.description || `Guía completa del comando ${command.title}`}
->
-  <Header />
-  
-  <div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-      <!-- Header del comando -->
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 sm:p-8 mb-6">
-        <!-- Breadcrumb -->
-        <nav class="mb-6 text-sm">
-          <ol class="flex items-center space-x-2 text-gray-600 dark:text-gray-400">
-            <li><a href="/" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Inicio</a></li>
-            <li><span class="mx-2">/</span></li>
-            <li class="text-gray-900 dark:text-gray-100 font-medium">{command.title}</li>
-          </ol>
-        </nav>
-
-        <!-- Título y categoría -->
-        <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6">
-          <div class="flex-1">
-            <h1 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-gray-100 mb-3 font-mono">
-              {command.title}
-              {command.dangerous && (
-                <span class="inline-block ml-3 bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300 text-sm font-bold px-3 py-1 rounded-full">⚠️ Peligroso</span>
-              )}
-            </h1>
-            {command.description && (
-              <p class="text-lg text-gray-600 dark:text-gray-400">{command.description}</p>
-            )}
-          </div>
-          <div class="flex-shrink-0">
-            <span class={`inline-block px-4 py-2 rounded-full text-sm font-semibold bg-${categoryColor}-100 dark:bg-${categoryColor}-900/30 text-${categoryColor}-700 dark:text-${categoryColor}-400`}>
-              {command.category}
-            </span>
-          </div>
-        </div>
-
-        <!-- Sintaxis principal -->
-        {command.syntax && (
-          <div class="bg-gray-800 dark:bg-gray-900 rounded-lg p-4 mb-4">
-            <div class="flex items-center justify-between mb-2">
-              <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Sintaxis</span>
-              <button 
-                onclick={`navigator.clipboard.writeText('${command.syntax.replace(/'/g, "\\'")}').then(() => { this.textContent = '✓ Copiado'; setTimeout(() => this.textContent = 'Copiar', 2000); })`}
-                class="text-xs bg-gray-700 hover:bg-gray-600 text-gray-200 px-3 py-1 rounded transition-colors"
-              >
-                Copiar
-              </button>
-            </div>
-            <code class="text-green-400 font-mono text-sm block overflow-x-auto">
-              {command.syntax}
-            </code>
-          </div>
-        )}
-
-        <!-- Tags -->
-        {command.tags && command.tags.length > 0 && (
-          <div class="flex flex-wrap gap-2">
-            {command.tags.map((tag: string) => (
-              <span class="inline-block px-3 py-1 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full">
-                {tag}
-              </span>
-            ))}
-          </div>
-        )}
-      </div>
-
-      <!-- Contenido markdown -->
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 sm:p-8">
-        <div id="markdown-content" class="prose prose-lg max-w-none">
-          <div class="flex items-center justify-center py-12">
-            <div class="animate-spin rounded-full h-10 w-10 border-4 border-blue-200 border-t-blue-600"></div>
-            <span class="ml-4 text-gray-600 dark:text-gray-400 font-medium">Cargando contenido...</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <Footer />
-</BaseLayout>
-
-<script define:vars={{ slug }}>
-// Variable para almacenar marked
-let markedLib = null;
-
-// Función para cargar marked dinámicamente
-async function getMarked() {
-  if (!markedLib) {
-    try {
-      const module = await import('/_astro/marked.esm.C_4XxkkN.js');
-      markedLib = module.marked;
-      markedLib.setOptions({
-        gfm: true,
-        breaks: true,
-        headerIds: false,
-        mangle: false
-      });
-    } catch (err) {
-      console.error('Error loading marked:', err);
-      // Fallback: try CDN
-      if (!window.marked) {
-        const script = document.createElement('script');
-        script.src = 'https://cdn.jsdelivr.net/npm/marked@11.1.0/marked.min.js';
-        document.head.appendChild(script);
-        await new Promise(resolve => script.onload = resolve);
-      }
-      markedLib = window.marked;
-      markedLib.setOptions({
-        gfm: true,
-        breaks: true,
-        headerIds: false,
-        mangle: false
-      });
-    }
-  }
-  return markedLib;
-}
-
-// Función para remover frontmatter de markdown
-function removeFrontmatter(content) {
+function removeFrontmatter(content: string): string {
   const lines = content.split('\n');
   let inFrontmatter = false;
   let frontmatterEndIndex = -1;
-  
-  for (let i = 0; i < lines.length; i++) {
+
+  for (let i = 0; i < lines.length; i += 1) {
     const line = lines[i].trim();
-    
     if (line === '---') {
       if (!inFrontmatter) {
         inFrontmatter = true;
@@ -181,110 +31,699 @@ function removeFrontmatter(content) {
       }
     }
   }
-  
-  if (frontmatterEndIndex !== -1) {
-    return lines.slice(frontmatterEndIndex + 1).join('\n').trim();
-  }
-  
-  return content;
+
+  return frontmatterEndIndex !== -1 ? lines.slice(frontmatterEndIndex + 1).join('\n').trim() : content;
 }
 
-// Función para aplicar estilos de Tailwind al HTML generado
-function applyTailwindStyles(html) {
-  return html
-    .replace(/<h1[^>]*>(.*?)<\/h1>/g, (match, content) => {
-      return `<div class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border-l-4 border-blue-500 rounded-r-lg p-6 mb-8">
-        <h1 class="text-3xl font-bold text-center text-gray-900 dark:text-gray-100 mb-2">${content}</h1>
-        <div class="w-24 h-1 bg-blue-500 mx-auto rounded-full"></div>
-      </div>`;
-    })
-    .replace(/<h2[^>]*>.*?🏴‍☠️.*?Ejemplo.*?<\/h2>\s*<pre[^>]*><code[^>]*>([^<]+)<\/code><\/pre>/g, (match, codeContent) => {
-      return `<div class="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border-l-4 border-green-500 rounded-r-lg p-4 mb-6">
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-3">🏴‍☠️ Ejemplo</h3>
-        <div class="flex items-center space-x-3">
-          <div class="flex-1 bg-gray-100 dark:bg-gray-700 rounded-lg p-3 font-mono text-sm text-gray-800 dark:text-gray-200 select-all">${codeContent}</div>
-          <button onclick="navigator.clipboard.writeText('${codeContent.replace(/'/g, "\\'")}').then(() => { this.innerHTML = '✓ Copiado!'; setTimeout(() => this.innerHTML = '📋 Copiar', 2000); })" class="bg-green-500 hover:bg-green-600 text-white px-4 py-3 rounded-lg text-sm font-medium transition-colors duration-200 flex items-center space-x-2 whitespace-nowrap">
-            📋 Copiar
-          </button>
-        </div>
-      </div>`;
-    })
-    .replace(/<h3[^>]*>.*?Referencias.*?<\/h3>/g, (match) => {
-      return `<h3 class="text-xl font-bold text-center text-gray-900 dark:text-gray-100 mt-12 mb-4 bg-gray-800 dark:bg-gray-700 text-white py-3 rounded-lg">🔗 Referencias</h3>`;
-    })
-    .replace(/<(h[2-3])>/g, (match, tag) => {
-      const classes = {
-        'h2': 'text-xl font-bold mt-8 mb-4 text-gray-900 dark:text-gray-100',
-        'h3': 'text-lg font-bold mt-6 mb-3 text-gray-800 dark:text-gray-200'
-      };
-      return `<${tag} class="${classes[tag]}">`;
-    })
-    .replace(/<p>/g, '<p class="my-4 leading-relaxed text-gray-700 dark:text-gray-300">')
-    .replace(/<pre>/g, '<pre class="bg-gray-800 text-green-400 p-4 rounded-lg my-6 overflow-x-auto text-sm border border-gray-700">')
-    .replace(/<code>/g, '<code class="bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded text-sm font-mono text-gray-900 dark:text-gray-100">')
-    .replace(/<a /g, '<a class="text-blue-600 hover:text-blue-800 hover:underline dark:text-blue-400 dark:hover:text-blue-300" ')
-    .replace(/<(ul|ol)>/g, '<$1 class="ml-6 mb-4">')
-    .replace(/<li>/g, '<li class="mb-2 text-gray-700 dark:text-gray-300">')
-    .replace(/<blockquote>/g, '<blockquote class="border-l-4 border-blue-500 pl-4 my-6 italic text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-800 py-2 rounded-r">')
-    .replace(/<table>/g, '<table class="w-full border-collapse border border-gray-300 dark:border-gray-600 my-6 rounded-lg overflow-hidden">')
-    .replace(/<th>/g, '<th class="border border-gray-300 dark:border-gray-600 px-3 py-2 bg-gray-100 dark:bg-gray-700 text-left font-semibold text-gray-900 dark:text-gray-100">')
-    .replace(/<td>/g, '<td class="border border-gray-300 dark:border-gray-600 px-3 py-2 text-gray-700 dark:text-gray-300">');
+let markdownHtml = '<p class="text-rose-500 dark:text-rose-400">No se pudo cargar el contenido detallado.</p>';
+try {
+  const markdownPath = new URL(`../../public/comando/${slug}.md`, import.meta.url);
+  const fileContent = await fs.readFile(markdownPath, 'utf-8');
+  const cleanMarkdown = removeFrontmatter(fileContent);
+  const parsed = marked.parse(cleanMarkdown);
+  markdownHtml = typeof parsed === 'string' ? parsed : await parsed;
+} catch (error) {
+  console.error(`Error loading markdown for ${slug}:`, error);
 }
 
-// Cargar el contenido markdown
-async function loadContent() {
-  const markdownContent = document.getElementById('markdown-content');
-  
-  console.log('🔍 Intentando cargar comando:', slug);
-  
-  try {
-    const mdPath = `/comando/${slug}.md`;
-    console.log('📁 Ruta del archivo:', mdPath);
-    
-    const response = await fetch(mdPath);
-    
-    console.log('📡 Response status:', response.status);
-    
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    
-    const fileContent = await response.text();
-    console.log('📄 Archivo cargado, tamaño:', fileContent.length, 'caracteres');
-    
-    const cleanMarkdown = removeFrontmatter(fileContent);
-    console.log('✂️ Markdown limpio, tamaño:', cleanMarkdown.length, 'caracteres');
-    
-    const markedInstance = await getMarked();
-    const rawHtml = markedInstance.parse(cleanMarkdown);
-    console.log('🔧 HTML generado, tamaño:', rawHtml.length, 'caracteres');
-    
-    const htmlContent = applyTailwindStyles(rawHtml);
-    console.log('🎨 Estilos aplicados');
-    
-    markdownContent.innerHTML = htmlContent;
-    console.log('✅ Contenido renderizado exitosamente');
-    
-  } catch (error) {
-    console.error('❌ Error cargando markdown:', error);
-    console.error('Stack:', error.stack);
-    
-    markdownContent.innerHTML = `
-      <div class="text-center py-12">
-        <div class="text-red-400 dark:text-red-500 mb-4">
-          <svg class="h-16 w-16 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
-          </svg>
+const categoryBadgeClasses: Record<string, string> = {
+  blue: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300',
+  green: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300',
+  red: 'bg-rose-100 text-rose-700 dark:bg-rose-900/30 dark:text-rose-300',
+  orange: 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300',
+  indigo: 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300',
+  cyan: 'bg-cyan-100 text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-300',
+  purple: 'bg-fuchsia-100 text-fuchsia-700 dark:bg-fuchsia-900/30 dark:text-fuchsia-300',
+  gray: 'bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-200',
+};
+
+function getCategoryTone(category: string): keyof typeof categoryBadgeClasses {
+  const raw = category.toLowerCase();
+  if (raw.includes('linux') || raw.includes('python')) return 'green';
+  if (raw.includes('dns') || raw.includes('scan') || raw.includes('network')) return 'blue';
+  if (raw.includes('web') || raw.includes('http')) return 'orange';
+  if (raw.includes('security') || raw.includes('auth')) return 'red';
+  if (raw.includes('config') || raw.includes('system')) return 'indigo';
+  return 'gray';
+}
+
+const categoryTone = getCategoryTone(command.category);
+---
+
+<BaseLayout
+  title={`${command.title} - TechSec Cheatsheet`}
+  description={command.description || `Guia completa del comando ${command.title}`}
+>
+  <Header />
+
+  <div class="px-3 lg:px-4 py-3 lg:py-4 h-[calc(100dvh-var(--header-h))] overflow-hidden">
+    <div class="lg:hidden mb-3 flex justify-end">
+      <button id="mobile-nav-toggle" aria-expanded="false" aria-controls="mobile-nav-drawer" aria-label="Abrir navegación" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/85 dark:bg-slate-800/85 border border-slate-200/80 dark:border-slate-700/80 text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-sky-50 dark:hover:bg-slate-700 transition-colors">
+        <span aria-hidden="true">☰</span>
+        Explorar
+      </button>
+    </div>
+
+    <div class="flex gap-3 lg:gap-4 h-full">
+      <aside class="hidden lg:flex w-16 glass-panel rounded-2xl p-2 h-full z-20">
+        <nav id="nav-rail-desktop" class="w-full flex flex-col items-center gap-2"></nav>
+      </aside>
+
+      <aside class="hidden lg:flex w-[20rem] glass-panel rounded-2xl h-full z-20 flex-col overflow-hidden">
+        <div class="px-4 py-3 border-b border-slate-200/70 dark:border-slate-700/70 flex items-center justify-between">
+          <div>
+            <p class="text-[11px] uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">Explorador</p>
+            <h3 id="explorer-title-desktop" class="text-sm font-semibold text-slate-800 dark:text-slate-100">Categorias</h3>
+          </div>
+          <button id="explorer-back-desktop" class="hidden px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200">Atras</button>
         </div>
-        <p class="text-red-500 dark:text-red-400 text-sm font-medium">No se pudo cargar el contenido detallado</p>
-        <p class="text-gray-400 dark:text-gray-500 text-xs mt-2">Archivo: ${slug}.md</p>
-        <p class="text-gray-400 dark:text-gray-500 text-xs mt-1">Error: ${error.message}</p>
+        <div id="explorer-content-desktop" class="p-3 overflow-y-auto"></div>
+      </aside>
+
+      <main id="command-main-panel" class="flex-1 glass-panel rounded-2xl h-full overflow-y-auto">
+        <div class="max-w-4xl mx-auto p-5 lg:p-8 pb-20">
+          <nav class="flex items-center gap-2 mb-6 text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">
+            <span>Cheatsheet</span>
+            <span>/</span>
+            <span id="breadcrumb-category">{command.category}</span>
+            <span>/</span>
+            <span id="breadcrumb-command" class="text-sky-700 dark:text-sky-300">{command.title}</span>
+          </nav>
+
+          <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-7">
+            <div>
+              <div class="flex items-center gap-3 mb-3">
+                <h1 id="command-title" class="text-4xl sm:text-5xl font-black tracking-tight text-slate-900 dark:text-slate-100 font-mono">{command.title}</h1>
+                <span id="command-category-badge" class={`px-3 py-1 rounded-full text-xs font-semibold ${categoryBadgeClasses[categoryTone]}`}>
+                  {command.category}
+                </span>
+              </div>
+              <p id="command-description" class={`text-slate-600 dark:text-slate-300 text-lg max-w-2xl ${command.description ? '' : 'hidden'}`}>{command.description || ''}</p>
+            </div>
+          </div>
+
+          <section id="syntax-section" class={`mb-8 ${command.syntax ? '' : 'hidden'}`}>
+              <span class="text-[11px] uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400 font-semibold mb-2 block">Sintaxis</span>
+              <div class="relative group">
+                <div class="absolute -inset-0.5 bg-gradient-to-r from-sky-500 to-emerald-500 rounded-2xl blur opacity-20"></div>
+                <pre class="relative p-4 lg:p-6 pr-24 bg-slate-950 border border-slate-800 rounded-xl text-sm sm:text-base overflow-x-auto"><code id="syntax-code" class="text-emerald-400 font-mono">{command.syntax || ''}</code></pre>
+                <button
+                  id="copy-syntax-btn"
+                  class="absolute top-3 right-3 px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-700 hover:bg-slate-600 text-slate-200 transition-colors z-10"
+                >
+                  Copiar
+                </button>
+              </div>
+          </section>
+
+          <section class="surface-elevated p-5 lg:p-6">
+            <div id="markdown-content" class="prose prose-slate dark:prose-invert max-w-none" set:html={markdownHtml}></div>
+          </section>
+
+          <div class="sticky bottom-4 mt-6 flex justify-end pointer-events-none">
+            <button id="detail-scroll-top" class="opacity-0 pointer-events-none w-10 h-10 rounded-full bg-sky-600 hover:bg-sky-700 text-white shadow-lg transition-all duration-300 hover:-translate-y-0.5" title="Volver arriba" aria-label="Volver arriba">
+              <svg class="w-5 h-5 mx-auto" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+                <path d="M12 19V5M5 12l7-7 7 7" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <div id="mobile-nav-overlay" class="lg:hidden fixed inset-0 bg-slate-950/50 opacity-0 pointer-events-none transition-opacity duration-200 z-40"></div>
+  <aside id="mobile-nav-drawer" role="dialog" aria-modal="true" aria-label="Navegación" class="lg:hidden fixed top-[var(--header-h)] left-0 w-[95vw] max-w-[430px] h-[calc(100vh-var(--header-h))] glass-panel border-r border-slate-200/70 dark:border-slate-700/70 z-50 transform -translate-x-full transition-transform duration-250">
+    <div class="h-full flex">
+      <div class="w-16 border-r border-slate-200/70 dark:border-slate-700/70 p-2">
+        <nav id="nav-rail-mobile" class="w-full flex flex-col items-center gap-2"></nav>
       </div>
-    `;
-  }
-}
+      <div class="flex-1 flex flex-col min-w-0">
+        <div class="px-4 py-3 border-b border-slate-200/70 dark:border-slate-700/70 flex items-center justify-between">
+          <div>
+            <p class="text-[11px] uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">Explorador</p>
+            <h3 id="explorer-title-mobile" class="text-sm font-semibold text-slate-800 dark:text-slate-100">Categorias</h3>
+          </div>
+          <div class="flex items-center gap-2">
+            <button id="explorer-back-mobile" class="hidden px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200">Atras</button>
+            <button id="mobile-nav-close" aria-label="Cerrar navegación" class="w-9 h-9 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200"><span aria-hidden="true">✕</span></button>
+          </div>
+        </div>
+        <div id="explorer-content-mobile" class="p-3 overflow-y-auto"></div>
+      </div>
+    </div>
+  </aside>
 
-// Cargar contenido cuando el DOM esté listo
-document.addEventListener('DOMContentLoaded', loadContent);
+</BaseLayout>
+
+<script>
+  import { marked as _marked } from 'marked';
+  (window as any).__marked = _marked;
 </script>
 
+<script define:vars={{ slug, commands }}>
+
+let markedLib = null;
+
+const railGroups = [
+  { id: 'all', label: 'Todas', icon: 'all' },
+  { id: 'favorites', label: 'Favoritos', icon: 'favorites' },
+  { id: 'linux', label: 'Linux', icon: 'linux' },
+  { id: 'windows', label: 'Windows', icon: 'windows' },
+  { id: 'osint', label: 'OSINT', icon: 'osint' },
+  { id: 'network', label: 'Red', icon: 'network' },
+  { id: 'web', label: 'Web', icon: 'web' },
+];
+
+const railIcons = {
+  all: '<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="3" y="4" width="7" height="7" rx="1.5"/><rect x="14" y="4" width="7" height="7" rx="1.5"/><rect x="3" y="13" width="7" height="7" rx="1.5"/><rect x="14" y="13" width="7" height="7" rx="1.5"/></svg>',
+  favorites: '<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M12 3.75l2.55 5.16 5.7.83-4.12 4.02.97 5.68L12 16.8l-5.1 2.64.98-5.68-4.13-4.02 5.71-.83L12 3.75z" stroke-linejoin="round"/></svg>',
+  linux: '<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M12 3.5c2.1 0 3.8 1.7 3.8 3.8v2.3A2.4 2.4 0 0113.4 12h-2.8a2.4 2.4 0 01-2.4-2.4V7.3c0-2.1 1.7-3.8 3.8-3.8z"/><path d="M6.7 16.1c0-1.8 1.5-3.3 3.3-3.3h4c1.8 0 3.3 1.5 3.3 3.3V20H6.7v-3.9z"/></svg>',
+  windows: '<svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M3.5 4.7l7-1v8.1h-7V4.7zm8 7V3.5l9-1.3v9.5h-9zM3.5 12.8h7v7.5l-7-1v-6.5zm8 7.7v-7.7h9v9l-9-1.3z"/></svg>',
+  osint: '<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="10.5" cy="10.5" r="5.5"/><path d="M15 15l5.2 5.2" stroke-linecap="round"/><path d="M10.5 7.8v5.4M7.8 10.5h5.4" stroke-linecap="round"/></svg>',
+  network: '<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="3" y="4" width="6.5" height="4.5" rx="1"/><rect x="14.5" y="4" width="6.5" height="4.5" rx="1"/><rect x="8.8" y="15.5" width="6.5" height="4.5" rx="1"/><path d="M6.25 8.5v3.2h11.5V8.5M12 11.7v3.8"/></svg>',
+  web: '<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="12" cy="12" r="8.5"/><path d="M3.8 12h16.4M12 3.5c2.6 2.3 4.1 5.3 4.1 8.5S14.6 18.2 12 20.5M12 3.5c-2.6 2.3-4.1 5.3-4.1 8.5s1.5 6.2 4.1 8.5"/></svg>',
+};
+
+const state = {
+  group: 'all',
+  view: 'commands',
+  category: null,
+  currentSlug: slug,
+  currentCommand: null,
+};
+
+const markdownCache = new Map();
+
+const favoritesKey = 'cheatsheet-favorites-v1';
+const navStateKey = 'cheatsheet-nav-state-v1';
+
+function getFavorites() {
+  try {
+    const raw = localStorage.getItem(favoritesKey);
+    return new Set(raw ? JSON.parse(raw) : []);
+  } catch {
+    return new Set();
+  }
+}
+
+function saveFavorites(favorites) {
+  localStorage.setItem(favoritesKey, JSON.stringify(Array.from(favorites)));
+}
+
+function loadNavState() {
+  try {
+    const raw = localStorage.getItem(navStateKey);
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
+}
+
+function saveNavState() {
+  localStorage.setItem(navStateKey, JSON.stringify({
+    group: state.group,
+    view: state.view,
+    category: state.category,
+  }));
+}
+
+function slugify(value) {
+  return value.toLowerCase().replace(/\s+/g, '').replace(/[^a-z0-9]/g, '');
+}
+
+function normalizeText(cmd) {
+  return [cmd.title, cmd.description, cmd.command, cmd.syntax, cmd.platform, (cmd.tags || []).join(' '), cmd.category]
+    .join(' ')
+    .toLowerCase();
+}
+
+function commandInGroup(cmd, groupId, favorites) {
+  const text = normalizeText(cmd);
+  if (groupId === 'all') return true;
+  if (groupId === 'favorites') return favorites.has(cmd.id);
+  if (groupId === 'linux') return text.includes('linux') || text.includes('bash') || text.includes('zsh') || text.includes('unix');
+  if (groupId === 'windows') return text.includes('windows') || text.includes('powershell') || text.includes('cmd ');
+  if (groupId === 'osint') return text.includes('osint') || text.includes('dork') || text.includes('recon') || text.includes('enum');
+  if (groupId === 'network') return text.includes('dns') || text.includes('network') || text.includes('scan') || text.includes('port');
+  if (groupId === 'web') return text.includes('http') || text.includes('web') || text.includes('url') || text.includes('curl');
+  return true;
+}
+
+function getGroupCommands(groupId, favorites) {
+  return commands.filter((cmd) => commandInGroup(cmd, groupId, favorites));
+}
+
+function getGroupCategories(groupId, favorites) {
+  const filtered = getGroupCommands(groupId, favorites);
+  const unique = [...new Set(filtered.map((cmd) => cmd.category))];
+  return unique.sort((a, b) => a.localeCompare(b, 'es'));
+}
+
+function renderRail(targetId, favorites) {
+  const target = document.getElementById(targetId);
+  if (!target) return;
+
+  const currentMode = (window.__getThemeMode && window.__getThemeMode()) || 'vault';
+  const themeControls = `
+    <div class="mt-auto pt-3 flex flex-col items-center gap-2 border-t border-slate-200/60 dark:border-slate-700/60">
+      <button type="button" data-theme-mode="vault" class="w-5 h-5 rounded-full cursor-pointer opacity-${currentMode === 'vault' ? '100' : '40'} hover:opacity-100" style="background:linear-gradient(145deg,#0f172a,#1e3a8a)" title="Blue" aria-label="Blue"></button>
+      <button type="button" data-theme-mode="black" class="w-5 h-5 rounded-full border border-slate-600 cursor-pointer opacity-${currentMode === 'black' ? '100' : '40'} hover:opacity-100" style="background:#050505" title="Dark" aria-label="Dark"></button>
+    </div>
+  `;
+
+  target.innerHTML = `${railGroups
+    .map((group) => {
+      const active = state.group === group.id;
+      const favCount = group.id === 'favorites' ? favorites.size : null;
+      return `
+        <button
+          type="button"
+          data-action="set-group"
+          data-group="${group.id}"
+          class="relative w-11 h-11 rounded-xl flex items-center justify-center transition-all border ${active ? 'bg-sky-600 text-white border-sky-600 shadow-lg shadow-sky-500/30' : 'bg-white/85 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300 border-slate-200/80 dark:border-slate-700/80 hover:bg-sky-50 dark:hover:bg-slate-700'}"
+          title="${group.label}"
+          aria-label="${group.label}"
+        >
+          ${railIcons[group.icon] || railIcons.all}
+          ${favCount !== null ? `<span class="absolute -mt-6 ml-4 text-[10px] px-1 rounded bg-rose-500 text-white ${favCount > 0 ? '' : 'hidden'}">${favCount}</span>` : ''}
+        </button>
+      `;
+    })
+    .join('')}${themeControls}`;
+}
+
+function renderExplorer(targetId, titleId, backId, favorites) {
+  const target = document.getElementById(targetId);
+  const titleEl = document.getElementById(titleId);
+  const backBtn = document.getElementById(backId);
+  if (!target || !titleEl || !backBtn) return;
+
+  const groupLabel = railGroups.find((item) => item.id === state.group)?.label || 'Todas';
+
+  if (state.view === 'categories') {
+    const categories = getGroupCategories(state.group, favorites);
+    titleEl.textContent = groupLabel;
+    backBtn.classList.add('hidden');
+
+    if (categories.length === 0) {
+      target.innerHTML = `<p class="text-sm text-slate-500 dark:text-slate-400 p-2">No hay elementos para este grupo.</p>`;
+      return;
+    }
+
+    target.innerHTML = categories
+      .map((category) => {
+        const count = getGroupCommands(state.group, favorites).filter((cmd) => cmd.category === category).length;
+        return `
+          <button
+            type="button"
+            data-action="open-category"
+            data-category="${category}"
+            class="w-full mb-2 px-3 py-3 rounded-xl border border-slate-200/70 dark:border-slate-700/70 bg-white/80 dark:bg-slate-800/75 hover:bg-sky-50 dark:hover:bg-slate-700 transition-colors text-left flex items-center justify-between"
+          >
+            <span class="font-semibold text-sm text-slate-800 dark:text-slate-100">${category}</span>
+            <span class="text-xs font-semibold px-2 py-1 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300">${count}</span>
+          </button>
+        `;
+      })
+      .join('');
+    return;
+  }
+
+  titleEl.textContent = state.category || groupLabel;
+  backBtn.classList.remove('hidden');
+
+  const list = getGroupCommands(state.group, favorites)
+    .filter((cmd) => cmd.category === state.category)
+    .sort((a, b) => a.title.localeCompare(b.title, 'es'));
+
+  if (list.length === 0) {
+    target.innerHTML = `<p class="text-sm text-slate-500 dark:text-slate-400 p-2">No hay comandos en esta categoria.</p>`;
+    return;
+  }
+
+  target.innerHTML = list
+    .map((cmd) => {
+      const cmdSlug = slugify(cmd.title);
+      const isCurrent = cmdSlug === state.currentSlug;
+      const isFavorite = favorites.has(cmd.id);
+      return `
+        <button
+          type="button"
+          data-action="open-command"
+          data-command="${cmdSlug}"
+          class="w-full mb-2 px-3 py-3 rounded-xl border text-left flex items-center justify-between transition-all ${isCurrent ? 'bg-sky-600 text-white border-sky-600 shadow-lg shadow-sky-500/25' : 'bg-white/80 dark:bg-slate-800/75 border-slate-200/70 dark:border-slate-700/70 hover:bg-sky-50 dark:hover:bg-slate-700'}"
+        >
+          <div>
+            <p class="font-semibold text-sm ${isCurrent ? 'text-white' : 'text-slate-800 dark:text-slate-100'}">${cmd.title}</p>
+            ${cmd.description ? `<p class="text-xs mt-1 ${isCurrent ? 'text-sky-100' : 'text-slate-500 dark:text-slate-400'} line-clamp-1">${cmd.description}</p>` : ''}
+          </div>
+          <span
+            data-action="toggle-favorite"
+            data-id="${cmd.id}"
+            class="ml-3 text-base ${isCurrent ? 'text-amber-200' : isFavorite ? 'text-amber-500' : 'text-slate-400'}"
+            title="Favorito"
+          >★</span>
+        </button>
+      `;
+    })
+    .join('');
+}
+
+function getCommandBySlug(commandSlug) {
+  return commands.find((item) => slugify(item.title) === commandSlug) || null;
+}
+
+function getCategoryToneClass(category) {
+  const raw = (category || '').toLowerCase();
+  const tone = raw.includes('linux') || raw.includes('python')
+    ? 'green'
+    : raw.includes('dns') || raw.includes('scan') || raw.includes('network')
+      ? 'blue'
+      : raw.includes('web') || raw.includes('http')
+        ? 'orange'
+        : raw.includes('security') || raw.includes('auth')
+          ? 'red'
+          : raw.includes('config') || raw.includes('system')
+            ? 'indigo'
+            : 'gray';
+
+  const map = {
+    blue: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300',
+    green: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300',
+    red: 'bg-rose-100 text-rose-700 dark:bg-rose-900/30 dark:text-rose-300',
+    orange: 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300',
+    indigo: 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300',
+    gray: 'bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-200',
+  };
+
+  return map[tone] || map.gray;
+}
+
+function updateCommandMeta(commandItem) {
+  const title = document.getElementById('command-title');
+  const badge = document.getElementById('command-category-badge');
+  const desc = document.getElementById('command-description');
+  const syntaxSection = document.getElementById('syntax-section');
+  const syntaxCode = document.getElementById('syntax-code');
+  const breadcrumbCategory = document.getElementById('breadcrumb-category');
+  const breadcrumbCommand = document.getElementById('breadcrumb-command');
+
+  if (title) title.textContent = commandItem.title;
+  if (breadcrumbCategory) breadcrumbCategory.textContent = commandItem.category || 'General';
+  if (breadcrumbCommand) breadcrumbCommand.textContent = commandItem.title;
+
+  if (badge) {
+    badge.textContent = commandItem.category || 'General';
+    badge.className = `px-3 py-1 rounded-full text-xs font-semibold ${getCategoryToneClass(commandItem.category || '')}`;
+  }
+
+  if (desc) {
+    const value = commandItem.description || '';
+    desc.textContent = value;
+    if (value) {
+      desc.classList.remove('hidden');
+    } else {
+      desc.classList.add('hidden');
+    }
+  }
+
+  if (syntaxSection && syntaxCode) {
+    const syntax = commandItem.syntax || commandItem.command || '';
+    syntaxCode.textContent = syntax;
+    if (syntax) {
+      syntaxSection.classList.remove('hidden');
+    } else {
+      syntaxSection.classList.add('hidden');
+    }
+  }
+
+  document.title = `${commandItem.title} - TechSec Cheatsheet`;
+}
+
+function removeFrontmatter(content) {
+  const lines = content.split('\n');
+  let inFrontmatter = false;
+  let frontmatterEndIndex = -1;
+
+  for (let i = 0; i < lines.length; i += 1) {
+    const line = lines[i].trim();
+    if (line === '---') {
+      if (!inFrontmatter) {
+        inFrontmatter = true;
+      } else {
+        frontmatterEndIndex = i;
+        break;
+      }
+    }
+  }
+
+  return frontmatterEndIndex !== -1 ? lines.slice(frontmatterEndIndex + 1).join('\n').trim() : content;
+}
+
+function getMarked() {
+  if (!markedLib) {
+    markedLib = window.__marked;
+  }
+  return markedLib;
+}
+
+async function getMarkdownHtmlForSlug(commandSlug) {
+  if (markdownCache.has(commandSlug)) {
+    return markdownCache.get(commandSlug);
+  }
+
+  const response = await fetch(`/comando/${commandSlug}.md`);
+  if (!response.ok) {
+    throw new Error(`HTTP ${response.status}`);
+  }
+
+  const rawContent = await response.text();
+  const cleanMarkdown = removeFrontmatter(rawContent);
+  const marked = getMarked();
+  const parsed = marked.parse(cleanMarkdown);
+  const html = typeof parsed === 'string' ? parsed : await parsed;
+  markdownCache.set(commandSlug, html);
+  return html;
+}
+
+async function selectCommand(commandSlug, pushHistory = true) {
+  const commandItem = getCommandBySlug(commandSlug);
+  if (!commandItem) return;
+
+  const markdownContent = document.getElementById('markdown-content');
+  if (!markdownContent) return;
+
+  state.currentSlug = commandSlug;
+  state.currentCommand = commandItem;
+  state.category = commandItem.category;
+  state.view = 'commands';
+  renderAllNavigation();
+  updateCommandMeta(commandItem);
+  closeMobileDrawer();
+
+  markdownContent.classList.add('opacity-60', 'transition-opacity', 'duration-150');
+  try {
+    const html = await getMarkdownHtmlForSlug(commandSlug);
+    markdownContent.innerHTML = html;
+  } catch (error) {
+    markdownContent.innerHTML = '<p class="text-rose-500 dark:text-rose-400">No se pudo cargar el contenido detallado.</p>';
+    console.error(error);
+  }
+  markdownContent.classList.remove('opacity-60');
+
+  if (pushHistory) {
+    history.pushState({ slug: commandSlug }, '', `/${commandSlug}`);
+  }
+
+  saveNavState();
+}
+
+function renderAllNavigation() {
+  const favorites = getFavorites();
+  renderRail('nav-rail-desktop', favorites);
+  renderRail('nav-rail-mobile', favorites);
+  renderExplorer('explorer-content-desktop', 'explorer-title-desktop', 'explorer-back-desktop', favorites);
+  renderExplorer('explorer-content-mobile', 'explorer-title-mobile', 'explorer-back-mobile', favorites);
+}
+
+function wireActions() {
+  if (window.__slugDashboardActionsWired) return;
+  window.__slugDashboardActionsWired = true;
+
+  document.addEventListener('click', (event) => {
+    const target = event.target;
+    if (!(target instanceof HTMLElement)) return;
+
+    const actionEl = target.closest('[data-action]');
+    if (!(actionEl instanceof HTMLElement)) return;
+
+    const action = actionEl.dataset.action;
+
+    if (action === 'set-group') {
+      state.group = actionEl.dataset.group || 'all';
+      state.view = 'categories';
+      state.category = null;
+      saveNavState();
+      renderAllNavigation();
+      return;
+    }
+
+    if (action === 'open-category') {
+      state.category = actionEl.dataset.category || null;
+      state.view = 'commands';
+      saveNavState();
+      renderAllNavigation();
+      return;
+    }
+
+    if (action === 'open-command') {
+      const commandSlug = actionEl.dataset.command;
+      if (commandSlug) {
+        if (commandSlug !== state.currentSlug) {
+          selectCommand(commandSlug, true);
+        } else {
+          closeMobileDrawer();
+        }
+      }
+      return;
+    }
+
+    if (action === 'toggle-favorite') {
+      event.preventDefault();
+      event.stopPropagation();
+      const id = actionEl.dataset.id;
+      if (!id) return;
+      const favorites = getFavorites();
+      if (favorites.has(id)) {
+        favorites.delete(id);
+      } else {
+        favorites.add(id);
+      }
+      saveFavorites(favorites);
+      renderAllNavigation();
+    }
+  });
+
+  ['explorer-back-desktop', 'explorer-back-mobile'].forEach((id) => {
+    const button = document.getElementById(id);
+    if (!button) return;
+    button.onclick = () => {
+      state.view = 'categories';
+      state.category = null;
+      saveNavState();
+      renderAllNavigation();
+    };
+  });
+}
+
+function openMobileDrawer() {
+  const drawer = document.getElementById('mobile-nav-drawer');
+  const overlay = document.getElementById('mobile-nav-overlay');
+  const toggle = document.getElementById('mobile-nav-toggle');
+  if (!drawer || !overlay) return;
+  drawer.classList.remove('-translate-x-full');
+  drawer.classList.add('translate-x-0');
+  overlay.classList.remove('opacity-0', 'pointer-events-none');
+  overlay.classList.add('opacity-100');
+  document.body.style.overflow = 'hidden';
+  toggle?.setAttribute('aria-expanded', 'true');
+}
+
+function closeMobileDrawer() {
+  const drawer = document.getElementById('mobile-nav-drawer');
+  const overlay = document.getElementById('mobile-nav-overlay');
+  const toggle = document.getElementById('mobile-nav-toggle');
+  if (!drawer || !overlay) return;
+  drawer.classList.add('-translate-x-full');
+  drawer.classList.remove('translate-x-0');
+  overlay.classList.add('opacity-0', 'pointer-events-none');
+  overlay.classList.remove('opacity-100');
+  document.body.style.overflow = '';
+  toggle?.setAttribute('aria-expanded', 'false');
+}
+
+function initCopySyntax() {
+  const button = document.getElementById('copy-syntax-btn');
+  if (!button) return;
+  button.onclick = () => {
+    const syntax = state.currentCommand?.syntax || state.currentCommand?.command || '';
+    if (!syntax) return;
+    navigator.clipboard.writeText(syntax).then(() => {
+      button.textContent = 'Copiado';
+      setTimeout(() => {
+        button.textContent = 'Copiar';
+      }, 1800);
+    });
+  };
+}
+
+function initPage() {
+  const saved = loadNavState();
+  if (saved && railGroups.some((group) => group.id === saved.group)) {
+    state.group = saved.group;
+  }
+
+  const initialCommand = getCommandBySlug(state.currentSlug);
+  if (initialCommand) {
+    state.currentCommand = initialCommand;
+    if (saved?.view === 'commands' && saved.category) {
+      const allowed = getGroupCategories(state.group, getFavorites());
+      if (allowed.includes(saved.category)) {
+        state.view = 'commands';
+        state.category = saved.category;
+      } else {
+        state.view = 'commands';
+        state.category = initialCommand.category;
+      }
+    } else {
+      state.view = 'commands';
+      state.category = initialCommand.category;
+    }
+    updateCommandMeta(initialCommand);
+  }
+
+  saveNavState();
+  renderAllNavigation();
+  wireActions();
+  initCopySyntax();
+
+  const mobileToggle = document.getElementById('mobile-nav-toggle');
+  const mobileClose = document.getElementById('mobile-nav-close');
+  const mobileOverlay = document.getElementById('mobile-nav-overlay');
+  const detailScrollTop = document.getElementById('detail-scroll-top');
+  const commandPanel = document.getElementById('command-main-panel');
+  if (mobileToggle) mobileToggle.onclick = openMobileDrawer;
+  if (mobileClose) mobileClose.onclick = closeMobileDrawer;
+  if (mobileOverlay) mobileOverlay.onclick = closeMobileDrawer;
+  if (detailScrollTop && commandPanel) {
+    detailScrollTop.onclick = () => {
+      commandPanel.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+    commandPanel.addEventListener('scroll', () => {
+      const visible = commandPanel.scrollTop > 120;
+      detailScrollTop.classList.toggle('opacity-0', !visible);
+      detailScrollTop.classList.toggle('pointer-events-none', !visible);
+      detailScrollTop.classList.toggle('pointer-events-auto', visible);
+    });
+  }
+
+  if (!window.__slugThemeBound) {
+    window.__slugThemeBound = true;
+    window.addEventListener('themeModeChanged', renderAllNavigation);
+  }
+
+  window.onkeydown = (event) => {
+    if (event.key === 'Escape') closeMobileDrawer();
+  };
+
+  window.onpopstate = () => {
+    const pathSlug = window.location.pathname.replace(/^\//, '');
+    if (!pathSlug || pathSlug === state.currentSlug) return;
+    selectCommand(pathSlug, false);
+  };
+}
+
+document.addEventListener('DOMContentLoaded', initPage);
+document.addEventListener('astro:page-load', initPage);
+</script>
