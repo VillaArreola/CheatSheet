@@ -252,22 +252,40 @@ function slugify(value) {
   return value.toLowerCase().replace(/\s+/g, '').replace(/[^a-z0-9]/g, '');
 }
 
-function normalizeText(cmd) {
-  return [cmd.title, cmd.description, cmd.command, cmd.syntax, cmd.platform, (cmd.tags || []).join(' '), cmd.category]
-    .join(' ')
-    .toLowerCase();
-}
-
 function commandInGroup(cmd, groupId, favorites) {
-  const text = normalizeText(cmd);
   if (groupId === 'all') return true;
   if (groupId === 'favorites') return favorites.has(cmd.id);
-  if (groupId === 'linux') return text.includes('linux') || text.includes('bash') || text.includes('zsh') || text.includes('unix');
-  if (groupId === 'windows') return text.includes('windows') || text.includes('powershell') || text.includes('cmd ');
-  if (groupId === 'osint') return text.includes('osint') || text.includes('dork') || text.includes('recon') || text.includes('enum');
-  if (groupId === 'network') return text.includes('dns') || text.includes('network') || text.includes('scan') || text.includes('port');
-  if (groupId === 'web') return text.includes('http') || text.includes('web') || text.includes('url') || text.includes('curl');
-  return true;
+
+  // Use category as primary signal. Exclude cmd.platform (always "Unix") and
+  // cmd.syntax (long markdown blob) to avoid false positive matches.
+  const cat = (cmd.category || '').toLowerCase();
+  const text = [cmd.title, cmd.description, cmd.command, (cmd.tags || []).join(' ')]
+    .join(' ').toLowerCase();
+
+  if (groupId === 'linux') {
+    // Linux / zshrc categories + SSH tools stored under Config
+    return cat === 'linux' || cat === 'zshrc' ||
+      (cat === 'config' && (text.includes('ssh') || text.includes(' zsh') || text.includes('bash')));
+  }
+  if (groupId === 'windows') {
+    // Cifrado category (BitLocker) + anything that explicitly mentions Windows
+    return cat === 'cifrado' ||
+      text.includes('windows') || text.includes('powershell') || text.includes('bitlocker') || text.includes('win-kex');
+  }
+  if (groupId === 'osint') {
+    return cat === 'osint' ||
+      text.includes('osint') || text.includes('dorking') || text.includes('recon');
+  }
+  if (groupId === 'network') {
+    return cat === 'escan' ||
+      text.includes('nmap') || text.includes('dnsrecon') ||
+      (text.includes('dns') && !text.includes('dnsrecon'));
+  }
+  if (groupId === 'web') {
+    return text.includes('docker') || text.includes('http') ||
+      text.includes('browser') || text.includes('chrome') || text.includes('curl');
+  }
+  return false;
 }
 
 function getGroupCommands(groupId, favorites) {
