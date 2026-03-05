@@ -683,8 +683,17 @@ function initPage() {
     updateCommandMeta(initialCommand);
   }
 
+  // Guard: only run on slug/command pages
+  if (!document.getElementById('command-main-panel')) return;
+
+  // Reset overflow in case mobile drawer was open during navigation
+  document.body.style.overflow = '';
+
   saveNavState();
   renderAllNavigation();
+
+  // Reset wiring guard so handlers are correctly re-registered on each navigation
+  window.__slugDashboardActionsWired = false;
   wireActions();
   initCopySyntax();
 
@@ -708,6 +717,7 @@ function initPage() {
     });
   }
 
+  window.__slugThemeBound = false;
   if (!window.__slugThemeBound) {
     window.__slugThemeBound = true;
     window.addEventListener('themeModeChanged', renderAllNavigation);

@@ -3,34 +3,88 @@ import Search from '../ui/Search.astro';
 import { commands } from '../../data/generated/commands';
 ---
 
-<header class="glass-panel sticky top-0 z-40 border-b border-white/40 dark:border-slate-700/60">
-  <div class="flex flex-row items-center justify-between p-3 sm:p-4 gap-3 max-w-7xl mx-auto w-full">
+<header class="glass-panel sticky top-0 z-40 border-b border-white/30 dark:border-slate-700/50">
+  <div class="flex flex-row items-center justify-between px-3 py-2 gap-2 max-w-7xl mx-auto w-full">
+
+    <!-- Logo -->
     <div class="shrink-0">
-      <a href="/" class="flex items-center gap-2 sm:gap-3 transition-transform duration-200 hover:scale-[1.01]">
-        <img src="/MVLOGO.png" alt="Villa Arreola Logo" width="40" height="40" class="h-8 w-8 sm:h-10 sm:w-10 rounded-xl ring-2 ring-sky-200/70 dark:ring-sky-800/70" />
-        <div class="leading-tight">
-          <span class="block text-lg sm:text-2xl font-extrabold text-slate-800 dark:text-slate-100">Cheatsheet</span>
-          <span class="hidden sm:block text-xs tracking-[0.16em] uppercase text-slate-500 dark:text-slate-400">TechSec Vault</span>
-        </div>
+      <a href="/" class="flex items-center gap-2 transition-transform duration-200 hover:scale-[1.02]">
+        <img src="/MVLOGO.png" alt="Villa Arreola Logo" width="32" height="32" class="h-7 w-7 rounded-lg ring-1 ring-sky-300/60 dark:ring-sky-700/60" />
+        <span class="text-sm font-bold text-slate-800 dark:text-slate-100 tracking-tight hidden sm:block">Cheatsheet</span>
       </a>
     </div>
-    <div class="flex items-center gap-3 flex-1 min-w-0">
-      <div class="flex-1 min-w-0">
-        <Search commands={commands} />
-      </div>
-      <nav aria-label="Sitios relacionados" class="hidden sm:flex items-center gap-6 px-4 py-2 rounded-full bg-white/70 dark:bg-slate-800/70 border border-slate-200/70 dark:border-slate-700/70 shrink-0">
-        <a href="https://ctf.villaarreola.com" target="_blank" rel="noopener noreferrer" class="text-slate-600 dark:text-slate-300 hover:text-sky-700 dark:hover:text-sky-300 transition-colors">
-          CTF Writeups
-        </a>
-        <span aria-hidden="true" class="text-slate-300 dark:text-slate-600 font-light">|</span>
-        <a href="https://kb.villaarreola.com" target="_blank" rel="noopener noreferrer" class="text-slate-600 dark:text-slate-300 hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors">
-          Knowledge Base
-        </a>
-      </nav>
-    </div>
-  </div>
 
+    <!-- Search (compact) -->
+    <div class="flex-1 min-w-0 max-w-sm">
+      <Search commands={commands} compact={true} />
+    </div>
+
+    <!-- Nav links -->
+    <nav aria-label="Sitios relacionados" class="hidden sm:flex items-center gap-3 shrink-0">
+      <a href="https://ctf.villaarreola.com" target="_blank" rel="noopener noreferrer" class="nav-link group">
+        <span class="nav-icon bg-orange-500/90">
+          <svg viewBox="0 0 16 16" fill="currentColor" class="h-2.5 w-2.5 text-white">
+            <path d="M2 10s1-.75 3-.75 3.75 1.5 6 1.5 3-.75 3-.75V2s-1 .75-3 .75-3.75-1.5-6-1.5S2 2 2 2zm0 8V10"/>
+          </svg>
+        </span>
+        <span>CTF</span>
+      </a>
+      <span class="text-slate-600/50 dark:text-slate-500/60 text-sm select-none">|</span>
+      <a href="https://lab.villaarreola.com" target="_blank" rel="noopener noreferrer" class="nav-link group">
+        <span class="nav-icon bg-violet-500/90">
+          <svg viewBox="0 0 16 16" fill="currentColor" class="h-2.5 w-2.5 text-white">
+            <path d="M14 1H2a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h4v1H4v1h8v-1h-2v-1h4a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zm-1 10H3V3h10v8z"/>
+          </svg>
+        </span>
+        <span>HomeLab</span>
+      </a>
+      <span class="text-slate-600/50 dark:text-slate-500/60 text-sm select-none">|</span>
+      <a href="https://kb.villaarreola.com" target="_blank" rel="noopener noreferrer" class="nav-link group">
+        <span class="nav-icon bg-emerald-500/90">
+          <svg viewBox="0 0 16 16" fill="currentColor" class="h-2.5 w-2.5 text-white">
+            <path d="M6 1a1 1 0 0 0-1 1v1H4a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2h-1V2a1 1 0 0 0-2 0v1H6V2a1 1 0 0 0-1-1zm3 6H7V5h2v2zm0 3H7V8h2v2z"/>
+          </svg>
+        </span>
+        <span>Knowledge Base</span>
+      </a>
+    </nav>
+
+  </div>
 </header>
+
+<style>
+  .nav-link {
+    @apply flex items-center gap-1.5 text-xs font-medium
+           text-slate-500 dark:text-slate-400
+           hover:text-slate-900 dark:hover:text-slate-100
+           transition-colors duration-150 select-none;
+  }
+  .nav-link--active {
+    @apply text-slate-800 dark:text-slate-200;
+  }
+  .nav-icon {
+    @apply flex items-center justify-center h-4 w-4 rounded-[4px] shrink-0;
+  }
+</style>
+
+<script>
+function setHeaderHeightVar() {
+  const headerEl = document.querySelector('header');
+  if (!headerEl) return;
+  document.documentElement.style.setProperty('--header-h', `${headerEl.getBoundingClientRect().height}px`);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  setHeaderHeightVar();
+  const headerEl = document.querySelector('header');
+  if (headerEl && 'ResizeObserver' in window) {
+    const ro = new ResizeObserver(() => setHeaderHeightVar());
+    ro.observe(headerEl as Element);
+  }
+});
+
+window.addEventListener('resize', setHeaderHeightVar);
+</script>
 
 <script>
 function setHeaderHeightVar() {

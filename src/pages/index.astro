@@ -338,6 +338,12 @@ function wireActions() {
 }
 
 function initPage() {
+  // Guard: only run on the index page (favorites-counter is unique to this page)
+  if (!document.getElementById('favorites-counter')) return;
+
+  // Reset overflow in case mobile drawer was open during navigation
+  document.body.style.overflow = '';
+
   const saved = loadNavState();
   if (saved && railGroups.some((group) => group.id === saved.group)) {
     state.group = saved.group;
@@ -352,7 +358,11 @@ function initPage() {
   }
 
   renderAllNavigation();
+
+  // Reset wiring guard so handlers are correctly re-registered on each navigation
+  window.__homeDashboardWired = false;
   wireActions();
+
   const mobileToggle = document.getElementById('mobile-nav-toggle');
   const mobileClose = document.getElementById('mobile-nav-close');
   const mobileOverlay = document.getElementById('mobile-nav-overlay');
@@ -360,6 +370,7 @@ function initPage() {
   if (mobileClose) mobileClose.onclick = closeMobileDrawer;
   if (mobileOverlay) mobileOverlay.onclick = closeMobileDrawer;
 
+  window.__homeThemeBound = false;
   if (!window.__homeThemeBound) {
     window.__homeThemeBound = true;
     window.addEventListener('themeModeChanged', renderAllNavigation);

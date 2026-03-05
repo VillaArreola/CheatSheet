@@ -11,8 +11,7 @@ title: Google Dorking
 
 
 ```bash
-"Busqueda" > Coincidencia exacta de la frase
-site:site.com > Busqueda unicamente en el dominio seleccionado.
+"incident report" filetype:pdf site:av-test.org
 ```
 
 
@@ -41,7 +40,7 @@ site:site.com > Busqueda unicamente en el dominio seleccionado.
 | Parámetro | Descripción                                                        | Ejemplo                                        |
 | --------- | ------------------------------------------------------------------ | ---------------------------------------------- |
 | “  ”      | Búsqueda solo de estas palabras                                    | “Computación cuántica”                         |
-| site:     | Busque da en el sitio deseado                                      | site:gob.mx                                    |
+| site:     | Busque da en el sitio deseado                                      | site:[gob.mx](http://gob.mx/)                  |
 | filetype: | Tipos de archivos especificos                                      | filetype:xls “”Registro de compras”            |
 | intitle:  | Incluye busquedas solo si se encuentran en el titulo de la pagina. | intitle: “administration”                      |
 | inurl:    | Incluye busquedas solo si se encuentran el la url                  | inurl: “manzanas”                              |
@@ -57,44 +56,13 @@ site:site.com > Busqueda unicamente en el dominio seleccionado.
 ### **🚀 Ejemplos de uso**
 
 
-**Enumeración estándar:**
+### Ejemplo real (login expuesto en un dominio)
 
 
 ```bash
-dnsrecon -d ejemplo.com -t std
+intitle:"index of" "login" site:example.com
+Brute force de subdominios con diccionario:
 ```
-
-
-**Brute force de subdominios con diccionario:**
-
-
-```bash
-dnsrecon -d ejemplo.com -D subdomains.txt -t brt
-```
-
-
-**Transferencia de zona:**
-
-
-```bash
-dnsrecon -d ejemplo.com -t axfr
-```
-
-
----
-
-
-### **📤 Salida esperada**
-
-
-```plain text
-[*] STD: ejemplo.com NS ns1.ejemplo.com
-[*] STD: ejemplo.com MX mail.ejemplo.com
-[*] BRUTE: shop.ejemplo.com A 192.168.1.25
-```
-
-
-_(Insertar captura real si la tienes.)_
 
 
 ---
@@ -102,14 +70,8 @@ _(Insertar captura real si la tienes.)_
 
 ### **💡 Notas / Tips**
 
-- El tipo `std` obtiene registros básicos (A, AAAA, MX, NS, TXT).
-- Usar `t goo` para buscar subdominios indexados en Google.
-- Con diccionarios grandes, limitar el tiempo de consulta con `-lifetime`.
+- **Legal/ético:** úsalo solo en activos propios o con permiso.
+- **Reduce ruido:** combina `site:` + `filetype:` + una frase exacta entre comillas.
 
 ---
 
-
-### **🔗 Referencias**
-
-- [Repositorio oficial](https://github.com/darkoperator/dnsrecon)
-- [Documentación](https://github.com/darkoperator/dnsrecon/wiki)

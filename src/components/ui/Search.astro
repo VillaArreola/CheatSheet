@@ -9,9 +9,10 @@ interface Props {
     syntax?: string;
     tags?: string[];
   }>;
+  compact?: boolean;
 }
 
-const { commands } = Astro.props;
+const { commands, compact = false } = Astro.props;
 
 function slugify(value: string): string {
   return value.toLowerCase().replace(/\s+/g, '').replace(/[^a-z0-9]/g, '');
@@ -28,7 +29,7 @@ const commandData = commands.map(cmd => ({
 
 <div class="relative w-full" id="search-wrapper">
   <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none" aria-hidden="true">
-    <svg class="h-5 w-5 text-slate-400 dark:text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <svg class={`text-slate-400 dark:text-slate-500 ${compact ? 'h-3.5 w-3.5' : 'h-5 w-5'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
     </svg>
   </div>
@@ -41,7 +42,7 @@ const commandData = commands.map(cmd => ({
     aria-controls="search-results"
     aria-expanded="false"
     role="combobox"
-    class="w-full pl-10 pr-4 py-2.5 sm:py-3 border border-slate-200/90 dark:border-slate-700 rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 text-sm sm:text-base bg-white/85 dark:bg-slate-800/85 focus:bg-white dark:focus:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 transition-all touch-manipulation shadow-sm"
+    class={`w-full border border-slate-200/90 dark:border-slate-700 rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 bg-white/85 dark:bg-slate-800/85 focus:bg-white dark:focus:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 transition-all touch-manipulation shadow-sm ${compact ? 'pl-8 pr-3 py-1.5 text-xs' : 'pl-10 pr-4 py-2.5 sm:py-3 text-sm sm:text-base'}`}
     autocomplete="off"
     autocorrect="off"
     autocapitalize="off"
@@ -56,10 +57,16 @@ const commandData = commands.map(cmd => ({
 </div>
 
 <script define:vars={{ commandData }}>
-  const input = document.getElementById('search-input');
-  const results = document.getElementById('search-results');
+  function initSearch() {
+    const input = document.getElementById('search-input');
+    const results = document.getElementById('search-results');
+    if (!input || !results) return;
 
-  if (input && results) {
+    // Reset state on each init (e.g. after client-side navigation)
+    input.value = '';
+    results.classList.add('hidden');
+    input.setAttribute('aria-expanded', 'false');
+
     let activeIndex = -1;
     let filtered = [];
 
@@ -180,4 +187,9 @@ const commandData = commands.map(cmd => ({
       }
     });
   }
+
+  // Initial load
+  document.addEventListener('DOMContentLoaded', initSearch);
+  // Re-init after every Astro client-side navigation (View Transitions)
+  document.addEventListener('astro:page-load', initSearch);
 </script>

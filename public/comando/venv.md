@@ -1,131 +1,81 @@
 ---
 layout: ../../layouts/cheatlayout.astro
-title: venv
+title: Venv
 ---
-
-
-# Rclone 
-
-
-## **🏴‍☠️  Ejemplo**
-
-
-```bash
-python -m venv
-```
 
 
 ### **📌 Descripción breve**
 
-> Rclone es una herramienta util par realizar copias o sincronizar archivos locales o desde la nube.
+> `venv` es el módulo estándar de Python para crear entornos virtuales aislados por proyecto.
 
 ---
 
 
-### **🛠 Sintaxis básica windows** 
+### **🛠 Crear venv**
 
 
-```shell
-Crear env en windows 
-python -m venv name
+```bash
+# Windows / Linux / macOS
+python -m venv .venv
+```
 
-Activar env en PS:
 
+---
+
+
+### **▶️ Activar venv**
+
+
+```bash
+# Windows (PowerShell)
 .venv\Scripts\Activate.ps1
 
-Activar env en Linux:
-source name/bin/activate
-```
+# Windows (CMD)
+.venv\Scripts\activate.bat
 
-
-**🛠 Sintaxis básica  linux**
-
-
-
-```shell
-python -m venv name
-
-Activar env en Linux:
-source name/bin/activate
+# Linux / macOS (bash/zsh)
+source .venv/bin/activate
 ```
 
 
 ---
 
 
-### ⚔️ Eliminar un venv
-
-
-### **⚙️ Parámetros clave**
-
-
-| Parámetro            | Descripción                                      | Ejemplo                   |
-| -------------------- | ------------------------------------------------ | ------------------------- |
-| `-listremotes`       | Lista las particones remotas                     | rclone listremotes        |
-| `-config delete ''`  | Elimina el directorio deseado                    |                           |
-| `-p`                 | Muestra el log del proceso                       | rclone -P                 |
-| `--dry-run`          | Muestra un apreview sobre el comando a ejecutar. | rcloud   -comand —dry-run |
-| `--update`           | Actualiza solo lo mas reciente                   | rclone —command —update   |
-
-
----
-
-
-### **🚀 Ejemplos de uso**
-
-
-**Sincronizar 2 nubes:**
+### **⏹ Desactivar**
 
 
 ```bash
-rclone sync ./MisFotos gdrive:/Fotos --progress --dry-run
-```
-
-
-**Montar una unidad en local:**
-
-
-```bash
-rclone mount gdrive:/ ~/GDrive
-```
-
-
-Sincroniza una carpeta y elimina el origen:
-
-
-```bash
-rclone sync ./Documentos gdrive:/Backup/Documentos -P --delete-after
-```
-
-
-Sincroniza solo archivo especifico:
-
-
-```bash
-rclone copy ./notas gdrive:/pdfs --include "*.pdf" -P
-```
-
-
-Excluye archivos temporales:
-
-
-```bash
-rclone sync "C:\OBS" "P:\OBS" -P --exclude "*.tmp" --exclude "*.bak"
+deactivate
 ```
 
 
 ---
 
 
-### **📤 Salida esperada**
+### **📦 Instalar dependencias (dentro del venv)**
 
 
-```plain text
-2025/10/09 21:16:56 NOTICE:
-Transferred:       13.275 MiB / 13.275 MiB, 100%, 0 B/s, ETA -
-Checks:               131 / 131, 100%, Listed 767
-Transferred:          241 / 241, 100%
-Elapsed time:         0.2s
+```bash
+python -m pip install -U pip
+pip install requests
+pip freeze > requirements.txt
+pip install -r requirements.txt
+```
+
+
+---
+
+
+### **🧹 Eliminar un venv**
+
+> Solo borra la carpeta del entorno (ej. `.venv/`).
+
+```bash
+# Linux / macOS
+rm -rf .venv
+
+# Windows (PowerShell)
+Remove-Item -Recurse -Force .venv
 ```
 
 
@@ -134,13 +84,24 @@ Elapsed time:         0.2s
 
 ### **💡 Notas / Tips**
 
-- Antes de sincronizar, **usa** **`--dry-run`** para evitar errores fatales.
-- **Programar backups automáticos** con `cron`
-- Rclone puede cifrar tus datos con `rclone config` → tipo `crypt7`
+- Usa el nombre `.venv` por convención y agrégalo a tu `.gitignore`.
+- Si PowerShell bloquea scripts, ejecuta (temporalmente):
+
+    ```powershell
+    Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+    ```
+
+- Confirma que estás en el venv:
+
+    ```bash
+    which python  # Linux/macOS
+    where python  # Windows
+    ```
+
 
 ---
 
 
 ### **🔗 Referencias**
 
-- [Documentación](https://github.com/darkoperator/dnsrecon/wiki)
+- [https://docs.python.org/3/library/venv.html](https://docs.python.org/3/library/venv.html)
