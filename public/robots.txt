@@ -1,11 +1,10 @@
 User-agent: *
 Allow: /
 Allow: /comando/
-# Bloqueamos lo que realmente no debe ser indexado
-Disallow: /_astro/
+
 Disallow: /api/
 
-# Bloqueo de IA (opcional pero recomendado para proteger tus apuntes)
+
 User-agent: GPTBot
 Disallow: /
 
