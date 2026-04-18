@@ -15,14 +15,14 @@ rclone sync "source"   "Destino\"   -P  --exclude ""
 ```
 
 
-### **📌 Descripción breve**
+###  **Descripción breve**
 
 > Rclone es una herramienta util par realizar copias o sincronizar archivos locales o desde la nube.
 
 ---
 
 
-### **🛠 Sintaxis básica**
+###  **Sintaxis básica**
 
 
 ```shell
@@ -33,7 +33,7 @@ rclone [comando] [origen] [destino] [opciones]
 ---
 
 
-### **⚙️ Parámetros clave**
+###  **Parámetros clave**
 
 
 | Parámetro            | Descripción                                      | Ejemplo                   |
@@ -48,7 +48,7 @@ rclone [comando] [origen] [destino] [opciones]
 ---
 
 
-### **🚀 Ejemplos de uso**
+### **Ejemplos de uso**
 
 
 **Sincronizar 2 nubes:**

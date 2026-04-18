@@ -26,6 +26,54 @@ export interface Command {
 
 export const commands: Command[] = [
   {
+    "id": "318ec7e7-4fc0-81e9-b01a-e7155640eb52",
+    "title": "AbuseIPDB",
+    "command": "curl -G ",
+    "description": "Base de datos colaborativa para consultar y reportar reputación de IPs maliciosas con historial de reportes y nivel de confianza.",
+    "category": "OSINT",
+    "tags": [],
+    "examples": [
+      "curl -G https://api.abuseipdb.com/api/v2/check \\\n  --data-urlencode \"ipAddress=165.227.84.14\" \\\n  -H \"Key: TU_API_KEY\" \\\n  -H \"Accept: application/json\"",
+      "# Consulta manual en la web\nhttps://www.abuseipdb.com/check/IP_AQUI\n\n# Consulta via API\ncurl -G https://api.abuseipdb.com/api/v2/check \\\n  --data-urlencode \"ipAddress=IP_AQUI\" \\\n  -d maxAgeInDays=90 \\\n  -H \"Key: TU_API_KEY\" \\\n  -H \"Accept: application/json\"",
+      "# Abrir en navegador:\nhttps://www.abuseipdb.com/check/165.227.84.14\n# Ver: Confidence Score, ISP, número de reportes, tipos de abuso",
+      "curl -G https://api.abuseipdb.com/api/v2/check \\\n  --data-urlencode \"ipAddress=165.227.84.14\" \\\n  -d maxAgeInDays=90 \\\n  -d verbose \\\n  -H \"Key: TU_API_KEY\" \\\n  -H \"Accept: application/json\" | jq ."
+    ],
+    "dangerous": false,
+    "platform": "Unix",
+    "syntax": "curl -G https://api.abuseipdb.com/api/v2/check \\\n  --data-urlencode \"ipAddress=165.227.84.14\" \\\n  -H \"Key: TU_API_KEY\" \\\n  -H \"Accept: application/json\"",
+    "parameters": [
+      {
+        "param": "ipAddress",
+        "description": "IP a consultar",
+        "example": "`--data-urlencode \"ipAddress=1.2.3.4\"`"
+      },
+      {
+        "param": "maxAgeInDays",
+        "description": "Rango de días para reportes (default 30)",
+        "example": "`-d maxAgeInDays=90`"
+      },
+      {
+        "param": "verbose",
+        "description": "Muestra reportes individuales",
+        "example": "`-d verbose`"
+      },
+      {
+        "param": "Key",
+        "description": "API key del header",
+        "example": "`-H \"Key: abc123\"`"
+      }
+    ],
+    "output": "",
+    "notes": "- Confidence Score 100% con miles de reportes no siempre significa ataque dirigido; puede ser un scanner legítimo (como LeakIX) muy reportado\n- Revisar el hostname de la IP en Shodan para confirmar si es un servicio conocido de investigación\n- Los tipos de abuso más comunes: Port Scan, Hacking, Web App Attack, Brute-Force\n- Integrarlo en scripts de monitoreo para alertas automáticas sobre IPs en tus logs\n- API gratuita disponible con registro; límite de 1000 consultas/día en plan free",
+    "references": [
+      "AbuseIPDB",
+      "Documentación API",
+      "Registro para API Key"
+    ],
+    "created_at": "2026-03-03T03:17:00.000Z",
+    "updated_at": "2026-04-18T15:08:00.000Z"
+  },
+  {
     "id": "318ec7e7-4fc0-81de-ba9c-e3467b0948b8",
     "title": "BitLocker Self-Custody",
     "command": "manage-bde -protectors -enable C: -RecoveryPassword",
@@ -58,42 +106,111 @@ export const commands: Command[] = [
     "updated_at": "2026-03-05T03:17:00.000Z"
   },
   {
-    "id": "31aec7e7-4fc0-8150-ae48-ff6f365e922b",
-    "title": "Browserless — Chrome Headless en Docker",
-    "command": "docker run -p 3000:3000 ",
-    "description": "API Docker que levanta un Chrome sin interfaz para scraping de páginas con JavaScript dinámico, screenshots y PDFs.",
+    "id": "31aec7e7-4fc0-81df-a1f0-ca20d9419480",
+    "title": "Cloudflare Tunnel (cloudflared)",
+    "command": "cloudflared tunnel run <nombre>",
+    "description": "Expone servicios a Internet sin abrir puertos en el firewall, usando una conexión saliente del servidor hacia Cloudflare.",
     "category": "Config",
     "tags": [],
     "examples": [
-      "docker run -p 3000:3000 ghcr.io/browserless/chromium",
-      "---\n\n\n### **⚙️ Endpoints principales**\n\n\n| Endpoint         | Descripción                                |\n| ---------------- | ------------------------------------------ |\n| `/screenshot`    | Captura PNG/JPEG de una URL                |\n| `/pdf`           | Genera PDF de una URL                      |\n| `/content`       | Devuelve el HTML renderizado (post-JS)     |\n| `/scrape`        | Extrae elementos del DOM por selector CSS  |\n| `ws://host:3000` | WebSocket para Puppeteer/Playwright remoto |\n\n\n---\n\n\n### **🚀 Ejemplos de uso**\n\n\n**Screenshot de una URL:**",
-      "**Extraer contenido HTML renderizado:**",
-      "**Scrape por selector CSS:**",
-      "**Puppeteer remoto (Node.js):**"
+      "cloudflared tunnel run mi-tunnel",
+      "cloudflared tunnel login          # Autenticar (genera cert.pem)\ncloudflared tunnel create <n>     # Crear túnel + credencial JSON\ncloudflared tunnel route dns <n> <sub.dom.com>  # CNAME en Cloudflare DNS\ncloudflared tunnel run <n>        # Levantar túnel",
+      "**Config file (****`~/.cloudflared/config.yml`****):**"
     ],
     "dangerous": false,
     "platform": "Unix",
-    "syntax": "docker run -p 3000:3000 ghcr.io/browserless/chromium",
+    "syntax": "cloudflared tunnel run mi-tunnel",
     "parameters": [
       {
-        "param": "/screenshot",
-        "description": "Captura PNG/JPEG de una URL",
-        "example": "| `/pdf`"
+        "param": "login",
+        "description": "Abre browser para autenticar con Cloudflare",
+        "example": "| `create <n>`"
       },
       {
-        "param": "/content",
-        "description": "Devuelve el HTML renderizado (post-JS)",
-        "example": "| `/scrape`"
+        "param": "route dns",
+        "description": "Crea CNAME en zona DNS de Cloudflare",
+        "example": "| `run <n>`"
+      }
+    ],
+    "output": "---\n\n\n### **Salida esperada**",
+    "notes": "- Firewall puede estar **completamente cerrado** (sin puertos 80/443 expuestos).\n- Al rotar entre nubes solo cambia la IP interna; el CNAME de Cloudflare permanece igual.\n- Con `TUNNEL_TOKEN` (dashboard CF) no necesitas montar el JSON de credenciales.\n- No actives el proxy naranja (nube naranja) sobre el subdominio del túnel; ya está implícito.",
+    "references": [
+      "Cloudflare Tunnel docs",
+      "cloudflared Docker Hub"
+    ],
+    "created_at": "2026-03-05T00:19:00.000Z",
+    "updated_at": "2026-04-18T14:42:00.000Z"
+  },
+  {
+    "id": "318ec7e7-4fc0-817b-be5b-e2602ee5be67",
+    "title": "dig — Consultas DNS",
+    "command": "dig [tipo] ",
+    "description": "Herramienta CLI para realizar consultas DNS directas y verificar registros como A, MX, TXT, CAA, DMARC, SPF desde la terminal.",
+    "category": "DNS",
+    "tags": [],
+    "examples": [
+      "dig CAA dominio.com\ndig TXT _dmarc.dominio.com\ndig MX dominio.com",
+      "dig [tipo_registro] [dominio] [@servidor_dns_opcional]",
+      "dig CAA dominio.com",
+      "dig TXT _dmarc.dominio.com",
+      "dig TXT dominio.com | grep spf",
+      "dig MX dominio.com +short",
+      "dig -x 165.227.84.14",
+      "dig A dominio.com @8.8.8.8"
+    ],
+    "dangerous": false,
+    "platform": "Unix",
+    "syntax": "dig CAA dominio.com\ndig TXT _dmarc.dominio.com\ndig MX dominio.com",
+    "parameters": [
+      {
+        "param": "A",
+        "description": "Resolución IPv4 del dominio",
+        "example": "`dig A dominio.com`"
+      },
+      {
+        "param": "MX",
+        "description": "Registros de correo",
+        "example": "`dig MX dominio.com`"
+      },
+      {
+        "param": "TXT",
+        "description": "Registros de texto (SPF, DKIM, DMARC, verificación)",
+        "example": "`dig TXT dominio.com`"
+      },
+      {
+        "param": "CAA",
+        "description": "Autoridades certificadoras autorizadas",
+        "example": "`dig CAA dominio.com`"
+      },
+      {
+        "param": "NS",
+        "description": "Nameservers del dominio",
+        "example": "`dig NS dominio.com`"
+      },
+      {
+        "param": "-x",
+        "description": "Consulta inversa (IP → hostname)",
+        "example": "`dig -x 1.2.3.4`"
+      },
+      {
+        "param": "@servidor",
+        "description": "Consultar contra un DNS específico",
+        "example": "`dig A dominio.com @8.8.8.8`"
+      },
+      {
+        "param": "+short",
+        "description": "Salida compacta solo con el valor",
+        "example": "`dig A dominio.com +short`"
       }
     ],
     "output": "",
-    "notes": "- n8n no interpreta JavaScript por sí solo: para scraping de SPAs o páginas con JS, Browserless es el complemento estándar.\n- Usar en la misma red Docker que n8n y llamarlo por nombre de servicio.\n- `CONCURRENT=5` limita sesiones simultáneas para proteger la RAM del servidor.\n- Alternativa: **Playwright** directo en contenedor propio si se necesita mayor control.",
+    "notes": "- Usar `+short` para obtener solo el valor del registro, sin cabeceras.\n- Consultar `@8.8.8.8` o `@1.1.1.1` para verificar propagación desde DNS públicos.\n- Los registros DMARC siempre se consultan en el subdominio `_dmarc.dominio.com`.\n- Los registros DKIM se consultan en `[selector]._domainkey.dominio.com`.",
     "references": [
-      "Browserless docs",
-      "GitHub"
+      "dig man page",
+      "MXToolbox DNS Lookup"
     ],
-    "created_at": "2026-03-05T00:21:00.000Z",
-    "updated_at": "2026-03-05T03:17:00.000Z"
+    "created_at": "2026-03-03T03:29:00.000Z",
+    "updated_at": "2026-04-18T14:59:00.000Z"
   },
   {
     "id": "24fec7e7-4fc0-80ef-a008-f3585a1afc4e",
@@ -141,7 +258,101 @@ export const commands: Command[] = [
       "Documentación"
     ],
     "created_at": "2025-08-14T20:53:00.000Z",
-    "updated_at": "2025-12-28T22:13:00.000Z"
+    "updated_at": "2026-04-18T15:25:00.000Z"
+  },
+  {
+    "id": "31aec7e7-4fc0-81dd-8022-d408e0bfa831",
+    "title": "Docker Compose",
+    "command": "docker compose up -d",
+    "description": "Plugin integrado de Docker para orquestar múltiples contenedores; reemplaza el binario docker-compose V1 con sintaxis de espacio.",
+    "category": "Linux",
+    "tags": [],
+    "examples": [
+      "# V2 (correcto en Docker moderno)\ndocker compose up -d\n\n# V1 (obsoleto — produce \"command not found\" en Docker V2)\ndocker-compose up -d",
+      "docker compose [comando] [opciones]",
+      "sudo apt-get update && sudo apt-get install docker-compose-plugin",
+      "docker compose version\n# Docker Compose version v2.x.x",
+      "docker compose ps\ndocker ps -a          # todos los contenedores del host\ndocker stats          # consumo CPU/RAM en tiempo real"
+    ],
+    "dangerous": false,
+    "platform": "Unix",
+    "syntax": "# V2 (correcto en Docker moderno)\ndocker compose up -d\n\n# V1 (obsoleto — produce \"command not found\" en Docker V2)\ndocker-compose up -d",
+    "parameters": [
+      {
+        "param": "up -d",
+        "description": "Levanta el stack en segundo plano",
+        "example": "`docker compose up -d`"
+      },
+      {
+        "param": "down",
+        "description": "Detiene y elimina contenedores/redes",
+        "example": "`docker compose down`"
+      },
+      {
+        "param": "logs -f",
+        "description": "Sigue los logs en tiempo real",
+        "example": "`docker compose logs -f`"
+      },
+      {
+        "param": "ps",
+        "description": "Estado de los servicios del stack",
+        "example": "`docker compose ps`"
+      },
+      {
+        "param": "restart",
+        "description": "Reinicia un servicio específico",
+        "example": "`docker compose restart wazuh-manager`"
+      },
+      {
+        "param": "pull",
+        "description": "Descarga imágenes actualizadas",
+        "example": "`docker compose pull`"
+      }
+    ],
+    "output": "",
+    "notes": "- El warning `the attribute 'version' is obsolete` en V2 es informativo — no rompe nada; se puede eliminar la línea `version:` del YAML\n- Siempre ejecutar desde el directorio que contiene `docker-compose.yml`\n- `docker compose down` elimina contenedores y redes pero **no** los volúmenes; usar `down -v` para eliminar volúmenes también\n- `docker compose up -d --build` fuerza rebuild de imágenes locales",
+    "references": [
+      "Docker Compose V2 — Docs oficiales"
+    ],
+    "created_at": "2026-03-05T00:16:00.000Z",
+    "updated_at": "2026-04-18T14:44:00.000Z"
+  },
+  {
+    "id": "31aec7e7-4fc0-8175-8d7b-c1076954377b",
+    "title": "Docker External Networks",
+    "command": "docker network create shared_net",
+    "description": "Redes Docker compartidas entre proyectos Compose separados para que contenedores de distintos stacks se comuniquen.",
+    "category": "Config",
+    "tags": [],
+    "examples": [
+      "# Crear red externa\ndocker network create shared_net\n\n# Referenciar en docker-compose.yml\nnetworks:\n  shared_net:\n    external: true",
+      "---\n\n\n### **Parámetros clave**\n\n\n| Parámetro        | Descripción                           | Ejemplo               |\n| ---------------- | ------------------------------------- | --------------------- |\n| `external: true` | La red ya existe; Docker no la crea   | ver arriba            |\n| `name`           | Nombre explícito si difiere del alias | `name: mi_red_global` |\n\n\n---\n\n\n###  **Ejemplos de uso**\n\n\n**Crear la red una vez:**",
+      "**Stack A — exponer servicio:**",
+      "**Stack B — consumir por nombre de servicio:**"
+    ],
+    "dangerous": false,
+    "platform": "Unix",
+    "syntax": "# Crear red externa\ndocker network create shared_net\n\n# Referenciar en docker-compose.yml\nnetworks:\n  shared_net:\n    external: true",
+    "parameters": [
+      {
+        "param": "external: true",
+        "description": "La red ya existe; Docker no la crea",
+        "example": "ver arriba"
+      },
+      {
+        "param": "name",
+        "description": "Nombre explícito si difiere del alias",
+        "example": "`name: mi_red_global`"
+      }
+    ],
+    "output": "---\n\n\n### **📤 Salida esperada**",
+    "notes": "- La red debe existir **antes** de `docker compose up` en cualquier stack.\n- Los contenedores se llaman por **nombre de servicio**, no por IP.\n- Para multi-host usar overlay networks con Docker Swarm.\n- Proyectos en carpetas distintas = redes distintas por defecto; external network rompe ese aislamiento deliberadamente.",
+    "references": [
+      "Docker Networking overview",
+      "Compose networking"
+    ],
+    "created_at": "2026-03-05T00:19:00.000Z",
+    "updated_at": "2026-04-18T14:41:00.000Z"
   },
   {
     "id": "28aec7e7-4fc0-8080-b36c-c6da57b219e3",
@@ -153,7 +364,11 @@ export const commands: Command[] = [
     "examples": [
       "\"incident report\" filetype:pdf site:av-test.org",
       "\"Busqueda\" > Coincidencia exacta de la frase\nsite:site.com > Busqueda unicamente en el dominio seleccionado.",
-      "intitle:\"index of\" \"login\" site:example.com\nBrute force de subdominios con diccionario:"
+      "site:facebook.com \"Datos Robados\"",
+      "\"445 118 4920\" OR \"+524451184920\" OR \"4451184920\"",
+      "site:twitter.com OR site:x.com \"4451184920\" OR \"+52524451184920\"",
+      "filetype:pdf \"numero\" OR \"+52 numeor\"\nfiletype:xls OR filetype:xlsx \"Numeor\" \"Puebla\" OR \"CDMX\"\nfiletype:doc OR filetype:docx intext:\"Numeor\" \"keyW\" OR \"keyW\"\n\nintext:\"TU_NÚMERO\" filetype:pdf site:.mx",
+      "(\"445 118 4920\" OR \"+524451184920\" OR \"4451184920\" OR \"+52 445 118 4920\") (\"Lugar 1\" OR \"Lugar 2\" OR \"Puebla\" OR \"Key 1\" OR \"KEy 2\")\nsite:facebook.com OR site:mercadolibre.com.mx OR site:olx.com.mx \"445 118 4920\"\nintext:\"445 118 4920\" (WhatsApp OR celular OR teléfono OR contacto)\n\"445 118 4920\" (RFC OR CURP OR INE) filetype:pdf OR filetype:jpg"
     ],
     "dangerous": false,
     "platform": "Unix",
@@ -163,7 +378,115 @@ export const commands: Command[] = [
     "notes": "- **Legal/ético:** úsalo solo en activos propios o con permiso.\n- **Reduce ruido:** combina `site:` + `filetype:` + una frase exacta entre comillas.",
     "references": [],
     "created_at": "2025-10-12T22:59:00.000Z",
-    "updated_at": "2026-03-05T02:58:00.000Z"
+    "updated_at": "2026-04-18T18:32:00.000Z"
+  },
+  {
+    "id": "341ec7e7-4fc0-8121-80d7-dbc50a421146",
+    "title": "HTTP Status Codes",
+    "command": "curl -o /dev/null -s -w \"%{http_code}\" ",
+    "description": "Referencia rápida de los códigos de estado HTTP agrupados por categoría: informativos, éxito, redirección, errores de cliente y errores de servidor.",
+    "category": "Config",
+    "tags": [],
+    "examples": [
+      "curl -o /dev/null -s -w \"%{http_code}\" https://example.com",
+      "HTTP/1.1 <código> <mensaje>",
+      "curl -o /dev/null -s -w \"%{http_code}\" https://example.com",
+      "curl -I https://example.com",
+      "curl -L https://example.com"
+    ],
+    "dangerous": false,
+    "platform": "Unix",
+    "syntax": "curl -o /dev/null -s -w \"%{http_code}\" https://example.com",
+    "parameters": [
+      {
+        "param": "100",
+        "description": "Continue",
+        "example": "El servidor recibió la solicitud inicial; el cliente puede continuar."
+      },
+      {
+        "param": "101",
+        "description": "Switching Protocols",
+        "example": "El servidor acepta cambiar de protocolo (ej. WebSocket)."
+      },
+      {
+        "param": "200",
+        "description": "OK",
+        "example": "La solicitud fue exitosa."
+      },
+      {
+        "param": "201",
+        "description": "Created",
+        "example": "Recurso creado correctamente (ej. tras un POST)."
+      },
+      {
+        "param": "301",
+        "description": "Moved Permanently",
+        "example": "El recurso se movió definitivamente a otra URL."
+      },
+      {
+        "param": "302",
+        "description": "Found",
+        "example": "Redirección temporal a otra URL."
+      },
+      {
+        "param": "400",
+        "description": "Bad Request",
+        "example": "La solicitud tiene sintaxis incorrecta o es inválida."
+      },
+      {
+        "param": "401",
+        "description": "Unauthorized",
+        "example": "Se requiere autenticación para acceder al recurso."
+      },
+      {
+        "param": "403",
+        "description": "Forbidden",
+        "example": "El servidor rechaza la solicitud aunque el cliente esté autenticado."
+      },
+      {
+        "param": "404",
+        "description": "Not Found",
+        "example": "El recurso solicitado no existe en el servidor."
+      },
+      {
+        "param": "405",
+        "description": "Method Not Allowed",
+        "example": "El método HTTP usado no está permitido para ese endpoint."
+      },
+      {
+        "param": "429",
+        "description": "Too Many Requests",
+        "example": "El cliente ha enviado demasiadas solicitudes en poco tiempo (rate limiting)."
+      },
+      {
+        "param": "500",
+        "description": "Internal Server Error",
+        "example": "Error genérico en el servidor; algo falló internamente."
+      },
+      {
+        "param": "502",
+        "description": "Bad Gateway",
+        "example": "El servidor actúa como proxy y recibió una respuesta inválida del upstream."
+      },
+      {
+        "param": "503",
+        "description": "Service Unavailable",
+        "example": "El servidor no puede manejar solicitudes (sobrecarga o mantenimiento)."
+      },
+      {
+        "param": "504",
+        "description": "Gateway Timeout",
+        "example": "El servidor proxy no recibió respuesta a tiempo del upstream."
+      }
+    ],
+    "output": "",
+    "notes": "- `401` = sin autenticar; `403` = autenticado pero sin permisos.\n- `429` se usa para detectar rate limiting en fuzzing/escaneo web.\n- `502`/`504` en proxies inversos suelen indicar que el backend está caído.\n- En pentesting, un `403` a veces puede bypassearse cambiando headers como `X-Forwarded-For`.\n- El código `200` en un `OPTIONS` revela métodos HTTP permitidos por el servidor.",
+    "references": [
+      "MDN Web Docs — HTTP response status codes",
+      "RFC 9110 — HTTP Semantics"
+    ],
+    "created_at": "2026-04-13T10:33:00.000Z",
+    "updated_at": "2026-04-18T15:04:00.000Z"
   },
   {
     "id": "253ec7e7-4fc0-80e2-bdb9-e54621c69807",
@@ -210,128 +533,80 @@ export const commands: Command[] = [
         "example": "`ls -R`"
       }
     ],
-    "output": "ls\n    ```\n\n- **Listado detallado con archivos ocultos:**\n\n    ```bash\n    ls -la\n    ```\n\n- **Listado con tamaños legibles ordenado por fecha:**\n\n    ```bash\n    ls -lht\n    ```\n\n- **Listado recursivo de subdirectorios:**\n\n    ```bash\n    ls -R /var/log\n    ```\n\n\n**📤 Salida esperada**",
+    "output": "ls\n    ```\n\n- **Listado detallado con archivos ocultos:**\n\n    ```bash\n    ls -la\n    ```\n\n- **Listado con tamaños legibles ordenado por fecha:**\n\n    ```bash\n    ls -lht\n    ```\n\n- **Listado recursivo de subdirectorios:**\n\n    ```bash\n    ls -R /var/log\n    ```\n\n\n**Salida esperada**",
     "notes": "",
     "references": [
       "Manual de ls",
       "Guía de comandos Linux"
     ],
     "created_at": "2025-08-18T01:16:00.000Z",
-    "updated_at": "2026-03-05T01:27:00.000Z"
+    "updated_at": "2026-04-18T15:25:00.000Z"
   },
   {
-    "id": "31aec7e7-4fc0-814a-8ec4-f0a2aa33f5f8",
-    "title": "MEGAcmd",
-    "command": "mega-sync /home/usuario/MEGA_local /",
-    "description": "Cliente CLI oficial de MEGA para Linux que permite sincronizar carpetas, subir/bajar archivos y montar la nube como WebDAV.",
-    "category": "Linux",
+    "id": "318ec7e7-4fc0-81b5-9ed6-dd1d521dc3dd",
+    "title": "manage-bde",
+    "command": "manage-bde -status",
+    "description": "CLI de Windows para administrar BitLocker: ver estado del cifrado, listar protectores, habilitar/deshabilitar y rotar claves de recuperación.",
+    "category": "Cifrado",
     "tags": [],
     "examples": [
-      "# Instalar en Kali/Debian 12\nwget https://mega.nz/linux/repo/Debian_12/amd64/megacmd-Debian_12_amd64.deb\nsudo apt install ./megacmd-Debian_12_amd64.deb\n\n# Login seguro (modo interactivo)\nmega-cmd\n# > login tu_email@gmail.com\n# > exit\n\n# Sincronizar carpeta local con MEGA\nmkdir -p ~/MEGA_local\nmega-sync ~/MEGA_local /",
-      "mega-<comando> [opciones] [argumentos]",
-      "mega-login email@gmail.com TuContraseña\nhistory -c   # borrar contraseña del historial",
-      "# En cada máquina:\nmkdir -p ~/MEGA_CTF\nmega-sync ~/MEGA_CTF /HTB\n# Los archivos se sincronizan automáticamente entre todas"
+      "###  **Descripción breve**\n\n> Herramienta CLI de Windows (PowerShell/CMD) para gestionar BitLocker Drive Encryption. Permite ver estado de cifrado, administrar protectores y generar claves de recuperación. Requiere permisos de Administrador.\n\n---\n\n\n### **Sintaxis básica**",
+      "---\n\n\n### **Parámetros clave**\n\n\n| Comando                                 | Descripción                                    | Ejemplo                                               |\n| --------------------------------------- | ---------------------------------------------- | ----------------------------------------------------- |\n| `-status`                               | Estado del cifrado de todos los volúmenes      | `manage-bde -status`                                  |\n| `-on`                                   | Activa BitLocker en un volumen                 | `manage-bde -on C:`                                   |\n| `-off`                                  | Desactiva BitLocker (descifra el volumen)      | `manage-bde -off C:`                                  |\n| `-protectors -get`                      | Lista todos los protectores/claves del volumen | `manage-bde -protectors -get C:`                      |\n| `-protectors -enable`                   | Habilita protectores desactivados              | `manage-bde -protectors -enable C:`                   |\n| `-protectors -disable`                  | Suspende protectores temporalmente             | `manage-bde -protectors -disable C:`                  |\n| `-protectors -enable -RecoveryPassword` | Genera nueva Recovery Key de 48 dígitos        | `manage-bde -protectors -enable C: -RecoveryPassword` |\n| `-protectors -delete -id {UUID}`        | Elimina un protector específico por ID         | `manage-bde -protectors -delete C: -id {UUID}`        |\n\n\n---\n\n\n###  **Ejemplos de uso**\n\n\n**Ver estado completo:**",
+      "**Listar claves de recuperación actuales:**",
+      "**Rotar (generar nueva) Recovery Key:**"
     ],
     "dangerous": false,
     "platform": "Unix",
-    "syntax": "# Instalar en Kali/Debian 12\nwget https://mega.nz/linux/repo/Debian_12/amd64/megacmd-Debian_12_amd64.deb\nsudo apt install ./megacmd-Debian_12_amd64.deb\n\n# Login seguro (modo interactivo)\nmega-cmd\n# > login tu_email@gmail.com\n# > exit\n\n# Sincronizar carpeta local con MEGA\nmkdir -p ~/MEGA_local\nmega-sync ~/MEGA_local /",
+    "syntax": "###  **Descripción breve**\n\n> Herramienta CLI de Windows (PowerShell/CMD) para gestionar BitLocker Drive Encryption. Permite ver estado de cifrado, administrar protectores y generar claves de recuperación. Requiere permisos de Administrador.\n\n---\n\n\n### **Sintaxis básica**",
     "parameters": [
       {
-        "param": "mega-login",
-        "description": "Iniciar sesión",
-        "example": "`mega-login email pass`"
+        "param": "-status",
+        "description": "Estado del cifrado de todos los volúmenes",
+        "example": "`manage-bde -status`"
       },
       {
-        "param": "mega-sync",
-        "description": "Sincronizar carpeta local ↔ cloud",
-        "example": "`mega-sync ~/local /remoto`"
+        "param": "-on",
+        "description": "Activa BitLocker en un volumen",
+        "example": "`manage-bde -on C:`"
       },
       {
-        "param": "mega-get",
-        "description": "Descargar archivo puntual",
-        "example": "`mega-get /ruta/archivo.py .`"
+        "param": "-off",
+        "description": "Desactiva BitLocker (descifra el volumen)",
+        "example": "`manage-bde -off C:`"
       },
       {
-        "param": "mega-put",
-        "description": "Subir archivo",
-        "example": "`mega-put local.txt /ruta/`"
+        "param": "-protectors -get",
+        "description": "Lista todos los protectores/claves del volumen",
+        "example": "`manage-bde -protectors -get C:`"
       },
       {
-        "param": "mega-ls",
-        "description": "Listar archivos en la nube",
-        "example": "`mega-ls /HTB`"
+        "param": "-protectors -enable",
+        "description": "Habilita protectores desactivados",
+        "example": "`manage-bde -protectors -enable C:`"
       },
       {
-        "param": "mega-webdav",
-        "description": "Montar como WebDAV local",
-        "example": "`mega-webdav /`"
+        "param": "-protectors -disable",
+        "description": "Suspende protectores temporalmente",
+        "example": "`manage-bde -protectors -disable C:`"
       },
       {
-        "param": "mega-sync",
-        "description": "Ver sincronizaciones activas",
-        "example": "`mega-sync` (sin args)"
+        "param": "-protectors -enable -RecoveryPassword",
+        "description": "Genera nueva Recovery Key de 48 dígitos",
+        "example": "`manage-bde -protectors -enable C: -RecoveryPassword`"
+      },
+      {
+        "param": "-protectors -delete -id {UUID}",
+        "description": "Elimina un protector específico por ID",
+        "example": "`manage-bde -protectors -delete C: -id {UUID}`"
       }
     ],
-    "output": "---\n\n\n### **📤 Salida esperada**",
-    "notes": "- El archivo `.megaignore` se sincroniza como cualquier archivo — editándolo en un equipo se propaga a todos\n- `mega-webdav` permite montar MEGA como unidad local accesible desde cualquier app",
+    "output": "---\n\n\n###  **Salida esperada**",
+    "notes": "- Siempre ejecutar como **Administrador** (PowerShell o CMD elevado).\n- `-protectors -disable` es temporal: al reiniciar se reactivan.\n- Después de rotar, verificar que el UUID del protector cambió.\n- Alternativa gráfica: `control /name Microsoft.BitLockerDriveEncryption`",
     "references": [
-      "MEGAcmd GitHub",
-      "Descargas Linux"
+      "Documentación oficial Microsoft"
     ],
-    "created_at": "2026-03-05T00:59:00.000Z",
-    "updated_at": "2026-03-05T03:13:00.000Z"
-  },
-  {
-    "id": "31aec7e7-4fc0-810d-8d97-d27ce6499494",
-    "title": "Mermaid.js",
-    "command": "",
-    "description": "Lenguaje de diagramas basado en texto para documentar arquitecturas e infraestructuras en Markdown y Obsidian.",
-    "category": "Config",
-    "tags": [],
-    "examples": [
-      "### **📌 Descripción breve**\n\n> Mermaid.js genera diagramas de flujo, secuencia y arquitectura desde texto plano. Funciona nativamente en Obsidian, GitHub, GitLab y Notion.\n\n---\n\n\n### **🛠 Sintaxis básica**",
-      "---\n\n\n### **⚙️ Tipos de nodo**\n\n\n| Sintaxis    | Forma      | Uso típico            |\n| ----------- | ---------- | --------------------- |\n| `[Texto]`   | Rectángulo | Servicio / componente |\n| `{{Texto}}` | Rombo      | Firewall / decisión   |\n| `(Texto)`   | Redondeado | Usuario / endpoint    |\n| `((Texto))` | Círculo    | Nodo central          |\n| `[(Texto)]` | Cilindro   | Base de datos         |\n\n\n---\n\n\n### **🚀 Tipos de conexión**",
-      "---\n\n\n### **🎨 Estilos y clases**",
-      "---\n\n\n### **📤 Subgraphs (agrupar zonas)**"
-    ],
-    "dangerous": false,
-    "platform": "Unix",
-    "syntax": "### **📌 Descripción breve**\n\n> Mermaid.js genera diagramas de flujo, secuencia y arquitectura desde texto plano. Funciona nativamente en Obsidian, GitHub, GitLab y Notion.\n\n---\n\n\n### **🛠 Sintaxis básica**",
-    "parameters": [
-      {
-        "param": "[Texto]",
-        "description": "Rectángulo",
-        "example": "Servicio / componente"
-      },
-      {
-        "param": "{{Texto}}",
-        "description": "Rombo",
-        "example": "Firewall / decisión"
-      },
-      {
-        "param": "(Texto)",
-        "description": "Redondeado",
-        "example": "Usuario / endpoint"
-      },
-      {
-        "param": "((Texto))",
-        "description": "Círculo",
-        "example": "Nodo central"
-      },
-      {
-        "param": "[(Texto)]",
-        "description": "Cilindro",
-        "example": "Base de datos"
-      }
-    ],
-    "output": "",
-    "notes": "- En Obsidian: usa bloque  mermaid   — renderiza automáticamente\n- En GitHub/GitLab: mismo bloque, soporte nativo desde 2022\n- `graph TD` = top-down; `graph LR` = left-right; `graph RL` = derecha a izquierda\n- Para diagramas de secuencia usar `sequenceDiagram` en lugar de `graph`\n- Editor online: [mermaid.live](http://mermaid.live/)",
-    "references": [
-      "Mermaid.js Docs",
-      "Mermaid Live Editor"
-    ],
-    "created_at": "2026-03-05T00:54:00.000Z",
-    "updated_at": "2026-03-05T03:15:00.000Z"
+    "created_at": "2026-03-03T03:27:00.000Z",
+    "updated_at": "2026-04-18T15:06:00.000Z"
   },
   {
     "id": "31aec7e7-4fc0-814f-9f6e-c4fcb7329944",
@@ -431,65 +706,29 @@ export const commands: Command[] = [
       "NSE Scripts"
     ],
     "created_at": "2026-03-05T01:39:00.000Z",
-    "updated_at": "2026-03-05T03:11:00.000Z"
+    "updated_at": "2026-04-18T19:09:00.000Z"
   },
   {
-    "id": "31aec7e7-4fc0-81d6-bfa7-d94a824219d8",
-    "title": "OnionShare",
-    "command": "https://onionshare.org",
-    "description": "Herramienta para transferir archivos de forma anónima creando un servidor .onion temporal sin cuentas ni registros.",
-    "category": "Config",
+    "id": "319ec7e7-4fc0-811f-83d1-f0e7b933b122",
+    "title": "Puertos Críticos de Red",
+    "command": "nmap -p 22,80,443,3306,3389,5900,8080 <target>",
+    "description": "Referencia rápida de los puertos TCP/UDP más importantes en redes: web, bases de datos, acceso remoto, infraestructura y servicios de red.",
+    "category": "Redes",
     "tags": [],
     "examples": [
-      "# En Windows/Mac/Linux:\n# 1. Abrir OnionShare → arrastrar archivo\n# 2. Copiar dirección .onion generada\n# 3. En Tor Browser: pegar la dirección .onion → descargar\n# 4. Cerrar OnionShare → servidor desaparece",
-      "# Flujo completo\nEmisor: OnionShare → arrastrar archivo → copiar URL .onion\nReceptor: Tor Browser → pegar URL .onion → descargar",
-      "# En Windows: abrir OnionShare → arrastrar el archivo\n# OnionShare genera: http://ejemplo123abc.onion/descarga\n# En Whonix Workstation → Tor Browser → pegar URL",
-      "# OnionShare → modo \"Receive\" → compartir URL .onion con emisor"
+      "nmap -p 22,80,443,3306,3389,5900,8080 <target>"
     ],
     "dangerous": false,
     "platform": "Unix",
-    "syntax": "# En Windows/Mac/Linux:\n# 1. Abrir OnionShare → arrastrar archivo\n# 2. Copiar dirección .onion generada\n# 3. En Tor Browser: pegar la dirección .onion → descargar\n# 4. Cerrar OnionShare → servidor desaparece",
+    "syntax": "nmap -p 22,80,443,3306,3389,5900,8080 <target>",
     "parameters": [],
     "output": "",
-    "notes": "- El servidor .onion es E2EE: el tráfico nunca sale a internet abierto",
+    "notes": "- Puerto 23 (Telnet) y 21 (FTP) transmiten credenciales en claro — evitar en producción\n- Puerto 445 (SMB) es vector frecuente de ransomware\n- Puerto 3389 (RDP) sufre ataques de fuerza bruta constantes — siempre detrás de VPN\n- Puerto 5900 (VNC) suele quedar expuesto con autenticación débil",
     "references": [
-      "OnionShare oficial",
-      "Documentación"
+      "IANA Port Numbers"
     ],
-    "created_at": "2026-03-05T01:02:00.000Z",
-    "updated_at": "2026-03-05T03:12:00.000Z"
-  },
-  {
-    "id": "31aec7e7-4fc0-817c-b377-f1dd9c6db3a6",
-    "title": "Proxmox VE",
-    "command": "ssh root@<proxmox-ip>",
-    "description": "Hipervisor tipo 1 open source que combina KVM (VMs completas) y LXC (contenedores ligeros) con gestión centralizada vía web.",
-    "category": "Config",
-    "tags": [],
-    "examples": [
-      "ssh root@192.168.137.10\n# Acceso web: https://192.168.137.10:8006",
-      "# Listar VMs y contenedores\nqm list           # VMs KVM\npct list          # Contenedores LXC\n\n# Iniciar / detener\nqm start <vmid>\nqm stop <vmid>\npct start <ctid>\npct stop <ctid>\n\n# Crear snapshot\nqm snapshot <vmid> <nombre>\n\n# Ver logs del sistema\njournalctl -u pve-cluster",
-      "# Seleccionar el NVMe secundario durante el instalador\n# El instalador puede modificar la EFI — usar discos físicamente separados",
-      "# Editar /etc/systemd/logind.conf\nHandleLidSwitch=ignore\nHandleLidSwitchDocked=ignore\nsystemctl restart systemd-logind",
-      "qemu-img convert -f vmdk -O qcow2 imagen.vmdk imagen.qcow2\nqm importdisk <vmid> imagen.qcow2 local-lvm"
-    ],
-    "dangerous": false,
-    "platform": "Unix",
-    "syntax": "ssh root@192.168.137.10\n# Acceso web: https://192.168.137.10:8006",
-    "parameters": [
-      {
-        "param": "/etc/systemd/logind.conf",
-        "description": "Evitar suspensión al cerrar tapa",
-        "example": "`HandleLidSwitch=ignore`"
-      }
-    ],
-    "output": "",
-    "notes": "- **Tipo 1 vs Tipo 2**: Proxmox corre directo sobre hardware (800MB overhead). VMware Workstation pasa por el OS host (4GB+ overhead).\n- KSM fusiona páginas de RAM idénticas entre VMs — muy útil cuando varias VMs usan el mismo OS base.\n- Panel web disponible en `https://<IP>:8006`",
-    "references": [
-      "Documentación oficial Proxmox"
-    ],
-    "created_at": "2026-03-05T01:40:00.000Z",
-    "updated_at": "2026-03-05T03:09:00.000Z"
+    "created_at": "2026-03-04T13:59:00.000Z",
+    "updated_at": "2026-04-18T14:57:00.000Z"
   },
   {
     "id": "288ec7e7-4fc0-80b3-81ca-f99965597cc9",
@@ -538,93 +777,7 @@ export const commands: Command[] = [
       "Documentación"
     ],
     "created_at": "2025-10-10T01:31:00.000Z",
-    "updated_at": "2026-03-05T03:02:00.000Z"
-  },
-  {
-    "id": "31aec7e7-4fc0-81d8-b2fc-dbf96fa45b2a",
-    "title": "SSH Config File",
-    "command": "ssh mi-servidor",
-    "description": "Archivo ~/.ssh/config para definir alias de servidores y evitar especificar rutas y usuarios manualmente.",
-    "category": "Linux",
-    "tags": [],
-    "examples": [
-      "# ~/.ssh/config\nHost mi-servidor-aws\n    HostName 12.34.56.78\n    User ubuntu\n    IdentityFile ~/.ssh/mi-clave-aws.pem\n\nHost proxmox-lab\n    HostName 192.168.137.100\n    User root\n    IdentityFile ~/.ssh/id_ed25519",
-      "Host <alias>\n    HostName <IP o dominio>\n    User <usuario>\n    IdentityFile <ruta-a-clave-privada>\n    Port <puerto>          # opcional, default 22",
-      "ssh mi-servidor-aws\n# equivale a: ssh -i ~/.ssh/mi-clave-aws.pem ubuntu@12.34.56.78",
-      "echo -e \"\\nHost nuevo\\n    HostName 1.2.3.4\\n    User debian\\n    IdentityFile ~/.ssh/id_ed25519\" >> ~/.ssh/config",
-      "chmod 600 ~/.ssh/config"
-    ],
-    "dangerous": false,
-    "platform": "Unix",
-    "syntax": "# ~/.ssh/config\nHost mi-servidor-aws\n    HostName 12.34.56.78\n    User ubuntu\n    IdentityFile ~/.ssh/mi-clave-aws.pem\n\nHost proxmox-lab\n    HostName 192.168.137.100\n    User root\n    IdentityFile ~/.ssh/id_ed25519",
-    "parameters": [
-      {
-        "param": "Host",
-        "description": "Alias que usarás en el comando `ssh`",
-        "example": "`Host prod-server`"
-      },
-      {
-        "param": "HostName",
-        "description": "IP o dominio real del servidor",
-        "example": "`HostName 10.0.0.5`"
-      },
-      {
-        "param": "User",
-        "description": "Usuario de login",
-        "example": "`User ubuntu`"
-      },
-      {
-        "param": "IdentityFile",
-        "description": "Ruta a la clave privada",
-        "example": "`IdentityFile ~/.ssh/key.pem`"
-      },
-      {
-        "param": "Port",
-        "description": "Puerto SSH (si no es 22)",
-        "example": "`Port 2222`"
-      }
-    ],
-    "output": "",
-    "notes": "- El archivo `config` también debe tener permisos `600`\n- Usar `Host *` al final del archivo para definir defaults globales\n- `ProxyJump` permite saltar por un bastión: `ProxyJump bastion-host`\n- Compatible con `scp` y `rsync` — también usan el archivo config",
-    "references": [
-      "ssh_config man page"
-    ],
-    "created_at": "2026-03-05T00:53:00.000Z",
-    "updated_at": "2026-03-05T03:16:00.000Z"
-  },
-  {
-    "id": "31aec7e7-4fc0-8193-858e-ca335cb7756d",
-    "title": "SSH Key Management",
-    "command": "chmod 700 ~/.ssh && chmod 600 ~/.ssh/clave-privada",
-    "description": "Organizar claves SSH en ~/.ssh/ con los permisos correctos para evitar errores de autenticación.",
-    "category": "Linux",
-    "tags": [],
-    "examples": [
-      "mkdir -p ~/.ssh\nchmod 700 ~/.ssh\nchmod 600 ~/.ssh/mi-clave-privada\nchmod 644 ~/.ssh/mi-clave-publica.pub",
-      "ssh -i ~/.ssh/nombre-clave.pem usuario@<IP>",
-      "mv ~/Downloads/mi-clave ~/.ssh/\nchmod 600 ~/.ssh/mi-clave",
-      "ssh -i ~/.ssh/mi-clave-aws.pem ubuntu@<IP>",
-      "ssh usuario@<IP>",
-      "aws ec2 delete-key-pair --key-name NombreDeTuClave\nrm ~/.ssh/clave-vieja.pem"
-    ],
-    "dangerous": false,
-    "platform": "Unix",
-    "syntax": "mkdir -p ~/.ssh\nchmod 700 ~/.ssh\nchmod 600 ~/.ssh/mi-clave-privada\nchmod 644 ~/.ssh/mi-clave-publica.pub",
-    "parameters": [
-      {
-        "param": "chmod 700 ~/.ssh",
-        "description": "| Clave privada",
-        "example": "`600` (solo lectura del dueño)"
-      }
-    ],
-    "output": "",
-    "notes": "- Las claves con nombre estándar (`id_rsa`, `id_ed25519`) se usan automáticamente sin `-i`\n- Borrar un Key Pair en AWS solo elimina su registro — las instancias en ejecución conservan acceso\n- Para revocar acceso real a un servidor activo: eliminar la línea en `~/.ssh/authorized_keys` del servidor\n- En Windows: `%USERPROFILE%\\.ssh\\` es la ruta equivalente",
-    "references": [
-      "OpenSSH Manual",
-      "AWS EC2 Key Pairs"
-    ],
-    "created_at": "2026-03-05T00:53:00.000Z",
-    "updated_at": "2026-03-05T03:15:00.000Z"
+    "updated_at": "2026-04-18T18:30:00.000Z"
   },
   {
     "id": "289ec7e7-4fc0-805d-b274-f6e0f779ad51",
@@ -650,98 +803,14 @@ export const commands: Command[] = [
       "https://docs.python.org/3/library/venv.html"
     ],
     "created_at": "2025-10-11T19:21:00.000Z",
-    "updated_at": "2026-03-05T03:05:00.000Z"
-  },
-  {
-    "id": "31aec7e7-4fc0-814c-a5f4-e42e85525278",
-    "title": "Watchtower — Auto-update Docker",
-    "command": "docker run -d --name watchtower -v /var/run/docker.sock:/var/run/docker.sock containrrr/watchtower",
-    "description": "Contenedor que monitoriza y actualiza automáticamente otros contenedores Docker cuando hay nuevas imágenes disponibles.",
-    "category": "Config",
-    "tags": [],
-    "examples": [
-      "docker run -d \\\n  --name watchtower \\\n  -v /var/run/docker.sock:/var/run/docker.sock \\\n  containrrr/watchtower --interval 86400",
-      "---\n\n\n### **⚙️ Parámetros clave**\n\n\n| Flag                | Descripción                                                                        | Ejemplo                  |\n| ------------------- | ---------------------------------------------------------------------------------- | ------------------------ |\n| `--interval <s>`    | Segundos entre cada chequeo                                                        | `--interval 86400` (24h) |\n| `--cleanup`         | Elimina imágenes antiguas tras actualizar                                          | `--cleanup`              |\n| `--monitor-only`    | Solo notifica, no actualiza                                                        | `--monitor-only`         |\n| `--include-stopped` | Incluye contenedores detenidos                                                     | `--include-stopped`      |\n| `--label-enable`    | Solo actualiza contenedores con label `com.centurylinklabs.watchtower.enable=true` | `--label-enable`         |\n\n\n---\n\n\n### **🚀 Ejemplos de uso**\n\n\n**Actualizar solo contenedores etiquetados:**",
-      "**Notificación por email al actualizar:**"
-    ],
-    "dangerous": false,
-    "platform": "Unix",
-    "syntax": "docker run -d \\\n  --name watchtower \\\n  -v /var/run/docker.sock:/var/run/docker.sock \\\n  containrrr/watchtower --interval 86400",
-    "parameters": [
-      {
-        "param": "--interval <s>",
-        "description": "Segundos entre cada chequeo",
-        "example": "`--interval 86400` (24h)"
-      },
-      {
-        "param": "--cleanup",
-        "description": "Elimina imágenes antiguas tras actualizar",
-        "example": "`--cleanup`"
-      },
-      {
-        "param": "--monitor-only",
-        "description": "Solo notifica, no actualiza",
-        "example": "`--monitor-only`"
-      },
-      {
-        "param": "--include-stopped",
-        "description": "Incluye contenedores detenidos",
-        "example": "`--include-stopped`"
-      },
-      {
-        "param": "--label-enable",
-        "description": "Solo actualiza contenedores con label `com.centurylinklabs.watchtower.enable=true`",
-        "example": "`--label-enable`"
-      }
-    ],
-    "output": "---\n\n\n### **📤 Salida esperada**",
-    "notes": "- Montar `/var/run/docker.sock` le da acceso total al daemon de Docker: **no exponer en contenedores públicos**.\n- En producción crítica usar `--monitor-only` + pipeline CI/CD para actualizaciones controladas.\n- Combinar con `--cleanup` evita que el disco se llene de imágenes antiguas.",
-    "references": [
-      "Watchtower docs",
-      "Docker Hub"
-    ],
-    "created_at": "2026-03-05T00:21:00.000Z",
-    "updated_at": "2026-03-05T03:16:00.000Z"
-  },
-  {
-    "id": "31aec7e7-4fc0-81ad-a8ae-edc342093c45",
-    "title": "Win-Kex",
-    "command": "kex --win -s",
-    "description": "Entorno de escritorio completo para Kali Linux en WSL2, permite usar apps gráficas de Kali dentro de Windows.",
-    "category": "Linux",
-    "tags": [],
-    "examples": [
-      "# Instalar\nsudo apt install kali-win-kex\n\n# Iniciar en modo ventana\nkex --win -s\n\n# Iniciar en modo pantalla completa (seamless)\nkex --sl -s\n\n# Iniciar en modo ESM (Enhanced Session Mode, más rápido)\nkex --esm --ip -s",
-      "kex [modo] [opciones]",
-      "sudo apt install firefox-esr -y\nfirefox  # abre ventana nativa si WSLg está activo",
-      "kex --win -s\n# Conectarse con VNC viewer a localhost:5901\n# Password por defecto: kex",
-      "kex stop"
-    ],
-    "dangerous": false,
-    "platform": "Unix",
-    "syntax": "# Instalar\nsudo apt install kali-win-kex\n\n# Iniciar en modo ventana\nkex --win -s\n\n# Iniciar en modo pantalla completa (seamless)\nkex --sl -s\n\n# Iniciar en modo ESM (Enhanced Session Mode, más rápido)\nkex --esm --ip -s",
-    "parameters": [
-      {
-        "param": "--win",
-        "description": "Kali en ventana separada (VNC)",
-        "example": "| Seamless"
-      }
-    ],
-    "output": "",
-    "notes": "- En Windows 11 actualizado, WSLg permite abrir apps gráficas individuales sin necesidad de Win-Kex\n- Win-Kex es necesario para escritorio completo o si WSLg no está disponible (Windows 10)\n- Para web pentesting (Burp, Firefox, SQLMap) suele bastar con WSLg + apps individuales\n- Para configurar FoxyProxy + Burp: instalar Firefox ESR y apuntar proxy a `127.0.0.1:8080`",
-    "references": [
-      "Win-Kex Kali Docs",
-      "WSLg GitHub"
-    ],
-    "created_at": "2026-03-05T00:59:00.000Z",
-    "updated_at": "2026-03-05T03:14:00.000Z"
+    "updated_at": "2026-04-18T18:31:00.000Z"
   },
   {
     "id": "2d7ec7e7-4fc0-8054-a7ea-de3d27892a26",
     "title": "zsh",
     "command": "sudo nano ~/.zshrc ",
     "description": "Cheas para configurar zshrc",
-    "category": "zshrc",
+    "category": "General",
     "tags": [],
     "examples": [
       "z <nombre_carpeta>    # Salta a carpeta (recordar frecuencia)\nz -                   # Vuelve a carpeta anterior\nzi                    # Interactivo (FZF)",

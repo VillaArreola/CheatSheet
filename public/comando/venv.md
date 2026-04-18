@@ -4,14 +4,14 @@ title: Venv
 ---
 
 
-### **📌 Descripción breve**
+###  **Descripción breve**
 
 > `venv` es el módulo estándar de Python para crear entornos virtuales aislados por proyecto.
 
 ---
 
 
-### **🛠 Crear venv**
+###  **Crear venv**
 
 
 ```bash
@@ -23,7 +23,7 @@ python -m venv .venv
 ---
 
 
-### **▶️ Activar venv**
+###  **Activar venv**
 
 
 ```bash
@@ -41,7 +41,7 @@ source .venv/bin/activate
 ---
 
 
-### **⏹ Desactivar**
+### **Desactivar**
 
 
 ```bash
@@ -52,7 +52,7 @@ deactivate
 ---
 
 
-### **📦 Instalar dependencias (dentro del venv)**
+### **Instalar dependencias (dentro del venv)**
 
 
 ```bash
@@ -66,7 +66,7 @@ pip install -r requirements.txt
 ---
 
 
-### **🧹 Eliminar un venv**
+### **Eliminar un venv**
 
 > Solo borra la carpeta del entorno (ej. `.venv/`).
 

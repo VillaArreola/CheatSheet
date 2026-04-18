@@ -7,7 +7,7 @@ title: Dnsrecon
 # Dnsrecon — Enumeración de DNS
 
 
-## **🏴‍☠️  Ejemplo**
+## **Ejemplo**
 
 
 ```bash
@@ -15,14 +15,14 @@ dnsrecon -d ejemplo.com -D subdomains.txt -t brt
 ```
 
 
-### **📌 Descripción breve**
+### **Descripción breve**
 
 > Herramienta para enumerar registros DNS y realizar descubrimiento de subdominios. Soporta consultas directas, reversas, transfers de zona y brute force.
 
 ---
 
 
-### **🛠 Sintaxis básica**
+###  **Sintaxis básica**
 
 
 ```bash
@@ -33,7 +33,7 @@ dnsrecon [opciones]
 ---
 
 
-### **⚙️ Parámetros clave**
+### **Parámetros clave**
 
 
 | Parámetro    | Descripción                                       | Ejemplo             |
@@ -47,7 +47,7 @@ dnsrecon [opciones]
 ---
 
 
-### **🚀 Ejemplos de uso**
+### **Ejemplos de uso**
 
 
 **Enumeración estándar:**
@@ -77,7 +77,7 @@ dnsrecon -d ejemplo.com -t axfr
 ---
 
 
-### **📤 Salida esperada**
+###  **Salida esperada**
 
 
 ```plain text
@@ -85,9 +85,6 @@ dnsrecon -d ejemplo.com -t axfr
 [*] STD: ejemplo.com MX mail.ejemplo.com
 [*] BRUTE: shop.ejemplo.com A 192.168.1.25
 ```
-
-
-_(Insertar captura real si la tienes.)_
 
 
 ---

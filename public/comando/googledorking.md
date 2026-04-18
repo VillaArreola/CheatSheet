@@ -4,10 +4,10 @@ title: Google Dorking
 ---
 
 
-# **Google Dorking** — Busqueda Avanzada
+# **Google Dorking** — Búsqueda Avanzada
 
 
-## **🏴‍☠️  Ejemplo**
+##  **Ejemplo**
 
 
 ```bash
@@ -15,14 +15,14 @@ title: Google Dorking
 ```
 
 
-### **📌 Descripción breve**
+### **Descripción breve**
 
-> Las busquedas de gogole dorking usan operadores para indicar donde buscar en sitios publicos pero no visibles dfacilmete.
+> Las búsquedas de Google Dorking usan operadores para indicar donde buscar en sitios públicos pero no visibles fácilmente.
 
 ---
 
 
-### **🛠 Sintaxis básica**
+### **Sintaxis básica**
 
 
 ```bash
@@ -34,7 +34,7 @@ site:site.com > Busqueda unicamente en el dominio seleccionado.
 ---
 
 
-### **⚙️ Parámetros clave**
+###  **Parámetros clave**
 
 
 | Parámetro | Descripción                                                        | Ejemplo                                        |
@@ -53,15 +53,53 @@ site:site.com > Busqueda unicamente en el dominio seleccionado.
 ---
 
 
-### **🚀 Ejemplos de uso**
+###  **Ejemplos de uso**
 
 
-### Ejemplo real (login expuesto en un dominio)
+**Puedes buscar por palabras clave en algún sitio:**
 
 
 ```bash
-intitle:"index of" "login" site:example.com
-Brute force de subdominios con diccionario:
+site:facebook.com "Datos Robados"
+```
+
+
+**Busqueda por número de teléfono:**
+
+
+```bash
+"445 118 4920" OR "+524451184920" OR "4451184920"
+```
+
+
+**Búsqueda con condicionales:**
+
+
+```bash
+site:twitter.com OR site:x.com "4451184920" OR "+52524451184920"
+```
+
+
+Dorks para documentos y archivos expuestos (PDF, XLS, DOC 
+
+
+```bash
+filetype:pdf "numero" OR "+52 numeor"
+filetype:xls OR filetype:xlsx "Numeor" "Puebla" OR "CDMX"
+filetype:doc OR filetype:docx intext:"Numeor" "keyW" OR "keyW"
+
+intext:"TU_NÚMERO" filetype:pdf site:.mx
+```
+
+
+Dorks combinados avanzados
+
+
+```bash
+("445 118 4920" OR "+524451184920" OR "4451184920" OR "+52 445 118 4920") ("Lugar 1" OR "Lugar 2" OR "Puebla" OR "Key 1" OR "KEy 2")
+site:facebook.com OR site:mercadolibre.com.mx OR site:olx.com.mx "445 118 4920"
+intext:"445 118 4920" (WhatsApp OR celular OR teléfono OR contacto)
+"445 118 4920" (RFC OR CURP OR INE) filetype:pdf OR filetype:jpg
 ```
 
 

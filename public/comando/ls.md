@@ -7,7 +7,7 @@ title: Ls
 # LS - listar
 
 
-## 🏴‍☠️ Ejemplo
+##  Ejemplo
 
 
 ```bash
@@ -15,17 +15,17 @@ ls -la /home/usuario/documentos
 ```
 
 
-**📌 Descripción breve**
+**Descripción breve**
 Comando fundamental de Linux para listar archivos y directorios. Muestra contenido de directorios con información detallada sobre permisos, propietarios, tamaños y fechas de modificación.
 
 
-**🛠 Sintaxis básica**
+**Sintaxis básica**
 
 
 `ls [opciones] [directorio/archivo]`
 
 
-**⚙️ Parámetros clave**
+ **Parámetros clave**
 
 
 | Parámetro | Descripción                                   | Ejemplo  |
@@ -38,7 +38,7 @@ Comando fundamental de Linux para listar archivos y directorios. Muestra conteni
 | `-R`      | Listado recursivo                             | `ls -R`  |
 
 
-**🚀 Ejemplos de uso**
+**Ejemplos de uso**
 
 - **Listado básico:**
 
@@ -65,7 +65,7 @@ Comando fundamental de Linux para listar archivos y directorios. Muestra conteni
     ```
 
 
-**📤 Salida esperada**
+**Salida esperada**
 
 
 ```plain text

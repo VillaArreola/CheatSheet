@@ -7,7 +7,7 @@ title: Nmap
 # Nmap
 
 
-## **🖊️ Ejemplo**
+## **Ejemplo**
 
 
 ```bash
@@ -15,14 +15,14 @@ nmap -sC -sV -oN scan.txt 192.168.1.0/24
 ```
 
 
-### **📌 Descripción**
+### **Descripción**
 
 > Nmap (Network Mapper) es una herramienta open source para exploración de redes y auditoría de seguridad. Permite descubrir hosts activos, puertos abiertos, servicios en ejecución y sistema operativo.
 
 ---
 
 
-### **🛠 Sintaxis básica**
+###  **Sintaxis básica**
 
 
 ```bash
@@ -34,7 +34,7 @@ nmap [opciones] <target>
 ---
 
 
-### **⚙️ Parámetros clave**
+### **Parámetros clave**
 
 
 | Parámetro  | Descripción                                     | Ejemplo                       |
@@ -58,7 +58,7 @@ nmap [opciones] <target>
 ---
 
 
-### **🚀 Ejemplos de uso**
+### **Ejemplos de uso**
 
 
 **Escaneo rápido con scripts y versiones:**
